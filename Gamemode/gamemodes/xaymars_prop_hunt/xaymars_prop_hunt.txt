@@ -1,0 +1,196 @@
+"xaymars_prop_hunt"
+{
+	"base"	"base"
+	"title"	"Prop Hunt"
+	"maps"	"^ph_|^cs_|^de_|^ttt_"
+
+	"fretta_maps"
+	{
+		"1"		"ph_"
+		"2"		"cs_"
+		"3"		"de_"
+		"4"		"ttt_"
+	}
+	"selectable"	"1"
+	
+	"menusystem"	"1"
+	"workshopid"	"468149739"
+
+	"settings"
+	{
+		// Game Settings
+		1
+		{
+			"name"		"mp_timelimit"
+			"text"		"G: Time Limit"
+			"help"		"Time Limit in Minutes for how long should we stay on one map. (0 to disable)"
+			"type"		"Numeric"
+			"default"	"20"
+		}
+		
+		2
+		{
+			"name"		"ph_sprinting"
+			"text"		"G: Enable Sprinting"
+			"help"		"Should sprinting be possible?"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+		
+		3
+		{
+			"name"		"ph_tauntwaittime"
+			"text"		"G: Taunt Cooldown"
+			"help"		"How much time must pass before another taunt may be played."
+			"type"		"Numeric"
+			"default"	"5"
+		}
+		
+		// Round Settings
+		4
+		{
+			"name"		"ph_rounds"
+			"text"		"R: Rounds per Map"
+			"help"		"How many rounds are played per map."
+			"type"		"Numeric"
+			"default"	"10"
+		}
+		
+		5
+		{
+			"name"		"ph_rounds_time"
+			"text"		"R: Round Duration (Seconds)"
+			"help"		"How long is each round going to last?"
+			"type"		"Numeric"
+			"default"	"300"
+		}
+		
+		6
+		{
+			"name"		"ph_rounds_blindtime"
+			"text"		"R: Hiding Time (Seconds)"
+			"help"		"How long are Seekers blinded in seconds?"
+			"type"		"Numeric"
+			"default"	"30"
+		}
+
+		7
+		{
+			"name"		"ph_rounds_teams_swap"
+			"text"		"R: Swap Teams every round?"
+			"help"		"Should teams be swapped every round? (Can't be used with Randomize)"
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+		
+		8
+		{
+			"name"		"ph_rounds_teams_randomize"
+			"text"		"R: Randomize Teams every round?"
+			"help"		"Should teams be randomized every round? (Can't be used with Swap)"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+		
+		// Seeker Settings
+		9
+		{
+			"name"		"ph_seeker_health"
+			"text"		"S: Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		10
+		{
+			"name"		"ph_seeker_health_max"
+			"text"		"S: Max Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		11
+		{
+			"name"		"ph_seeker_health_killbonus"
+			"text"		"S: Health Kill-Bonus"
+			"help"		"Health gained on kill."
+			"type"		"Numeric"
+			"default"	"10"
+		}
+		
+		11
+		{
+			"name"		"ph_seeker_health_penalty"
+			"text"		"S: Health Penalty"
+			"help"		"Health lost on wrong shot."
+			"type"		"Numeric"
+			"default"	"1"
+		}
+		
+		12
+		{
+			"name"		"ph_seeker_ammo_pistol"
+			"text"		"S: Ammo for Pistol"
+			"type"		"Numeric"
+			"default"	"40"
+		}
+		
+		13
+		{
+			"name"		"ph_seeker_ammo_smg"
+			"text"		"S: Ammo for SMG"
+			"type"		"Numeric"
+			"default"	"300"
+		}
+		
+		14
+		{
+			"name"		"ph_seeker_ammo_smggrenade"
+			"text"		"S: Ammo for SMG Grenade"
+			"type"		"Numeric"
+			"default"	"1"
+		}
+		
+		15
+		{
+			"name"		"ph_seeker_ammo_shotgun"
+			"text"		"S: Ammo for Shotgun"
+			"type"		"Numeric"
+			"default"	"60"
+		}
+		
+		// Hider Settings
+		16
+		{
+			"name"		"ph_hider_health"
+			"text"		"H: Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		17
+		{
+			"name"		"ph_hider_health_max"
+			"text"		"H: Max Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		18
+		{
+			"name"		"ph_hider_health_scale"
+			"text"		"H: Enable Health Scaling"
+			"help"		"Larger & heavier objects have more health, smaller less."
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+		
+		19
+		{
+			"name"		"ph_hider_health_scaled_max"
+			"text"		"H: Scaled Max Health"
+			"type"		"Numeric"
+			"default"	"200"
+		}
+	}
+}

@@ -1,0 +1,12 @@
+Changelist
+- Made Seeker Weapons & Ammo configurable from console & cfg file.
+- Updated Gamemode info so that new configuration options are visible on the client.
+
+ToDo:
+- Replace all createconvar with getconvar?
+- Seeker model not existing after unblind?
+- End round triggers
+- Other game modes
+- UI stuff
+- Scoreboard
+- Custom Collisions for Hiders? Allows to copy the prop geometry/align with rotation

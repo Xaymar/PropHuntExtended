@@ -1,0 +1,7 @@
+{
+	"title"		: "Prop Hunt Extended",
+	"type"		: "gamemode",
+	"tags"		: [ "fun" ],
+	"ignore"	: [
+	]
+}

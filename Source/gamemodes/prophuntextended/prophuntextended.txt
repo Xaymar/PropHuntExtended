@@ -1,0 +1,182 @@
+"prophuntextended"
+{
+	"base"	"base"
+	"title"	"Prop Hunt Extended"
+	"maps"	"^ph_|^cs_|^de_|^ttt_"	
+	"menusystem"	"1"
+	"workshopid"	"468149739"
+
+	"settings"
+	{
+		// Game Settings
+		1
+		{
+			"name"		"ph_gamemode"
+			"text"		"G: Game Mode"
+			"help"		"0: Basic, 1: Swizzle Effect (Random Teams), 2: The Dead Hunt (One Hunter, Dead Props become Hunters)"
+			"type"		"Numeric"
+			"default"	"0"
+		}
+		
+		2
+		{
+			"name"		"mp_timelimit"
+			"text"		"G: Time Limit"
+			"help"		"Time Limit in Minutes for how long should we stay on one map. (0 to disable)"
+			"type"		"Numeric"
+			"default"	"20"
+		}
+		
+		3
+		{
+			"name"		"ph_sprinting"
+			"text"		"G: Enable Sprinting"
+			"help"		"Should sprinting be possible?"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+		
+		4
+		{
+			"name"		"ph_tauntcooldown"
+			"text"		"G: Taunt Cooldown"
+			"help"		"How much time must pass before another taunt may be played."
+			"type"		"Numeric"
+			"default"	"5"
+		}
+		
+		// Round Settings
+		10
+		{
+			"name"		"ph_round_limit"
+			"text"		"R: Rounds per Map"
+			"help"		"How many rounds are played per map."
+			"type"		"Numeric"
+			"default"	"10"
+		}
+		
+		11
+		{
+			"name"		"ph_round_timelimit"
+			"text"		"R: Round Duration (Seconds)"
+			"help"		"How long is each round going to last?"
+			"type"		"Numeric"
+			"default"	"300"
+		}
+		
+		12
+		{
+			"name"		"ph_round_blindtime"
+			"text"		"R: Hiding Time (Seconds)"
+			"help"		"How long are hunters blinded? (positive values will be inside the round time limit, negative will add to the round time limit)"
+			"type"		"Numeric"
+			"default"	"30"
+		}
+
+		// Seeker Settings
+		20
+		{
+			"name"		"ph_seeker_health"
+			"text"		"S: Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		21
+		{
+			"name"		"ph_seeker_health_max"
+			"text"		"S: Max Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		22
+		{
+			"name"		"ph_seeker_health_bonus"
+			"text"		"S: Health Kill-Bonus"
+			"help"		"Health gained on kill."
+			"type"		"Numeric"
+			"default"	"20"
+		}
+		
+		23
+		{
+			"name"		"ph_seeker_health_penalty"
+			"text"		"S: Health Penalty"
+			"help"		"Health lost on wrong shot."
+			"type"		"Numeric"
+			"default"	"5"
+		}
+		
+		24
+		{
+			"name"		"ph_seeker_weapons"
+			"text"		"S: Weapons to be given to Seekers"
+			"help"		"Format: Weapon,Weapon,..."
+			"type"		"Text"
+			"default"	"weapon_crowbar,weapon_pistol,weapon_ph_smg,weapon_shotgun,weapon_physcannon"
+		}
+		
+		25
+		{
+			"name"		"ph_seeker_ammo"
+			"text"		"S: Ammo to give to Seekers"
+			"help"		"Format: Name:Amount,Name:Amount,..."
+			"type"		"Text"
+			"default"	"Pistol:100,SMG1:300,SMG1_Grenade:1,Buckshot:64"
+		}
+		
+		// Hider Settings
+		30
+		{
+			"name"		"ph_hider_health"
+			"text"		"H: Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		31
+		{
+			"name"		"ph_hider_health_max"
+			"text"		"H: Max Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		32
+		{
+			"name"		"ph_hider_health_scaling"
+			"text"		"H: Enable Health Scaling"
+			"help"		"Larger & heavier objects have more health, smaller less."
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+		
+		33
+		{
+			"name"		"ph_hider_health_scaling_max"
+			"text"		"H: Scaled Max Health"
+			"type"		"Numeric"
+			"default"	"200"
+		}
+		
+		// Whitelist & Blacklist
+		40
+		{
+			"name"		"ph_list_class_whitelist"
+			"text"		"L: Allowed Entity Classes"
+			"help"		"Hiders can only use these for changing model and skin."
+			"type"		"Text"
+			"default"	"ph_prop,prop_physics,prop_physics_multiplayer,prop_physics_respawnable"
+		}
+		
+		41
+		{
+			"name"		"ph_list_abuse_blacklist"
+			"text"		"L: Abuse Blacklist"
+			"help"		"Fix interact spam with certain entities so that all areas stay accessible."
+			"type"		"Text"
+			"default"	""func_button,func_door,func_door_rotation,prop_door_rotation,func_tracktrain,func_tanktrain,func_breakable""
+		}
+	}
+}

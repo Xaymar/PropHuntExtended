@@ -1,6 +1,7 @@
 -- SWEP Information
 SWEP.Author			= "Michael 'Xaymar' Dirks"
 SWEP.Contact		= "info@project-kube.de"
+SWEP.PrintName		= "PH Submachine Gun"
 SWEP.Purpose		= "More accurate SMG for Prop Hunt."
 SWEP.Instructions	= "Fire away! Alternative fire to fire a grenade."
 SWEP.Category		= "Prop Hunt Weapons"
@@ -30,6 +31,7 @@ SWEP.Primary.DefaultClip	= 45
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "SMG1"
 SWEP.Primary.Damage			= 5
+SWEP.Primary.RefireTime		= 0.1
 
 -- Secondary Ammunition: SMG Grenades
 SWEP.Secondary.ClipSize		= 1
@@ -37,11 +39,12 @@ SWEP.Secondary.DefaultClip	= 0
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "SMG1_Grenade"
 SWEP.Secondary.Damage		= 100
+SWEP.Secondary.RefireTime	= 1.0
 
 -- Recoil
 SWEP.Recoil = {}
-SWEP.Recoil.SingleFire		= 1.0
-SWEP.Recoil.BurstFire		= 4.0
+SWEP.Recoil.SingleFire		= 0.2
+SWEP.Recoil.BurstFire		= 1.0
 SWEP.Recoil.SecondaryFire	= 8.0
 
 -- Accuracy
@@ -82,10 +85,14 @@ function SWEP:Initialize()
 	
 	-- Initialize default values.
 	self.BurstFire = false
+	self:SetNWBool("BurstFire", false)
+	self.LastReload = CurTime()
+	
 	self.PrimaryAccuracy = self.Accuracy.Primary.Max
 	self.LastPrimaryAttack = CurTime()
 	self.SecondaryAccuracy = self.Accuracy.Secondary.Max
 	self.LastSecondaryAttack = CurTime()
+	
 end
 
 -- Primary Attack
@@ -95,13 +102,13 @@ function SWEP:CanPrimaryAttack()
 		-- If not, check if there's ammo available.
 		if (self:Ammo1() > 0) then
 			-- If yes, reload and wait for weapon to be ready again.
-			self:EmitSound(self.Sound.NoPrimaryAmmo)
+			self.Weapon:EmitSound(self.Sound.NoPrimaryAmmo)
 			self:Reload()
 			return false
 		end
 		
 		-- If no, emit empty sound for primary fire.
-		self:EmitSound(self.Sound.NoPrimaryAmmo)
+		self.Weapon:EmitSound(self.Sound.NoPrimaryAmmo)
 		self:SetNextPrimaryFire(CurTime() + 0.1)
 		return false
 	end
@@ -114,31 +121,37 @@ function SWEP:PrimaryAttack()
 	-- Can't fire without Ammo
 	if (!self:CanPrimaryAttack()) then return end
 	
-	if (self.BurstFire == false) then
+	if (self:GetNWBool("BurstFire") == false) then
 		-- Single Mode: fire and take one bullet from the clip.
-		self:ShootBullet(self.Primary.Damage, bullet_count, 1.0 - self.PrimaryAccuracy)
 		self:TakePrimaryAmmo(1)
-		self:EmitSound(self.Sound.SingleFire)
-		self:SetNextPrimaryFire( CurTime() + 0.1 )
+		self:SetNextPrimaryFire( CurTime() + self.Primary.RefireTime )
+		self.Weapon:EmitSound(self.Sound.SingleFire)
 		
 		-- Apply recoil
-		self.Owner:ViewPunch( Angle(-1, 0, 0) * self.Recoil.SingleFire * (1 + (1 - self.PrimaryAccuracy)) )
+		if IsValid(self.Owner) then
+			self.Owner:ViewPunch( Angle(-1, 0, 0) * self.Recoil.SingleFire * (1 + (1 - self.PrimaryAccuracy)) )
+			self:ShootBullet(self.Primary.Damage, 1, 1.0 - self.PrimaryAccuracy)
+		end
 		
 		-- Decrease accuracy
 		self.PrimaryAccuracy = math.Clamp(self.PrimaryAccuracy - self.Accuracy.Primary.Reduction, self.Accuracy.Primary.Min, self.Accuracy.Primary.Max)
 	else
 		-- Burst Mode: fire and take up to three bullets from the clip
 		local bulletCount = math.Clamp(self:Clip1(), 1, 3)
-		self:ShootBullet(self.Primary.Damage, bullet_count, 1.0 - self.PrimaryAccuracy)
 		self:TakePrimaryAmmo(bulletCount)
-		self:EmitSound(self.Sound.BurstFire)
-		self:SetNextPrimaryFire( CurTime() + 0.5 * (bulletCount / 3.0) )
+		self:SetNextPrimaryFire( CurTime() + self.Primary.RefireTime * bulletCount )
+		self.Weapon:EmitSound(self.Sound.BurstFire)
 		
-		-- Apply recoil
-		self.Owner:ViewPunch(Angle(-1, 0, 0) * self.Recoil.BurstFire * (bulletCount / 3.0) * (1 + (1 - self.PrimaryAccuracy)))
-		
-		-- Decrease accuracy
-		self.PrimaryAccuracy = math.Clamp(self.PrimaryAccuracy - self.Accuracy.Primary.Reduction * bulletCount, self.Accuracy.Primary.Min, self.Accuracy.Primary.Max)
+		for i = 1, bulletCount do
+			if (IsValid(self)) && (IsValid(self.Owner)) then
+				-- Apply recoil & shoot
+				self.Owner:ViewPunch(Angle(-1, 0, 0) * self.Recoil.BurstFire * (1 + (1 - self.PrimaryAccuracy)))
+				self:ShootBullet(self.Primary.Damage, 1, 1.0 - self.PrimaryAccuracy)
+				
+				-- Decrease accuracy
+				self.PrimaryAccuracy = math.Clamp(self.PrimaryAccuracy - self.Accuracy.Primary.Reduction, self.Accuracy.Primary.Min, self.Accuracy.Primary.Max)
+			end
+		end
 	end
 	
 	-- Set Animation and attack time.
@@ -147,17 +160,15 @@ function SWEP:PrimaryAttack()
 	return
 end
 
-
 -- Secondary Attack
 function SWEP:CanSecondaryAttack()
 	if (self:Clip2() == 0) then
 		if (self:Ammo2() == 0) then
-			self:EmitSound(self.Sound.NoSecondaryAmmo)
+			self.Weapon:EmitSound(self.Sound.NoSecondaryAmmo)
 			self:SetNextSecondaryFire( CurTime() + 1.0 )
 			return false
 		else
 			self:SetClip2( 1 )
-			self.Owner:SetAmmo( self.Owner:GetAmmoCount( self:GetSecondaryAmmoType() ) - 1, self:GetSecondaryAmmoType() )
 		end
 	end
 	
@@ -168,9 +179,11 @@ function SWEP:SecondaryAttack()
 	-- Can't fire without Ammo
 	if (!self:CanSecondaryAttack()) then return end
 	
+	self.Owner:SetAmmo( self.Owner:GetAmmoCount( self:GetSecondaryAmmoType() ) - 1, self:GetSecondaryAmmoType() )
+	
 	-- Emit a sound.
-	self:EmitSound(self.Sound.SecondaryFire)
-	self:SetNextSecondaryFire( CurTime() + 1.0 )
+	self.Weapon:EmitSound(self.Sound.SecondaryFire)
+	self:SetNextSecondaryFire( CurTime() + self.Secondary.RefireTime )
 	self:TakeSecondaryAmmo(1)
 	
 	-- Create grenade
@@ -193,16 +206,36 @@ end
 
 -- Reload: Combination of reloading and switching fire type.
 function SWEP:Reload()
-	if self:DefaultReload(ACT_VM_RELOAD) then
-		self:EmitSound(self.Sound.Reload)
-	else
-		if (self.LastReload) && ((CurTime() - self.LastReload) > 1) then
-			self:GetOwner():ChatPrint("BurstToggle")
-			self.BurstFire = !self.BurstFire
+	-- Fix reload for secondary
+	if (self:Clip2() == 0) then
+		if (self:Ammo2() > 0) then
+			self:SetClip2( 1 )
 		end
 	end
-	self.LastReload = CurTime()
+
+	if self:DefaultReload(ACT_VM_RELOAD) then
+		self.Weapon:EmitSound(self.Sound.Reload)
+	else
+		if (self.LastReload) && ((CurTime() - self.LastReload) > 1) then
+			self.BurstFire = !self:GetNWBool("BurstFire")
+			self.LastReload = CurTime()
+			
+			if (self.BurstFire) then
+				self.Weapon:EmitSound(self.Sound.SwitchBurst)
+				if SERVER then self:GetOwner():ChatPrint("Weapon: BurstFire is now on.") end
+			else
+				self.Weapon:EmitSound(self.Sound.SwitchSingle)
+				if SERVER then self:GetOwner():ChatPrint("Weapon: BurstFire is now off.") end
+			end
+			if SERVER then self:SetNWBool("BurstFire", self.BurstFire) end
+		end
+	end
+	
 	return
+end
+
+function SWEP:ShootEffects()
+	
 end
 
 -- Think: Restore accuracy over time.

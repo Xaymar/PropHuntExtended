@@ -1,12 +1,15 @@
 Changelist
-- Made Seeker Weapons & Ammo configurable from console & cfg file.
-- Updated Gamemode info so that new configuration options are visible on the client.
+- 
 
 ToDo:
 - Replace all createconvar with getconvar?
-- Seeker model not existing after unblind?
-- End round triggers
 - Other game modes
 - UI stuff
 - Scoreboard
 - Custom Collisions for Hiders? Allows to copy the prop geometry/align with rotation
+- Spectator: Spectate players(team only), first & third person
+- UI: Proper Scoreboard replacement
+- UI: Proper Team Selection replacement
+- PostMatch: Implement Round Limit & Map Time Limit checking.
+- PostMatch: Implement MapVoting? Or add support for MapVote addon?
+- Seekers, Hiders: Taunts! And custom Taunts. And everything that belongs to that.

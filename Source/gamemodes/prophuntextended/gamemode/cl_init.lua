@@ -27,6 +27,8 @@
 -- ------------------------------------------------------------------------- --
 include("sh_init.lua")
 
+GM.UI = {}
+include("client/cl_ui_help.lua")
 include("client/cl_ui_teamselection.lua")
 
 -- ------------------------------------------------------------------------- --
@@ -44,7 +46,6 @@ function GM:Initialize()
 	
 	print("Prop Hunt CL: Complete.")
 	print("-------------------------------------------------------------------------")
-	
 end
 
 function GM:Think() end
@@ -82,88 +83,6 @@ function GM:PlayerSpawn()
 	player_manager.RunClass(LocalPlayer(), "ClientSpawn")
 end
 
-function GM:HUDPaint()
-	local State = GetGlobalInt("RoundState", GAMEMODE.States.PreMatch)
-	
-	-- Show Status at the top center
-	local statusX, statusY, statusW, statusH
-	statusW = 192
-	statusH = 64
-	statusX = ScrW() / 2 - statusW / 2
-	statusY = 16
-	
-	--! States
-	-- Pre Match
-	if (State == GAMEMODE.States.PreMatch) then
-		-- Show Status at the top center
-		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
-		surface.SetFont( "Trebuchet24" )
-		surface.SetTextColor( 255, 255, 255, 255 )	
-		local w,h = surface.GetTextSize("Waiting...")
-		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/2 - h / 2)
-		surface.DrawText( "Waiting..." )
-	
-	-- Pre Round
-	elseif (State == GAMEMODE.States.PreRound) then
-		-- Show Status at the top center
-		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
-		surface.SetFont( "Trebuchet24" )
-		surface.SetTextColor( 255, 255, 255, 255 )
-		local w,h = surface.GetTextSize("Preparing...")
-		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/2 - h / 2)
-		surface.DrawText( "Preparing..." )
-		
-	-- Hide!
-	elseif (State == GAMEMODE.States.Hide) then
-		local strTime = tostring(math.ceil(GetGlobalInt("RoundTime")))
-		
-		-- Show Status at the top center
-		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
-		surface.SetTextColor(255,255,255,255)
-		surface.SetFont("Trebuchet18")
-		local w,h = surface.GetTextSize("Seekers unblinded in:")
-		surface.SetTextPos(statusX + statusW/2 - w / 2, statusY + statusH/4 - h / 2)
-		surface.DrawText("Seekers unblinded in:")
-		
-		surface.SetFont( "Trebuchet24" )
-		local w,h = surface.GetTextSize(strTime.." Seconds!")
-		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/1.5 - h / 2)
-		surface.DrawText(strTime.." Seconds!")
-	elseif (State == GAMEMODE.States.Seek) then
-		local intTime = math.ceil(GetGlobalInt("RoundTime"))
-		local strTime = string.format("%d:%02d", math.floor(intTime / 60), math.ceil(intTime % 60))
-		
-		-- Show Status at the top center
-		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
-		surface.SetTextColor(255,255,255,255)
-		surface.SetFont("Trebuchet18")
-		local w,h = surface.GetTextSize("Hunting Time!")
-		surface.SetTextPos(statusX + statusW/2 - w / 2, statusY + statusH/4 - h / 2)
-		surface.DrawText("Hunting Time!")
-		
-		surface.SetFont( "Trebuchet24" )
-		local w,h = surface.GetTextSize(strTime)
-		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/1.5 - h / 2)
-		surface.DrawText(strTime)
-		
-	elseif (State == GAMEMODE.States.PostRound) then
-		
-	elseif (State == GAMEMODE.States.PostMatch) then
-		
-	end
-	
-	player_manager.RunClass(LocalPlayer(), "HUDPaint")
-end
-
-function GM:ShowTeamSelection()
-	TeamSelectionUI:Show()
-end
-concommand.Add("ph_select_team", function() GAMEMODE:ShowTeamSelection() end)
-
-function GM:GetHandsModel()
-	return player_manager.RunClass(LocalPlayer(), "GetHandsModel")
-end
-
 function GM:PostDrawViewModel( vm, ply, weapon )
 	if ( weapon.UseHands || !weapon:IsScripted() ) then
 		local hands = LocalPlayer():GetHands()
@@ -174,9 +93,9 @@ end
 -- ------------------------------------------------------------------------- --
 --! Player Manager Binding
 -- ------------------------------------------------------------------------- --
-function GM:CalcView(ply, pos, ang, fov, nearZ, farZ)
-	return player_manager.RunClass(LocalPlayer(), "CalcView", {origin = pos, angles = ang, fov = fov, znear = nearZ, zfar = farZ})
-end
+function GM:HUDPaint() player_manager.RunClass(LocalPlayer(), "HUDPaint") end
+function GM:CalcView(ply, pos, ang, fov, nearZ, farZ) return player_manager.RunClass(LocalPlayer(), "CalcView", {origin = pos, angles = ang, fov = fov, znear = nearZ, zfar = farZ}) end
+function GM:GetHandsModel() return player_manager.RunClass(LocalPlayer(), "GetHandsModel") end
 
 -- ------------------------------------------------------------------------- --
 --! Gamemode Functionality
@@ -230,6 +149,28 @@ function GM:OnContextMenuClose()
 	print("Prop Hunt CL: Toggled View Mode")
 	LocalPlayer().Data.ThirdPerson = !LocalPlayer().Data.ThirdPerson
 end
+
+function GM:OnSpawnMenuOpen()
+	print("Prop Hunt CL: Enabling Prop Rotation")
+	LocalPlayer():SetNWBool("PropRotation", true)
+	net.Start("PlayerEnablePropRotation");net.SendToServer()
+end
+
+function GM:OnSpawnMenuClose()
+	print("Prop Hunt CL: Disabling Prop Rotation")
+	LocalPlayer():SetNWBool("PropRotation", false)
+	net.Start("PlayerDisablePropRotation");net.SendToServer()
+end
+
+function GM:ShowHelpUI()
+	self.UI.Help:Show()
+end
+concommand.Add("ph_show_help", function() GAMEMODE:ShowHelpUI() end)
+
+function GM:ShowTeamSelection()
+	TeamSelectionUI:Show()
+end
+concommand.Add("ph_select_team", function() GAMEMODE:ShowTeamSelection() end)
 
 -- ------------------------------------------------------------------------- --
 --! Network Messages

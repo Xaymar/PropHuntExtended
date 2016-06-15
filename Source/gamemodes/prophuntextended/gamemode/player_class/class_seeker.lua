@@ -94,7 +94,7 @@ function CLASS:DamageEntity(ent, att, dmg)
 		if IsValid(ent) && (!(ent:IsPlayer())) then
 			if (ent:GetClass() == "ph_prop") then
 				ent:GetOwner():TakeDamageInfo(dmg)
-			elseif (ent:GetClass() == "func_breakable") then -- ToDo: Make Configurable which entities don't hurt
+			elseif (ent:GetClass() == "func_breakable") then -- ToDo: Make Configurable which entities don't hurt?
 			else
 				att:TakeDamage(GAMEMODE.Config.Seeker:HealthPenalty(), ent, ent)
 			end
@@ -157,13 +157,12 @@ function CLASS:ClientSpawn()
 end
 
 function CLASS:HUDPaint()
+	BaseClass.HUDPaint(self)
+	
 	local State = GetGlobalInt("RoundState", GAMEMODE.States.PreMatch)
 	if (State == GAMEMODE.States.Hide) then
 		local intTime = math.ceil(GetGlobalInt("RoundTime"))
 		local strTime = tostring(intTime)
-		
-		-- Seekers are blinded in this Phase.
-		draw.RoundedBox(0, 0, 0, surface.ScreenWidth(), surface.ScreenHeight(), Color(0, 0, 0, 255))
 		
 		-- Show Status at the center
 		surface.SetTextColor( 255, 255, 255, 255 )
@@ -192,9 +191,9 @@ function CLASS:CalcView(camdata)
 	
 	-- First/Third
 	if (self.Player.Data.ThirdPerson) then
-		viewDist = math.Clamp(viewDist * 0.9 + maxViewDist * 0.1, 0, maxViewDist) -- Zoom Out
+		viewDist = math.Clamp(viewDist * 0.95 + maxViewDist * 0.05, 0, maxViewDist) -- Zoom Out
 	else
-		viewDist = math.Clamp(viewDist * 0.9, 0, maxViewDist) -- Zoom In
+		viewDist = math.Clamp(viewDist * 0.95, 0, maxViewDist) -- Zoom In
 	end
 	
 	-- Trace from Player to would-be camera position

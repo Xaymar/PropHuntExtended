@@ -74,7 +74,12 @@ function CLASS:PostDeath(attacker, dmginfo)
 	BaseClass.PostDeath(self, inflictor, attacker)
 	
 	-- Delete Hands Model
-	self.Player:GetHands():Remove()
+	if IsValid(self.Player:GetHands()) then
+		self.Player:GetHands():Remove()
+	end
+	if IsValid(self.Player.Data.Prop) then
+		self.Player.Data.Prop:Remove()
+	end
 	
 	-- Collision Group
 	self.Player:SetCollisionGroup(COLLISION_GROUP_PLAYER)
@@ -186,14 +191,14 @@ function CLASS:CalcView(camdata)
 		end
 		
 		-- Incremental Distance instead of instant.
-		viewDist = math.Clamp(viewDist * 0.9 + maxViewDist * 0.1, 0, maxViewDist) -- Zoom Out
+		viewDist = math.Clamp(viewDist * 0.95 + maxViewDist * 0.05, 0, maxViewDist) -- Zoom Out
 	else
 		if (IsValid(self.Player:GetHands())) then
 			self.Player:GetHands():SetRenderMode(RENDERMODE_TRANSALPHA)
 			self.Player:GetHands():SetColor(Color(255, 255, 255, 0))
 		end
 		
-		viewDist = math.Clamp(viewDist * 0.9, 0, maxViewDist) -- Zoom In
+		viewDist = math.Clamp(viewDist * 0.95, 0, maxViewDist) -- Zoom In
 	end
 	
 	-- Trace from Player to would-be camera position

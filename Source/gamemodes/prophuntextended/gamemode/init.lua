@@ -36,6 +36,7 @@ AddCSLuaFile("player_class/class_hider.lua")
 
 -- Client-Only
 AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("client/cl_ui_help.lua")
 AddCSLuaFile("client/cl_ui_teamselection.lua")
 
 -- ------------------------------------------------------------------------- --
@@ -53,6 +54,7 @@ include "server/states/state_preround.lua"
 include "server/states/state_hide.lua"
 include "server/states/state_seek.lua"
 include "server/states/state_postround.lua"
+include "server/states/state_postmatch.lua"
 
 function GM:Initialize()
 	print("-------------------------------------------------------------------------")
@@ -66,6 +68,8 @@ function GM:Initialize()
 	util.AddNetworkString("PlayerResetHull")
 	util.AddNetworkString("PlayerViewOffset")
 	util.AddNetworkString("PlayerRegisterPropEntity")
+	util.AddNetworkString("PlayerEnablePropRotation")
+	util.AddNetworkString("PlayerDisablePropRotation")
 	
 	print("Prop Hunt: Initializing Gamemode Data...")
 	self.Data = {}
@@ -219,6 +223,14 @@ function GM:SetRoundState(State)
 	SetGlobalInt("RoundState", State)
 end
 
+function GM:SetRoundTime(Time)
+	SetGlobalInt("RoundTime", Time)
+end
+
+function GM:SetRoundWinner(Winner)
+	SetGlobalInt("RoundWinner", Winner)
+end
+
 function GM:PlayerHullFromEntity(ply, ent)
 	if (ent) && (ent:IsValid()) then
 		local hmin, hmax = ent:OBBMins(), ent:OBBMaxs()
@@ -268,7 +280,9 @@ end
 --! Commands
 -- ------------------------------------------------------------------------- --
 -- F1/ShowHelp
-function GM:ShowHelp(ply) end
+function GM:ShowHelp(ply)
+	ply:ConCommand("ph_show_help")
+end
 
 -- F2/ShowTeam - Select Team
 function GM:ShowTeam(ply)
@@ -304,6 +318,19 @@ concommand.Add("ph_debug_printplayers", function(ply, cmd, args, argStr)
 	end
 	
 end, nil, nil, FCVAR_CLIENTCMD_CAN_EXECUTE + FCVAR_CHEAT)
+
+-- ------------------------------------------------------------------------- --
+--! Network Messages
+-- ------------------------------------------------------------------------- --
+net.Receive("PlayerEnablePropRotation", function(len, ply)
+	print("Prop Hunt: Enabling Prop Rotation")
+	ply:SetNWBool("PropRotation", true)
+end)
+net.Receive("PlayerDisablePropRotation", function(len, ply)
+	print("Prop Hunt: Disabling Prop Rotation")
+	ply:SetNWBool("PropRotation", false)
+end)
+
 
 -- ------------------------------------------------------------------------- --
 --! LEGACY CODE - TO BE REPLACED SOON

@@ -27,11 +27,15 @@ StatePostRound = {}
 function StatePostRound:OnEnter(OldState)
 	if GAMEMODE.Config:Debug() then print("StatePostRound: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.PostRound)
+	
+	GAMEMODE.Data.RoundStartTime = CurTime()
 end
 
 function StatePostRound:Tick()
 	-- Advance State
-	GAMEMODE.RoundManager:SetState(StatePreRound) -- Test: Reset to Hide
+	if (CurTime() - GAMEMODE.Data.RoundStartTime) >= 5 then -- ToDo: configureable time?
+		GAMEMODE.RoundManager:SetState(StatePostMatch)
+	end
 end
 
 function StatePostRound:OnLeave(NewState)
@@ -42,12 +46,12 @@ function StatePostRound:OnLeave(NewState)
 		-- Swap Teams
 		local hiders, seekers = team.GetPlayers(GAMEMODE.Teams.Hiders), team.GetPlayers(GAMEMODE.Teams.Seekers)
 		for i, ply in ipairs(hiders) do
+			ply:KillSilent()
 			ply:SetTeam(GAMEMODE.Teams.Seekers)
-			player_manager.SetPlayerClass(ply, "Seeker")
 		end
 		for i, ply in ipairs(seekers) do
+			ply:KillSilent()
 			ply:SetTeam(GAMEMODE.Teams.Hiders)
-			player_manager.SetPlayerClass(ply, "Hider")
 		end
 		
 	-- TODO: Other Gamemodes

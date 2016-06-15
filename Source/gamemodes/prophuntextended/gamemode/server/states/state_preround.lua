@@ -39,14 +39,12 @@ end
 function StatePreRound:OnLeave(NewState)
 	if GAMEMODE.Config:Debug() then print("StatePreRound: OnLeave") end
 	
-	-- Game Mode: Basic
-	if (GAMEMODE.Config:GameMode() == GAMEMODE.Modes.Original) then
-		-- Respawn Everyone
-		for i, ply in ipairs(player.GetAll()) do
-			ply:KillSilent()
-			ply.Data.Alive = true
-			ply:Spawn()
-		end
-	-- TODO: Other Gamemodes
+	-- Respawn Everyone
+	for i, ply in ipairs(player.GetAll()) do
+		ply:KillSilent()
+		ply.Data.Alive = true
+		ply:Spawn()
+		ply:ScreenFade(SCREENFADE.PURGE, color_black, 0, 0)
+		ply:ScreenFade(SCREENFADE.IN, color_black, 1, 0)
 	end
 end

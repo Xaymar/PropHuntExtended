@@ -67,7 +67,7 @@ function CLASS:PostDeath() end
 function CLASS:DoDeath() end
 
 function CLASS:DeathThink()
-	if (CurTime() - self.Player.Data.AliveTime) > 2 then
+	if (CurTime() - self.Player.Data.AliveTime) > 5 then
 		self.Player:Spawn()
 		return true
 	end
@@ -128,7 +128,91 @@ function CLASS:ClientSpawn() end
 -- View & HUD
 function CLASS:GetHandsModel() return BaseClass.GetHandsModel(self) end
 function CLASS:ShouldDrawLocal() return false end
-function CLASS:HUDPaint() end
+function CLASS:HUDPaint()
+	local State = GetGlobalInt("RoundState", GAMEMODE.States.PreMatch)
+	
+	-- Show Status at the top center
+	local statusX, statusY, statusW, statusH
+	statusW = 192
+	statusH = 64
+	statusX = ScrW() / 2 - statusW / 2
+	statusY = 16
+	
+	-- Status
+	if (State == GAMEMODE.States.PreMatch) then -- Pre Match
+		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
+		surface.SetFont( "Trebuchet24" )
+		surface.SetTextColor( 255, 255, 255, 255 )	
+		local w,h = surface.GetTextSize("Waiting for Players")
+		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/2 - h / 2)
+		surface.DrawText("Waiting for Players")
+	elseif (State == GAMEMODE.States.PreRound) then -- Pre Round
+		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
+		surface.SetFont( "Trebuchet24" )
+		surface.SetTextColor( 255, 255, 255, 255 )
+		local w,h = surface.GetTextSize("Preparing...")
+		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/2 - h / 2)
+		surface.DrawText( "Preparing..." )
+	elseif (State == GAMEMODE.States.Hide) then -- Hide
+		local strTime = tostring(math.ceil(GetGlobalInt("RoundTime")))
+		
+		-- Show Status at the top center
+		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
+		surface.SetTextColor(255,255,255,255)
+		surface.SetFont("Trebuchet18")
+		local w,h = surface.GetTextSize("Seekers unblinded in:")
+		surface.SetTextPos(statusX + statusW/2 - w / 2, statusY + statusH/4 - h / 2)
+		surface.DrawText("Seekers unblinded in:")
+		
+		surface.SetFont( "Trebuchet24" )
+		local w,h = surface.GetTextSize(strTime.." Seconds!")
+		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/1.5 - h / 2)
+		surface.DrawText(strTime.." Seconds!")
+	elseif (State == GAMEMODE.States.Seek) then -- Seek
+		local intTime = math.ceil(GetGlobalInt("RoundTime"))
+		local strTime = string.format("%d:%02d", math.floor(intTime / 60), math.ceil(intTime % 60))
+		
+		-- Show Status at the top center
+		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
+		surface.SetTextColor(255,255,255,255)
+		surface.SetFont("Trebuchet18")
+		local w,h = surface.GetTextSize("Hunting Time!")
+		surface.SetTextPos(statusX + statusW/2 - w / 2, statusY + statusH/4 - h / 2)
+		surface.DrawText("Hunting Time!")
+		
+		surface.SetFont( "Trebuchet24" )
+		local w,h = surface.GetTextSize(strTime)
+		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/1.5 - h / 2)
+		surface.DrawText(strTime)
+		
+	elseif (State == GAMEMODE.States.PostRound) then -- Post Round
+		-- Show Status at the top center
+		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
+		surface.SetTextColor(255,255,255,255)
+		surface.SetFont("Trebuchet18")
+		local w,h = surface.GetTextSize("Match Result")
+		surface.SetTextPos(statusX + statusW/2 - w / 2, statusY + statusH/4 - h / 2)
+		surface.DrawText("Match Result")
+		
+		local victor = GAMEMODE:GetRoundWinner()
+		local victorName = "Unknown"
+		if (victor == GAMEMODE.Teams.Spectator) then
+			victorName = "Draw"
+		elseif (victor == GAMEMODE.Teams.Hiders) then
+			victorName = "Hiders Win"
+		elseif (victor == GAMEMODE.Teams.Seekers) then
+			victorName = "Seekers Win"
+		end
+		surface.SetTextColor(team.GetColor(victor))
+		
+		surface.SetFont( "Trebuchet24" )
+		local w,h = surface.GetTextSize(victorName)
+		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/1.5 - h / 2)
+		surface.DrawText(victorName)
+	elseif (State == GAMEMODE.States.PostMatch) then -- Post Match
+		
+	end
+end
 function CLASS:CalcView(camdata) return camdata end
 
 -- ------------------------------------------------------------------------- --

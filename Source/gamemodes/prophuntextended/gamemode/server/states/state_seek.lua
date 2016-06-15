@@ -35,23 +35,22 @@ function StateSeek:OnEnter(OldState)
 	for i, ply in ipairs(team.GetPlayers(GAMEMODE.Teams.Seekers)) do
 		ply:Freeze(false)
 		ply:UnLock()
+		ply:ScreenFade(SCREENFADE.PURGE, color_black, 0, 0)
+		ply:ScreenFade(SCREENFADE.IN, color_black, 1, 0)
 	end	
 end
 
 function StateSeek:Tick()
 	-- Update Game Time
 	GAMEMODE.Data.RoundTime = GAMEMODE.Config.Round:Time() - (CurTime() - GAMEMODE.Data.RoundStartTime)
-	SetGlobalInt("RoundTime", math.ceil(GAMEMODE.Data.RoundTime))
+	GAMEMODE:SetRoundTime(GAMEMODE.Data.RoundTime)
 	
-	-- Conditions for moving to the next State
-	if (GAMEMODE.Data.RoundTime <= 0) then -- No Time remaining
-		GAMEMODE.Data.Winner = GAMEMODE.Teams.Hiders
-		GAMEMODE.RoundManager:SetState(StatePostRound)
-	end
-	
-	-- Condition: No Seekers / Hiders alive.
+	-- Victory Conditions
 	local hiders, seekers = team.GetPlayers(GAMEMODE.Teams.Hiders), team.GetPlayers(GAMEMODE.Teams.Seekers)
 	local hiderAlive, seekerAlive = false, false
+	if GAMEMODE.Config:Debug() then
+		hiderAlive = true;seekerAlive = true
+	end
 	for i,ply in ipairs(hiders) do
 		if (ply.Data.Alive) then
 			hiderAlive = true
@@ -63,17 +62,22 @@ function StateSeek:Tick()
 		end
 	end
 	if (hiderAlive == false) then
-		if (seekerAlive == false) then
-			GAMEMODE.Data.Winner = GAMEMODE.Teams.Spectators -- Shows as Draw
+		if (seekerAlive == false) then -- Draw, both teams dead.
+			GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Spectators)
 			GAMEMODE.RoundManager:SetState(StatePostRound)
-		else
-			GAMEMODE.Data.Winner = GAMEMODE.Teams.Seekers
+		else -- Seeker victory, Hiders dead
+			GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Seekers)
 			GAMEMODE.RoundManager:SetState(StatePostRound)
 		end
 	else
-		if (seekerAlive == false) then
-			GAMEMODE.Data.Winner = GAMEMODE.Teams.Hiders
+		if (seekerAlive == false) then -- Hider Victory, Seeker dead.
+			GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Hiders)
 			GAMEMODE.RoundManager:SetState(StatePostRound)
+		else
+			if (GAMEMODE.Data.RoundTime <= 0) then -- No Time remaining
+			GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Hiders)
+				GAMEMODE.RoundManager:SetState(StatePostRound)
+			end
 		end
 	end
 end

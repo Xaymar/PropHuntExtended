@@ -22,41 +22,40 @@
 	SOFTWARE.
 --]]
 
-StateHide = {}
+local PANEL = vgui.Create("DFrame")
+PANEL:SetSize(400, 300)
+PANEL:SetTitle("Help")
+PANEL:SetDraggable(true)
+PANEL:SetVisible(false)
+PANEL:SetDraggable(true)
+PANEL:SetSizable(true)
+PANEL:ShowCloseButton(true)
+PANEL:SetDeleteOnClose(false)
 
-function StateHide:OnEnter(OldState)
-	if GAMEMODE.Config:Debug() then print("StateHide: OnEnter") end
-	GAMEMODE:SetRoundState(GAMEMODE.States.Hide)
+function PANEL:Init()
+	DFrame.Init(self)
 	
-	-- Round Data
-	GAMEMODE.Data.RoundTime = math.abs(GAMEMODE.Config.Round:BlindTime())
-	GAMEMODE.Data.RoundStartTime = CurTime()
+	-- Sheets
+	self.Sheets = vgui.Create("DPropertySheet", self)
+	self.Sheets:Dock(FILL)
 	
-	GAMEMODE:SetRoundTime(GAMEMODE.Data.RoundTime)
-end
-
-function StateHide:Tick()
-	-- Update Game Time
-	GAMEMODE.Data.RoundTime = math.abs(GAMEMODE.Config.Round:BlindTime()) - (CurTime() - GAMEMODE.Data.RoundStartTime)
-	GAMEMODE:SetRoundTime(GAMEMODE.Data.RoundTime)
-	
-	-- Advance to Seeking State
-	if (GAMEMODE.Data.RoundTime <= 0) then
-		if GAMEMODE.Config:Debug() then print("StateHide: Advancing to Seek stage.") end
-		
-		GAMEMODE.RoundManager:SetState(StateSeek)
+	-- Basic Info
+	self.BasicInfoSheet = vgui.Create("DPanel", self.Sheets)
+	function self.BasicInfoSheet:Paint(w, h)
+		draw.RoundedBox(4, 0, 0, 100, 100, Color(0,128,255))
 	end
+	self.Sheets:AddSheet("The Gamemode", self.BasicInfoSheet)
 	
-	-- Freeze Seekers
-	for i, ply in ipairs(team.GetPlayers(GAMEMODE.Teams.Seekers)) do
-		ply:Freeze(true)
-		ply:Lock()
-		ply:ScreenFade(SCREENFADE.IN, color_black, 1, 9999)
-	end
 	
-	-- ToDo: Logic for more game modes here?
 end
 
-function StateHide:OnLeave(NewState)
-	if GAMEMODE.Config:Debug() then print("StateHide: OnLeave") end
+function PANEL:Show()
+	self:SetSize(ScrW(), ScrH())
+	self:Center()
+	self:SetVisible(true)
+	self:SetFocusTopLevel(true)
+	self:SlideDown(.5)
+	self:MakePopup()
 end
+
+GAMEMODE.UI.Help = PANEL

@@ -20,5 +20,10 @@ function ENT:Think()
 	
 	self:SetPos(self.Owner:GetPos() + pos)
 	self:SetVelocity(self:GetOwner():GetVelocity())
+	
+	-- Angles
+	if (self.Owner:GetNWBool("PropRotation")) then
+		self:SetAngles(self.Owner:EyeAngles())
+	end
 end
---]]
+

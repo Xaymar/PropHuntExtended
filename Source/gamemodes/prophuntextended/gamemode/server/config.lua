@@ -168,8 +168,8 @@ GM.Config.Lists.ModelBlacklist = {}
 GM.Config.Lists.ModelBlacklist["models/props/cs_assault/dollar.mdl"] = true
 GM.Config.Lists.ModelBlacklist["models/props/cs_assault/money.mdl"] = true
 GM.Config.Lists.ModelBlacklist["models/props/cs_office/snowman_arm.mdl"] = true
-GM.Config.Lists.ModelBlacklist["models/props_junk/garbage_plasticbottle001a.mdl"] = true
 GM.Config.Lists.ModelBlacklist["models/props/cs_office/projector_remote.mdl"] = true
+--GM.Config.Lists.ModelBlacklist["models/props_junk/garbage_plasticbottle001a.mdl"] = true
 
 GM.Config.Lists.ConCmds.ModelBlacklistList = concommand.Add("ph_list_model_blacklist_list", function(ply, cmd, args, argStr)
 	print("Model Blacklist:")

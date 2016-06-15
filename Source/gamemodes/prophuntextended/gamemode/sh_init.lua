@@ -72,7 +72,6 @@ function GM:CreateTeams()
 	team.SetUp(self.Teams.Spectators, "Spectators", Color(127, 127, 127, 255))
 	team.SetSpawnPoint(self.Teams.Spectators, {
 		"info_player_deathmatch",
-		"info_player_axis",
 		"info_player_combine",
 		"info_player_counterterrorist",
 		"info_player_allies",
@@ -85,7 +84,6 @@ function GM:CreateTeams()
 	team.SetSpawnPoint(self.Teams.Seekers, {
 		"info_player_spawn",
 		"info_player_deathmatch",
-		"info_player_axis",
 		"info_player_combine",
 		"info_player_counterterrorist"
 	})
@@ -127,4 +125,12 @@ end
 -- ------------------------------------------------------------------------- --
 function GM:GetRoundState()
 	return GetGlobalInt("RoundState", self.States.PreMatch)
+end
+
+function GM:GetRoundTime()
+	return GetGlobalInt("RoundTime", 0)
+end
+
+function GM:GetRoundWinner()
+	return GetGlobalInt("RoundWinner", GAMEMODE.Teams.Spectator)
 end

@@ -26,7 +26,7 @@ StatePostMatch = {}
 
 function StatePostMatch:OnEnter(OldState)
 	if GAMEMODE.Config:Debug() then print("StatePostMatch: OnEnter") end
-	GAMEMODE:SetRoundState(GAMEMODE.States.PostMatch)	
+	GAMEMODE:SetRoundState(GAMEMODE.States.PostMatch)
 end
 
 function StatePostMatch:Tick()

@@ -1,7 +1,6 @@
 @ECHO OFF
-:: Fallback
-SET "GARRYSMODPATH=C:\Program Files (x86)\Steam\steamapps\common\GarrysMod"
+SET "PWD=%~dp0"
+CALL build-env.bat
 
-REM "%GARRYSMODPATH%\bin\gmpublish.exe" update -id 468149739
-"%GARRYSMODPATH%\bin\gmpublish.exe" update -id 468149739 -icon "Logo.jpg" -addon "Pack.gma" -changes ""
+"%GARRYSMODPATH%\bin\gmpublish.exe" update -id %WORKSHOPID% -icon "Logo.jpg" -addon "Pack.gma" -changes ""
 PAUSE

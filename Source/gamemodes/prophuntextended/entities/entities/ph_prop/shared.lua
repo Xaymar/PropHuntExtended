@@ -23,7 +23,15 @@ function ENT:Think()
 	
 	-- Angles
 	if (self.Owner:GetNWBool("PropRotation")) then
-		self:SetAngles(self.Owner:EyeAngles())
+		self:ApplyRotation(self.Owner:EyeAngles())
 	end
+end
+
+function ENT:ApplyRotation(ang)
+	if !(GAMEMODE.Config.Hider:AllowFullRotation()) then
+		ang.p = 0
+		ang.r = 0
+	end
+	self:SetAngles(ang)
 end
 

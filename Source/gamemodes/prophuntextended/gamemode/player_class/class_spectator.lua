@@ -35,7 +35,7 @@ CLASS.UseVMHands		= false		-- Uses viewmodel hands
 -- ------------------------------------------------------------------------- --
 -- Spawn
 function CLASS:Spawn()
-	print("Prop Hunt: Spectator '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Spectator '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.") end
 	BaseClass.Spawn(self)
 	
 	self.Player:Spectate(OBS_MODE_ROAMING)
@@ -48,7 +48,7 @@ end
 
 -- Death
 function CLASS:PostDeath(inflictor, attacker)
-	print("Prop Hunt: Spectator '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") died.")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Spectator '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") died.") end
 	BaseClass.PostDeath(self, inflictor, attacker)
 	
 	self.Player:Spectate(OBS_MODE_NONE)
@@ -77,9 +77,10 @@ function CLASS:CanPickupItem(ent) return false end
 --! Client-Side
 -- ------------------------------------------------------------------------- --
 function CLASS:ClientSpawn()
-	print("Prop Hunt CL: Spectator '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: Spectator '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.") end
 end
 
 function CLASS:ShouldDrawLocal() return false end
+function CLASS:CalcView(camdata) return camdata end
 
 player_manager.RegisterClass( "Spectator", CLASS, "Default")

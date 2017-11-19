@@ -25,8 +25,9 @@
 StatePreRound = {}
 
 function StatePreRound:OnEnter(OldState)
-	if GAMEMODE.Config:Debug() then print("StatePreRound: OnEnter") end
+	if GAMEMODE.Config:DebugLog() then print("StatePreRound: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.PreRound)
+	GAMEMODE:SetRound(GAMEMODE:GetRound() + 1)
 	
 	-- Clean Up the Map
 	game.CleanUpMap()
@@ -37,7 +38,7 @@ function StatePreRound:Tick()
 	GAMEMODE.RoundManager:SetState(StateHide)
 end
 function StatePreRound:OnLeave(NewState)
-	if GAMEMODE.Config:Debug() then print("StatePreRound: OnLeave") end
+	if GAMEMODE.Config:DebugLog() then print("StatePreRound: OnLeave") end
 	
 	-- Respawn Everyone
 	for i, ply in ipairs(player.GetAll()) do
@@ -46,5 +47,15 @@ function StatePreRound:OnLeave(NewState)
 		ply:Spawn()
 		ply:ScreenFade(SCREENFADE.PURGE, color_black, 0, 0)
 		ply:ScreenFade(SCREENFADE.IN, color_black, 1, 0)
+		
+		-- Weighted Score: Adjust towards other Team.
+		if (ply:Team() == GAMEMODE.Teams.Hiders) then
+			ply.Data.RandomWeight = ply.Data.RandomWeight + 1
+		elseif (ply:Team() == GAMEMODE.Teams.Seekers) then
+			ply.Data.RandomWeight = ply.Data.RandomWeight - 1
+		end
 	end
+	
+	-- Fretta Hooks
+	hook.Run("RoundStart")
 end

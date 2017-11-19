@@ -49,6 +49,7 @@ function CLASS:Spawn() end
 function CLASS:Loadout() end
 
 -- Damage
+function CLASS:ShouldTakeDamage(attacker) return true end -- Should take damage from attacker?
 function CLASS:Hurt(victim, attacker, healthRemaining, damageTaken) end -- Damage Taken
 function CLASS:Damage(victim, attacker, healthRemaining, damageDealt) end -- Damage Dealt
 function CLASS:DamageEntity(ent, attacker, dmginfo) end -- Damage Dealt To Entity
@@ -63,9 +64,7 @@ function CLASS:SilentDeath()
 	self.Player.Data.AliveTime = CurTime()
 end
 function CLASS:PostDeath() end
-
 function CLASS:DoDeath() end
-
 function CLASS:DeathThink()
 	if (CurTime() - self.Player.Data.AliveTime) > 5 then
 		self.Player:Spawn()
@@ -73,7 +72,6 @@ function CLASS:DeathThink()
 	end
 	return false
 end
-
 function CLASS:CanSuicide() return true end
 
 -- Visible Stuff
@@ -109,6 +107,16 @@ function CLASS:AllowPickup(ent) return false end
 function CLASS:CanPickupWeapon(ent) return false end
 function CLASS:CanPickupItem(ent) return false end
 
+-- Menu (Always Server)
+function CLASS:ShowSpare1()
+	local lastTaunt = (self.Player.Data.LastTaunt or 0)
+	if ((CurTime() - lastTaunt) <= GAMEMODE.Config.Taunt:Cooldown()) then
+		return true
+	end
+	self.Player.Data.LastTaunt = CurTime()
+end
+function CLASS:ShowSpare2() end
+
 -- ------------------------------------------------------------------------- --
 --! Shared
 -- ------------------------------------------------------------------------- --
@@ -130,72 +138,52 @@ function CLASS:GetHandsModel() return BaseClass.GetHandsModel(self) end
 function CLASS:ShouldDrawLocal() return false end
 function CLASS:HUDPaint()
 	local State = GetGlobalInt("RoundState", GAMEMODE.States.PreMatch)
+	if State == -1 then
+		return
+	end
 	
-	-- Show Status at the top center
-	local statusX, statusY, statusW, statusH
-	statusW = 192
-	statusH = 64
-	statusX = ScrW() / 2 - statusW / 2
-	statusY = 16
+	-- Status Box at the top.
+	local statusW, statusH = 256,48
+	local statusX, statusY = ScrW() / 2 - statusW / 2, 0
+	draw.RoundedBox(0, statusX, statusY, statusW, statusH, Color(0,0,0,204)) -- Background
+	draw.RoundedBox(0, statusX, statusY+statusH, statusW, 4, team.GetColor(LocalPlayer():Team())) -- Team Bar
 	
-	-- Status
-	if (State == GAMEMODE.States.PreMatch) then -- Pre Match
-		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
-		surface.SetFont( "Trebuchet24" )
-		surface.SetTextColor( 255, 255, 255, 255 )	
-		local w,h = surface.GetTextSize("Waiting for Players")
-		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/2 - h / 2)
-		surface.DrawText("Waiting for Players")
-	elseif (State == GAMEMODE.States.PreRound) then -- Pre Round
-		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
-		surface.SetFont( "Trebuchet24" )
-		surface.SetTextColor( 255, 255, 255, 255 )
-		local w,h = surface.GetTextSize("Preparing...")
-		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/2 - h / 2)
-		surface.DrawText( "Preparing..." )
+	-- Title
+	surface.SetFont("Trebuchet18")
+	surface.SetTextColor(Color(255,255,255,255))
+	local titleText = ""
+	if (State == GAMEMODE.States.PreMatch) then
+		titleText = "Waiting for Players"
+	elseif (State == GAMEMODE.States.PreRound) then
+		titleText = "Preparing Round..."
 	elseif (State == GAMEMODE.States.Hide) then -- Hide
-		local strTime = tostring(math.ceil(GetGlobalInt("RoundTime")))
-		
-		-- Show Status at the top center
-		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
-		surface.SetTextColor(255,255,255,255)
-		surface.SetFont("Trebuchet18")
-		local w,h = surface.GetTextSize("Seekers unblinded in:")
-		surface.SetTextPos(statusX + statusW/2 - w / 2, statusY + statusH/4 - h / 2)
-		surface.DrawText("Seekers unblinded in:")
-		
-		surface.SetFont( "Trebuchet24" )
-		local w,h = surface.GetTextSize(strTime.." Seconds!")
-		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/1.5 - h / 2)
-		surface.DrawText(strTime.." Seconds!")
+		titleText = "Seekers unblinded in:"
 	elseif (State == GAMEMODE.States.Seek) then -- Seek
+		titleText = "Seek Time!"
+	elseif (State == GAMEMODE.States.PostRound) then -- Post Round
+		titleText = "Match Result:"
+	elseif (State == GAMEMODE.States.PostMatch) then -- Post Match
+	end
+	local w,h = surface.GetTextSize(titleText)
+	surface.SetTextPos(statusX + statusW/2 - w/2, statusY)
+	surface.DrawText(titleText)
+	
+	-- Subtitle
+	local stateText = ""
+	surface.SetFont("Trebuchet24")
+	surface.SetTextColor(Color(255,255,255,255))
+	if (State == GAMEMODE.States.PreMatch) then
+		stateText = tostring(team.NumPlayers(GAMEMODE.Teams.Seekers)) .. " Seeker(s), " .. tostring(team.NumPlayers(GAMEMODE.Teams.Hiders)) .. " Hider(s)"
+	elseif (State == GAMEMODE.States.PreRound) then
+		stateText = "Initiating..."
+	elseif (State == GAMEMODE.States.Hide) -- Hide
+		|| (State == GAMEMODE.States.Seek) then -- Seek
 		local intTime = math.ceil(GetGlobalInt("RoundTime"))
 		local strTime = string.format("%d:%02d", math.floor(intTime / 60), math.ceil(intTime % 60))
-		
-		-- Show Status at the top center
-		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
-		surface.SetTextColor(255,255,255,255)
-		surface.SetFont("Trebuchet18")
-		local w,h = surface.GetTextSize("Hunting Time!")
-		surface.SetTextPos(statusX + statusW/2 - w / 2, statusY + statusH/4 - h / 2)
-		surface.DrawText("Hunting Time!")
-		
-		surface.SetFont( "Trebuchet24" )
-		local w,h = surface.GetTextSize(strTime)
-		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/1.5 - h / 2)
-		surface.DrawText(strTime)
-		
+		stateText = strTime
 	elseif (State == GAMEMODE.States.PostRound) then -- Post Round
-		-- Show Status at the top center
-		draw.RoundedBox(16, statusX, statusY, statusW, statusH, Color(0, 0, 0, 204))
-		surface.SetTextColor(255,255,255,255)
-		surface.SetFont("Trebuchet18")
-		local w,h = surface.GetTextSize("Match Result")
-		surface.SetTextPos(statusX + statusW/2 - w / 2, statusY + statusH/4 - h / 2)
-		surface.DrawText("Match Result")
-		
 		local victor = GAMEMODE:GetRoundWinner()
-		local victorName = "Unknown"
+		local victorName = "Draw"
 		if (victor == GAMEMODE.Teams.Spectator) then
 			victorName = "Draw"
 		elseif (victor == GAMEMODE.Teams.Hiders) then
@@ -203,17 +191,69 @@ function CLASS:HUDPaint()
 		elseif (victor == GAMEMODE.Teams.Seekers) then
 			victorName = "Seekers Win"
 		end
+		stateText = victorName
 		surface.SetTextColor(team.GetColor(victor))
-		
-		surface.SetFont( "Trebuchet24" )
-		local w,h = surface.GetTextSize(victorName)
-		surface.SetTextPos( statusX + statusW/2 - w / 2, statusY + statusH/1.5 - h / 2)
-		surface.DrawText(victorName)
 	elseif (State == GAMEMODE.States.PostMatch) then -- Post Match
 		
 	end
+	local w,h = surface.GetTextSize(stateText)	
+	surface.SetTextPos(statusX + statusW/2 - w/2, statusY + 32 - h / 2)
+	surface.DrawText(stateText)
+	
+	-- Death Notices
+	GAMEMODE:DrawDeathNotice((ScrW() - 192) / ScrW() , 24 / ScrH())
 end
-function CLASS:CalcView(camdata) return camdata end
+function CLASS:CalcView(camdata)
+	-- Config
+	local cameraCollision		= GAMEMODE.Config.Camera:Collisions()
+	local cameraDistance		= GAMEMODE.Config.Camera:Distance()
+	local cameraDistanceRight	= GAMEMODE.Config.Camera:DistanceRight()
+	local cameraDistanceUp		= GAMEMODE.Config.Camera:DistanceUp()
+	local cameraLag				= GAMEMODE.Config.Camera:Lag()
+	local cameraLagInv			= 1 - cameraLag	
+	
+	-- First/Third Person Target Distance
+	local targetDistance = 0
+	if (self.Player.Data.ThirdPerson) then -- Incremental Distance instead of instant.
+		targetDistance = cameraDistance
+		
+		if (cameraCollision == true) then
+			-- Trace from Player to would-be camera position
+			local trace = {
+				start = camdata.origin,
+				endpos = camdata.origin - (camdata.angles:Forward() * cameraDistance),
+				--filter = { "worldspawn", "ph_prop", "player" },
+				--[-[
+				filter = function(ent)
+					local filter = { "worldspawn", "ph_prop", "player" }
+					
+					if (ent:IsPlayer())
+						|| (table.HasValue(filter, ent:GetClass()))
+						|| (ent == LocalPlayer()) || (ent == LocalPlayer():GetHands()) then
+						return false
+					end
+					return true
+				end,
+				--]]
+			}
+			local result = util.TraceLine(trace)
+			
+			-- The Camera has a Sphere radius of 10.
+			if (result.Hit) then -- Configurable?
+				targetDistance = math.Clamp(result.HitPos:Distance(camdata.origin), 0, cameraDistance)
+			end
+		end
+	else
+		targetDistance = 0
+	end
+	
+	-- Fade between Target and Current Distance
+	self.Player.Data.ViewDistance = math.Clamp(((self.Player.Data.ViewDistance or targetDistance) * cameraLag) + (targetDistance * cameraLagInv), 0, GAMEMODE.Config.Camera:DistanceMax())
+	
+	-- Adjust CamData and return
+	camdata.origin = camdata.origin - (camdata.angles:Forward() * math.Clamp(self.Player.Data.ViewDistance - 10, 0, self.Player.Data.ViewDistance)) + (camdata.angles:Right() * cameraDistanceRight) + (camdata.angles:Up() * cameraDistanceUp)
+	return camdata
+end
 
 -- ------------------------------------------------------------------------- --
 --! Register

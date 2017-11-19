@@ -1,294 +1,413 @@
--- Sounds played by members of the losing team at the end of the round.
-LOSS_SOUNDS = {
-	"bot/aw_hell.wav",
-	"bot/aww_man.wav",
-	"bot/anyone_see_anything.wav",
-	"bot/anyone_see_them.wav",
-	"bot/come_out_and_fight_like_a_man.wav",
-	"bot/come_out_wherever_you_are.wav",
-	"bot/he_got_away.wav",
-	"bot/he_got_away2.wav",
-	"bot/i_dont_know_where_he_went.wav",
-	"bot/i_got_nothing.wav",
-	"bot/nothing_happening_over_here.wav",
-	"bot/nothing_here.wav",
-	"bot/nothing_moving_over_here.wav",
-	"bot/thats_not_good.wav",
-	"bot/theres_too_many.wav",
-	"bot/theres_too_many_of_them.wav",
-	"bot/theyre_all_over_the_place2.wav",
-	"bot/theyre_everywhere2.wav",
-	"bot/too_many2.wav",
-	"bot/what_happened.wav",
-	"bot/what_have_you_done.wav",
-	"bot/where_are_they.wav",
-	"bot/where_are_you_hiding.wav"
-}
-if (! file.Exists("prop_hunt/sounds_loss.txt", "DATA")) then
-	file.Write("prop_hunt/sounds_loss.txt", util.TableToKeyValues(LOSS_SOUNDS))
-end
-local fileContent = file.Read("prop_hunt/sounds_loss.txt", "DATA");
-if fileContent then
-	local fileTable = util.KeyValuesToTable(fileContent)
-	if fileTable then LOSS_SOUNDS = fileTable end
+--[[
+	The MIT License (MIT)
+	
+	Copyright (c) 2015 Xaymar
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+--]]
+
+--! Initialize configuration table.
+GM.Config = { }
+GM.Config.ConVars = {}
+
+function CreateConVarIfNotExists(name, value, flags, helptext)
+	cv = GetConVar(name)
+	if (cv == nil) then
+		cv = CreateConVar(name, value, flags, helptext)
+--	else
+--		ncv = CreateConVar(name, value, flags, helptext)
+	end
+	return cv
 end
 
--- Sounds played by members of the winning team at the end of the round.
-VICTORY_SOUNDS = {
-	"bot/and_thats_how_its_done.wav",
-	"bot/come_to_papa.wav",
-	"bot/do_not_mess_with_me.wav",
-	"bot/dropped_him.wav",
-	"bot/enemy_down.wav",
-	"bot/enemy_down2.wav",
-	"bot/good_job_team.wav",
-	"bot/got_him.wav",
-	"bot/hes_broken.wav",
-	"bot/hes_dead.wav",
-	"bot/hes_done.wav",
-	"bot/hes_down.wav",
-	"bot/its_a_party.wav",
-	"bot/i_am_dangerous.wav",
-	"bot/i_am_on_fire.wav",
-	"bot/i_got_more_where_that_came_from.wav",
-	"bot/i_wasnt_worried_for_a_minute.wav",
-	"bot/killed_him.wav",
-	"bot/look_out_brag.wav",
-	"bot/made_him_cry.wav",
-	"bot/oh_yea.wav",
-	"bot/oh_yea2.wav",
-	"bot/owned.wav",
-	"bot/ruined_his_day.wav",
-	"bot/tag_them_and_bag_them.wav",
-	"bot/thats_the_way_this_is_done.wav",
-	"bot/that_was_a_close_one.wav",
-	"bot/that_was_it.wav",
-	"bot/that_was_the_last_guy.wav",
-	"bot/that_was_the_last_one.wav",
-	"bot/they_never_knew_what_hit_them.wav",
-	"bot/they_will_not_escape.wav",
-	"bot/they_wont_get_away.wav",
-	"bot/they_wont_get_away2.wav",
-	"bot/this_is_my_house.wav",
-	"bot/took_him_down.wav",
-	"bot/took_him_out.wav",
-	"bot/took_him_out2.wav",
-	"bot/wasted_him.wav",
-	"bot/way_to_be_team.wav",
-	"bot/well_done.wav",
-	"bot/we_owned_them.wav",
-	"bot/whew_that_was_close.wav",
-	"bot/whoo.wav",
-	"bot/whoo2.wav",
-	"bot/whos_the_man.wav",
-	"bot/who_wants_some_more.wav",
-	"bot/yesss.wav",
-	"bot/yesss2.wav"
-}
-if (! file.Exists("prop_hunt/sounds_victory.txt", "DATA")) then
-	file.Write("prop_hunt/sounds_victory.txt", util.TableToKeyValues(VICTORY_SOUNDS))
-end
-local fileContent = file.Read("prop_hunt/sounds_victory.txt", "DATA");
-if fileContent then
-	local fileTable = util.KeyValuesToTable(fileContent)
-	if fileTable then VICTORY_SOUNDS = fileTable end
+-- ------------------------------------------------------------------------- --
+--! Debug Settings
+-- ------------------------------------------------------------------------- --
+-- Debug Mode
+
+GM.Config.ConVars.Debug = CreateConVarIfNotExists("ph_debug", "0", FCVAR_CHEAT + FCVAR_REPLICATED, "Prop Hunt: Enable Debug Mode")
+function GM.Config:Debug()
+	return self.ConVars.Debug:GetBool()
 end
 
--- Taunts played when Hunters hit their Spare1 binding.
-HUNTER_TAUNTS = {
-	"bot/a_bunch_of_them.wav",
-	"bot/come_out_and_fight_like_a_man.wav",
-	"bot/come_out_wherever_you_are.wav",
-	"bot/come_to_papa.wav",
-	"bot/dont_worry_hell_get_it.wav",
-	"bot/hang_on_i_heard_something.wav",
-	"bot/hang_on_im_coming.wav",
-	"bot/i_dont_think_so.wav",
-	"bot/i_have_the_hostages.wav",
-	"bot/i_see_our_target.wav",
-	"bot/im_waiting_here.wav",
-	"bot/keeping_an_eye_on_the_hostages.wav",
-	"bot/nnno_sir.wav",
-	"bot/spotted_the_delivery_boy.wav",
-	"bot/target_acquired.wav",
-	"bot/target_spotted.wav",
-	"bot/you_heard_the_man_lets_go.wav"
-}
-if (! file.Exists("prop_hunt/sounds_taunt_hunter.txt", "DATA")) then
-	file.Write("prop_hunt/sounds_taunt_hunter.txt", util.TableToKeyValues(HUNTER_TAUNTS))
-end
-local fileContent = file.Read("prop_hunt/sounds_taunt_hunter.txt", "DATA");
-if fileContent then
-	local fileTable = util.KeyValuesToTable(fileContent)
-	if fileTable then HUNTER_TAUNTS = fileTable end
+-- Debug Log
+GM.Config.ConVars.DebugLog = CreateConVarIfNotExists("ph_debug_log", "0", FCVAR_REPLICATED, "Prop Hunt: Enable Debug Logging")
+function GM.Config:DebugLog()
+	return self.ConVars.DebugLog:GetBool()
 end
 
--- Taunts played when Props hit their Spare1 binding.
-PROP_TAUNTS = {
---	"ambient/alarms/apc_alarm_loop1.wav",
-	"ambient/alarms/apc_alarm_pass1.wav",
---	"ambient/alarms/citadel_alert_loop2.wav",
---	"ambient/alarms/city_firebell_loop1.wav",
---	"ambient/alarms/city_siren_loop2.wav",
---	"ambient/alarms/combine_bank_alarm_loop1.wav",
---	"ambient/alarms/combine_bank_alarm_loop4.wav",
---	"ambient/alarms/klaxon1.wav",
-	"ambient/alarms/manhack_alert_pass1.wav",
-	"ambient/alarms/razortrain_horn1.wav",
-	"ambient/alarms/scanner_alert_pass1.wav",
---	"ambient/alarms/siren.wav",
---	"ambient/alarms/train_crossing_bell_loop1.wav",
-	"ambient/alarms/train_horn2.wav",
-	"ambient/alarms/train_horn_distant1.wav",
-	"ambient/alarms/warningbell1.wav",
---	"ambient/chatter/cb_radio_chatter_1.wav",
---	"ambient/chatter/cb_radio_chatter_2.wav",
---	"ambient/chatter/cb_radio_chatter_3.wav",
-	"ambient/energy/whiteflash.wav",
-	"ambient/intro/alyxremove.wav",
-	"ambient/intro/logosfx.wav",
---	"ambient/levels/labs/teleport_alarm_loop1.wav",
-	"ambient/levels/launch/1stfiringwarning.wav",
-	"ambient/levels/launch/rockettakeoffblast.wav",
---	"ambient/levels/outland/basealarmloop.wav",
---	"ambient/machines/60hzhum.wav",
-	"ambient/misc/ambulance1.wav",
-	"ambient/misc/carhonk1.wav",
-	"ambient/misc/carhonk2.wav",
-	"ambient/misc/carhonk3.wav",
---	"ambient/music/bongo.wav",
---	"ambient/music/country_rock_am_radio_loop.wav",
---	"ambient/music/cubanmusic1.wav",
---	"ambient/music/dustmusic1.wav",
---	"ambient/music/dustmusic2.wav",
---	"ambient/music/dustmusic3.wav",
---	"ambient/music/flamenco.wav",
---	"ambient/music/latin.wav",
---	"ambient/music/mirame_radio_thru_wall.wav",
---	"ambient/music/piano1.wav",
---	"ambient/music/piano2.wav",
-	"ambient/outro/gunshipcrash.wav",
-	"ambient/3dmeagle.wav",
---	"ambient/guit1.wav",
---	"ambient/opera.wav",
---	"ambient/sheep.wav",
-	"beams/beamstart5.wav",
-	"buttons/bell1.wav",
-	"buttons/weapon_cant_buy.wav",
-	"common/bass.wav",
-	"common/bugreporter_failed.wav",
-	"common/warning.wav",
-	"doors/door_squeek1.wav",
-	"friends/friend_join.wav",
-	"friends/friend_online.wav",
-	"friends/message.wav",
-	"hostage/hunuse/comeback.wav",
-	"hostage/hunuse/dontleaveme.wav",
-	"hostage/hunuse/yeahillstay.wav",
-	"items/gift_drop.wav",
-	"music/radio1.mp3",
-	"phx/eggcrack.wav",
-	"plats/elevbell1.wav",
-	"player/headshot1.wav",
-	"player/headshot2.wav",
-	"player/sprayer.wav",
-	"radio/enemydown.wav",
-	"radio/go.wav",
-	"radio/locknload.wav",
-	"radio/negative.wav",
-	"radio/rounddraw.wav",
-	"radio/takepoint.wav",
-	"resource/warning.wav",
---	"test/temp/soundscape_test/tv_music.wav",
-	"ui/achievement_earned.wav",
-	"ui/freeze_cam.wav",
-	"vehicles/junker/radar_ping_friendly1.wav",
-	"weapons/c4/c4_beep1.wav",
-	"weapons/c4/c4_click.wav",
-	"weapons/awp/awp1.wav",
-	"vo/canals/female01/gunboat_giveemhell.wav",
-	"vo/canals/female01/gunboat_justintime.wav",
-	"vo/canals/female01/stn6_incoming.wav",
-	"vo/canals/male01/gunboat_giveemhell.wav",
-	"vo/canals/male01/gunboat_justintime.wav",
-	"vo/canals/male01/stn6_incoming.wav",
-	"vo/canals/al_radio_stn6.wav",
-	"vo/canals/arrest_getgoing.wav",
-	"vo/canals/arrest_helpme.wav",
-	"vo/canals/arrest_lookingforyou.wav",
-	"vo/canals/boxcar_lethimhelp.wav",
-	"vo/canals/matt_closecall.wav",
-	"vo/canals/premassacre.wav",
-	"vo/ravenholm/aimforhead.wav",
-	"vo/ravenholm/bucket_patience.wav",
-	"vo/ravenholm/madlaugh01.wav",
-	"vo/ravenholm/madlaugh02.wav",
-	"vo/ravenholm/madlaugh03.wav",
-	"vo/ravenholm/madlaugh04.wav",
-	"weapons/strider_buster/ol12_stickybombcreator.wav",
-	"weapons/c4/c4_explode1.wav",
-	"weapons/357/357_fire2.wav",
-	"weapons/357/357_fire3.wav",
-	"weapons/scout/scout_fire-1.wav",
-	"weapons/smokegrenade/sg_explode.wav",
-	"weapons/grenade_launcher1.wav",
-	"weapons/explode3.wav",
-	"weapons/underwater_explode3.wav",
-	"items/nvg_on.wav",
-	"hostage/huse/letsdoit.wav",
-	"hostage/huse/illfollow.wav",
-	"hostage/huse/getouttahere.wav",
-	"doors/door_screen_move1.wav",
-	"doors/heavy_metal_stop1.wav",
-	"doors/default_move.wav",
-	"common/stuck2.wav",
-	"ambient/water_splash1.wav",
-	"ambient/water_splash2.wav",
-	"ambient/water_splash3.wav",
-	"ambient/weather/thunder1.wav",
-	"ambient/weather/thunder2.wav",
-	"ambient/weather/thunder3.wav",
-	"ambient/weather/thunder4.wav",
-	"ambient/weather/thunder5.wav",
-	"ambient/weather/thunder6.wav",
-	"ambient/outro/thunder7.wav",
-	"ambient/voices/crying_loop1.wav",
-	"ambient/voices/playground_memory.wav",
-	"ambient/voices/f_scream1.wav",
-	"ambient/voices/m_scream1.wav",
-	"ambient/voices/cough1.wav",
-	"ambient/voices/cough2.wav",
-	"ambient/voices/cough3.wav",
-	"ambient/voices/cough4.wav",
-	"ambient/overhead/plane1.wav",
-	"ambient/overhead/plane2.wav",
-	"ambient/overhead/plane3.wav",
-	"ambient/overhead/hel1.wav",
-	"ambient/overhead/hel2.wav",
-	"ambient/misc/truck_backup1.wav",
-	"ambient/misc/truck_drive1.wav",
-	"ambient/misc/truck_drive2.wav",
-	"ambient/machines/pneumatic_drill_1.wav",
-	"ambient/machines/pneumatic_drill_2.wav",
-	"ambient/machines/pneumatic_drill_3.wav",
-	"ambient/machines/pneumatic_drill_4.wav",
-	"ambient/machines/station_train_squeel.wav",
-	"ambient/machines/ticktock.wav",
-	"ambient/creatures/teddy.wav",
-	"ambient/creatures/town_child_scream1.wav",
-	"ambient/creatures/town_moan1.wav",
-	"ambient/creatures/town_muffled_cry1.wav",
-	"ambient/creatures/town_scared_breathing1.wav",
-	"ambient/creatures/town_scared_breathing2.wav",
-	"ambient/creatures/town_scared_sob1.wav",
-	"ambient/creatures/town_scared_sob2.wav",
-	"ambient/creatures/town_zombie_call1.wav"
-}
-if (! file.Exists("prop_hunt/sounds_taunt_prop.txt", "DATA")) then
-	file.Write("prop_hunt/sounds_taunt_prop.txt", util.TableToKeyValues(PROP_TAUNTS))
+-- ------------------------------------------------------------------------- --
+--! Basic Settings
+-- ------------------------------------------------------------------------- --
+-- Game Mode (See sh_init.lua)
+GM.Config.ConVars.GameType = CreateConVarIfNotExists("ph_gametype", GM.Types.Original, FCVAR_REPLICATED, "Prop Hunt: Which Game Type should be played? ("..GM.Types.Original.." = Original Prop Hunt, "..GM.Types.TheDeadHunt.." = The Dead Hunt Mode)")
+function GM.Config:GameType()
+	return self.ConVars.GameType:GetInt()
 end
-local fileContent = file.Read("prop_hunt/sounds_taunt_prop.txt", "DATA");
-if fileContent then
-	local fileTable = util.KeyValuesToTable(fileContent)
-	if fileTable then PROP_TAUNTS = fileTable end
+
+-- Timelimit in minutes
+GM.Config.ConVars.TimeLimit = CreateConVarIfNotExists("mp_timelimit", "20", FCVAR_REPLICATED, "Map Time Limit (in Minutes)")
+function GM.Config:TimeLimit()
+	return self.ConVars.TimeLimit:GetFloat()
+end
+
+-- ------------------------------------------------------------------------- --
+--! Round Settings
+-- ------------------------------------------------------------------------- --
+GM.Config.Round = {}
+GM.Config.Round.ConVars = {}
+
+-- How many rounds should the GM attempt to fit into the map timelimit, if there is any?
+GM.Config.Round.ConVars.Limit = CreateConVarIfNotExists("ph_round_limit", "10", FCVAR_REPLICATED, "Round Manager: Maximum Rounds to Play on a single Map")
+function GM.Config.Round:Limit()
+	return self.ConVars.Limit:GetInt()
+end
+
+-- Round Time Limit (Seconds, Default 3 minutes)
+GM.Config.Round.ConVars.Time = CreateConVarIfNotExists("ph_round_timelimit", "180", FCVAR_REPLICATED, "Round Manager: Time Limit per Round (in Seconds)")
+function GM.Config.Round:Time()
+	return math.max(self.ConVars.Time:GetFloat() - math.min(self:BlindTime(),0),0)
+end
+
+-- For how many seconds are the Seekers blinded? (Seconds)
+GM.Config.Round.ConVars.BlindTime = CreateConVarIfNotExists("ph_round_blindtime", "-30", FCVAR_REPLICATED, "Round Manager: Blind Time for Seekers (in Seconds, positive takes away from ph_round_timelimit, negative adds extra time to ph_round_timelimit")
+function GM.Config.Round:BlindTime()
+	return self.ConVars.BlindTime:GetFloat()
+end
+
+-- ------------------------------------------------------------------------- --
+--! Team Settings
+-- ------------------------------------------------------------------------- --
+GM.Config.Teams = {}
+GM.Config.Teams.ConVars = {}
+
+-- Should teams be ranomized each round?
+GM.Config.Teams.ConVars.Randomize = CreateConVarIfNotExists("ph_teams_randomize", "0", FCVAR_REPLICATED, "Teams: Randomize Each Round")
+function GM.Config.Teams:Randomize()
+	return self.ConVars.Randomize:GetBool()
+end
+
+-- Should teams be using weighted randomization?
+-- Weighted randomization works by using a score calculated over the entire session.
+-- * Round Start: Adjust Score towards the other Team by 1 (Positive = Seeker, Negative = Hider)
+-- * Round Win: Adjust score by how many players are still alive on the winning team towards the other team.
+-- * Alive players get double the score.
+GM.Config.Teams.ConVars.Weighted = CreateConVarIfNotExists("ph_teams_weighted", "1", FCVAR_REPLICATED, "Teams: Use Weighted Randomization")
+function GM.Config.Teams:Weighted()
+	return self.ConVars.Weighted:GetBool()
+end
+
+-- The Dead Hunt: Percent of players to assign to seeker.
+GM.Config.Teams.ConVars.SeekerPercentage = CreateConVarIfNotExists("ph_teams_seekerpct", "25", FCVAR_REPLICATED, "Teams: Initial percentage of Seekers in Dead Hunt Game Type")
+function GM.Config.Teams:SeekerPercentage()
+	return self.ConVars.Teams:GetFloat() / 100
+end
+
+-- ------------------------------------------------------------------------- --
+--! Seeker Settings
+-- ------------------------------------------------------------------------- --
+GM.Config.Seeker = {}
+GM.Config.Seeker.ConVars = {}
+
+GM.Config.Seeker.ConVars.Health = CreateConVarIfNotExists("ph_seeker_health", "100", FCVAR_REPLICATED, "Seekers: Initial Health")
+function GM.Config.Seeker:Health()
+	return self.ConVars.Health:GetInt()
+end
+
+GM.Config.Seeker.ConVars.HealthMax = CreateConVarIfNotExists("ph_seeker_health_max", "100", FCVAR_REPLICATED, "Seekers: Maximum Health")
+function GM.Config.Seeker:HealthMax()
+	return self.ConVars.HealthMax:GetInt()
+end
+
+GM.Config.Seeker.ConVars.HealthBonus = CreateConVarIfNotExists("ph_seeker_health_bonus", "20", FCVAR_REPLICATED, "Seekers: Health Bonus per Kill")
+function GM.Config.Seeker:HealthBonus()
+	return self.ConVars.HealthBonus:GetInt()
+end
+
+GM.Config.Seeker.ConVars.HealthPenalty = CreateConVarIfNotExists("ph_seeker_health_penalty", "5", FCVAR_REPLICATED, "Seekers: Health Penalty per wrong Shot")
+function GM.Config.Seeker:HealthPenalty()
+	return self.ConVars.HealthPenalty:GetInt()
+end
+
+GM.Config.Seeker.ConVars.Weapons = CreateConVarIfNotExists("ph_seeker_weapons", "weapon_crowbar,weapon_pistol,weapon_ph_smg,weapon_shotgun", FCVAR_REPLICATED, "Seekers: Initial Weapons (Weapon,Weapon,...)")
+function GM.Config.Seeker:Weapons()
+	return string.Split(self.ConVars.Weapons:GetString(), ",")
+end
+
+GM.Config.Seeker.ConVars.Ammo = CreateConVarIfNotExists("ph_seeker_ammo", "Pistol:100,SMG1:300,SMG1_Grenade:1,Buckshot:64", FCVAR_REPLICATED, "Seekers: Initial Ammo (Ammo:Amount,Ammo:Amount,...)")
+function GM.Config.Seeker:Ammo()
+	return string.Split(self.ConVars.Ammo:GetString(), ",")
+end
+
+GM.Config.Seeker.ConVars.WalkSpeed = CreateConVarIfNotExists("ph_seeker_walk_speed", "250", 0, "Seekers: Walk Speed")
+function GM.Config.Seeker:WalkSpeed()
+	return self.ConVars.WalkSpeed:GetFloat()
+end
+
+GM.Config.Seeker.ConVars.Sprint = CreateConVarIfNotExists("ph_seeker_sprint", "1", FCVAR_REPLICATED, "Seekers: Allow Sprinting")
+function GM.Config.Seeker:Sprint()
+	return self.ConVars.Sprint:GetBool()
+end
+
+GM.Config.Seeker.ConVars.SprintSpeed = CreateConVarIfNotExists("ph_seeker_sprint_speed", "500", 0, "Seekers: Sprint Speed")
+function GM.Config.Seeker:SprintSpeed()
+	return self.ConVars.SprintSpeed:GetFloat()
+end
+
+GM.Config.Seeker.ConVars.JumpPower = CreateConVarIfNotExists("ph_seeker_jump_power", "200", 0, "Seekers: Jump Power")
+function GM.Config.Seeker:JumpPower()
+	return self.ConVars.JumpPower:GetFloat()
+end
+
+-- ------------------------------------------------------------------------- --
+--! Hider Settings
+-- ------------------------------------------------------------------------- --
+GM.Config.Hider = {}
+GM.Config.Hider.ConVars = {}
+
+GM.Config.Hider.ConVars.Health = CreateConVarIfNotExists("ph_hider_health", "100", FCVAR_REPLICATED, "Hiders: Initial Health")
+function GM.Config.Hider:Health()
+	return self.ConVars.Health:GetInt()
+end
+
+GM.Config.Hider.ConVars.HealthMax = CreateConVarIfNotExists("ph_hider_health_max", "100", FCVAR_REPLICATED, "Hiders: Maximum Health")
+function GM.Config.Hider:HealthMax()
+	return self.ConVars.HealthMax:GetInt()
+end
+
+GM.Config.Hider.ConVars.HealthScaling = CreateConVarIfNotExists("ph_hider_health_scaling", "1", FCVAR_REPLICATED, "Hiders: Enable Health Scaling")
+function GM.Config.Hider:HealthScaling()
+	return self.ConVars.HealthScaling:GetBool()
+end
+
+GM.Config.Hider.ConVars.HealthScalingMax = CreateConVarIfNotExists("ph_hider_health_scaling_max", "200", FCVAR_REPLICATED, "Hiders: Maximum scaled Health")
+function GM.Config.Hider:HealthScalingMax()
+	return self.ConVars.HealthScalingMax:GetInt()
+end
+
+GM.Config.Hider.ConVars.AllowFullRotation = CreateConVarIfNotExists("ph_hider_allow_full_rotation", "0", FCVAR_REPLICATED, "Hiders: Enable full 3D Rotation")
+function GM.Config.Hider:AllowFullRotation()
+	return self.ConVars.AllowFullRotation:GetBool()
+end
+
+GM.Config.Hider.ConVars.WalkSpeed = CreateConVarIfNotExists("ph_hider_walk_speed", "250", 0, "Hiders: Walk Speed")
+function GM.Config.Hider:WalkSpeed()
+	return self.ConVars.WalkSpeed:GetFloat()
+end
+
+GM.Config.Hider.ConVars.Sprint = CreateConVarIfNotExists("ph_hider_sprint", "0", FCVAR_REPLICATED, "Hiders: Allow Sprinting")
+function GM.Config.Hider:Sprint()
+	return self.ConVars.Sprint:GetBool()
+end
+
+GM.Config.Hider.ConVars.SprintSpeed = CreateConVarIfNotExists("ph_hider_sprint_speed", "500", 0, "Hiders: Sprint Speed")
+function GM.Config.Hider:SprintSpeed()
+	return self.ConVars.SprintSpeed:GetFloat()
+end
+
+GM.Config.Hider.ConVars.JumpPower = CreateConVarIfNotExists("ph_hider_jump_power", "200", 0, "Hiders: Jump Power")
+function GM.Config.Hider:JumpPower()
+	return self.ConVars.JumpPower:GetFloat()
+end
+
+-- ------------------------------------------------------------------------- --
+--! Whitelist & Blacklist
+-- ------------------------------------------------------------------------- --
+GM.Config.Lists = {}
+GM.Config.Lists.ConVars = {}
+
+-- Class Whitelist
+GM.Config.Lists.ConVars.ClassWhitelist = CreateConVarIfNotExists("ph_list_class_whitelist", "prop_physics,prop_physics_multiplayer,prop_physics_respawnable", FCVAR_REPLICATED, "Anti-Cheat: Whitelisted Hider Classes")
+function GM.Config.Lists:ClassWhitelist()
+	local str = self.ConVars.ClassWhitelist:GetString()
+	if (self.ClassWhitelistCache != str) then
+		self.ClassWhitelistCache = str
+		self.ClassWhitelistCacheTbl = string.Split(self.ClassWhitelistCache, ",")
+	end
+	return self.ClassWhitelistCacheTbl
+end
+
+-- Abuse Blacklist
+GM.Config.Lists.ConVars.AbuseBlacklist = CreateConVarIfNotExists("ph_list_abuse_blacklist", "func_button,func_door,func_door_rotation,prop_door_rotation,func_tracktrain,func_tanktrain,func_breakable", FCVAR_REPLICATED, "Anti-Cheat: Entity Abuse Blacklist")
+function GM.Config.Lists:AbuseBlacklist()
+	local str = self.ConVars.AbuseBlacklist:GetString()
+	if (self.AbuseBlacklistCache != str) then
+		self.AbuseBlacklistCache = str
+		self.AbuseBlacklistCacheTbl = string.Split(self.AbuseBlacklistCache, ",")
+	end
+	return self.AbuseBlacklistCacheTbl
+end
+
+-- Model Blacklist
+GM.Config.Lists.ConVars.ModelBlacklist = CreateConVarIfNotExists("ph_list_model_blacklist", "models/props/cs_assault/dollar.mdl,models/props/cs_assault/money.mdl,models/props/cs_office/snowman_arm.mdl,models/props/cs_office/projector_remote.mdl", FCVAR_REPLICATED, "Anti-Cheat: Model Abuse Blacklist")
+function GM.Config.Lists:ModelBlacklist()
+	local str = self.ConVars.ModelBlacklist:GetString()
+	if (self.ModelBlacklistCache != str) then
+		self.ModelBlacklistCache = str
+		self.ModelBlacklistCacheTbl = string.Split(self.ModelBlacklistCache, ",")
+	end
+	return self.ModelBlacklistCacheTbl
+end
+
+-- ------------------------------------------------------------------------- --
+--! Taunts
+-- ------------------------------------------------------------------------- --
+GM.Config.Taunt = {}
+GM.Config.Taunt.ConVars = {}
+
+-- Cooldown (Seconds)
+GM.Config.Taunt.ConVars.Cooldown = CreateConVarIfNotExists("ph_taunt_cooldown", 5, FCVAR_REPLICATED, "Prop Hunt: Cooldown between Taunts")
+function GM.Config.Taunt:Cooldown()
+	return self.ConVars.Cooldown:GetFloat()
+end
+
+-- Seeker
+GM.Config.Taunt.SeekersCache = ""
+GM.Config.Taunt.SeekersCacheDynamic = nil
+GM.Config.Taunt.SeekersCacheStatic = nil
+GM.Config.Taunt.SeekersCacheFull = nil
+GM.Config.Taunt.ConVars.Seekers = CreateConVarIfNotExists("ph_taunt_seekers", "bot/a_bunch_of_them.wav,bot/come_out_and_fight_like_a_man.wav,bot/come_out_wherever_you_are.wav,bot/come_to_papa.wav,bot/dont_worry_hell_get_it.wav,bot/hang_on_i_heard_something.wav,bot/hang_on_im_coming.wav,bot/i_dont_think_so.wav,bot/i_have_the_hostages.wav,bot/i_see_our_target.wav,bot/im_waiting_here.wav,bot/keeping_an_eye_on_the_hostages.wav,bot/nnno_sir.wav,bot/spotted_the_delivery_boy.wav,bot/target_acquired.wav,bot/target_spotted.wav,bot/you_heard_the_man_lets_go.wav", 0, "Prop Hunt: Seeker Taunts")
+function GM.Config.Taunt:Seekers()
+	local str = self.ConVars.Seekers:GetString()
+	if (self.SeekersCache != str) then
+		self.SeekersCache = str
+		self.SeekersCacheDynamic = string.Split(self.SeekersCache, ",")
+		self.SeekersCacheFull = table.Add(self.SeekersCacheDynamic, self.SeekersCacheStatic)
+		for i,snd in ipairs(self.SeekersCacheFull) do
+			util.PrecacheSound(snd)
+		end
+	end
+	return self.SeekersCacheFull
+end
+
+-- Hider
+GM.Config.Taunt.HidersCache = ""
+GM.Config.Taunt.HidersCacheDynamic = nil
+GM.Config.Taunt.HidersCacheStatic = nil
+GM.Config.Taunt.HidersCacheFull = nil
+GM.Config.Taunt.ConVars.Hiders = CreateConVarIfNotExists("ph_taunt_hiders", "ambient/alarms/apc_alarm_pass1.wav,ambient/alarms/manhack_alert_pass1.wav,ambient/alarms/razortrain_horn1.wav,ambient/alarms/scanner_alert_pass1.wav,ambient/alarms/train_horn2.wav,ambient/alarms/train_horn_distant1.wav,ambient/alarms/warningbell1.wav,ambient/energy/whiteflash.wav,ambient/intro/alyxremove.wav,ambient/intro/logosfx.wav,ambient/levels/launch/1stfiringwarning.wav,ambient/levels/launch/rockettakeoffblast.wav,ambient/misc/ambulance1.wav,ambient/misc/carhonk1.wav,ambient/misc/carhonk2.wav,ambient/misc/carhonk3.wav,ambient/outro/gunshipcrash.wav,ambient/3dmeagle.wav,beams/beamstart5.wav,buttons/bell1.wav,buttons/weapon_cant_buy.wav,common/bass.wav,common/bugreporter_failed.wav,common/warning.wav,doors/door_squeek1.wav,friends/friend_join.wav,friends/friend_online.wav,friends/message.wav,hostage/hunuse/comeback.wav,hostage/hunuse/dontleaveme.wav,hostage/hunuse/yeahillstay.wav,items/gift_drop.wav,music/radio1.mp3,phx/eggcrack.wav,plats/elevbell1.wav,player/headshot1.wav,player/headshot2.wav,player/sprayer.wav,radio/enemydown.wav,radio/go.wav,radio/locknload.wav,radio/negative.wav,radio/rounddraw.wav,radio/takepoint.wav,resource/warning.wav,ui/achievement_earned.wav,ui/freeze_cam.wav,vehicles/junker/radar_ping_friendly1.wav,weapons/c4/c4_beep1.wav,weapons/c4/c4_click.wav,weapons/awp/awp1.wav,vo/canals/female01/gunboat_giveemhell.wav,vo/canals/female01/gunboat_justintime.wav,vo/canals/female01/stn6_incoming.wav,vo/canals/male01/gunboat_giveemhell.wav,vo/canals/male01/gunboat_justintime.wav,vo/canals/male01/stn6_incoming.wav,vo/canals/al_radio_stn6.wav,vo/canals/arrest_getgoing.wav,vo/canals/arrest_helpme.wav,vo/canals/arrest_lookingforyou.wav,vo/canals/boxcar_lethimhelp.wav,vo/canals/matt_closecall.wav,vo/canals/premassacre.wav,vo/ravenholm/aimforhead.wav,vo/ravenholm/bucket_patience.wav,vo/ravenholm/madlaugh01.wav,vo/ravenholm/madlaugh02.wav,vo/ravenholm/madlaugh03.wav,vo/ravenholm/madlaugh04.wav,weapons/strider_buster/ol12_stickybombcreator.wav,weapons/c4/c4_explode1.wav,weapons/357/357_fire2.wav,weapons/357/357_fire3.wav,weapons/scout/scout_fire-1.wav,weapons/smokegrenade/sg_explode.wav,weapons/grenade_launcher1.wav,weapons/explode3.wav,weapons/underwater_explode3.wav,items/nvg_on.wav,hostage/huse/letsdoit.wav,hostage/huse/illfollow.wav,hostage/huse/getouttahere.wav,doors/door_screen_move1.wav,doors/heavy_metal_stop1.wav,doors/default_move.wav,common/stuck2.wav,ambient/water_splash1.wav,ambient/water_splash2.wav,ambient/water_splash3.wav,ambient/weather/thunder1.wav,ambient/weather/thunder2.wav,ambient/weather/thunder3.wav,ambient/weather/thunder4.wav,ambient/weather/thunder5.wav,ambient/weather/thunder6.wav,ambient/outro/thunder7.wav,ambient/voices/crying_loop1.wav,ambient/voices/playground_memory.wav,ambient/voices/f_scream1.wav,ambient/voices/m_scream1.wav,ambient/voices/cough1.wav,ambient/voices/cough2.wav,ambient/voices/cough3.wav,ambient/voices/cough4.wav,ambient/overhead/plane1.wav,ambient/overhead/plane2.wav,ambient/overhead/plane3.wav,ambient/overhead/hel1.wav,ambient/overhead/hel2.wav,ambient/misc/truck_backup1.wav,ambient/misc/truck_drive1.wav,ambient/misc/truck_drive2.wav,ambient/machines/pneumatic_drill_1.wav,ambient/machines/pneumatic_drill_2.wav,ambient/machines/pneumatic_drill_3.wav,ambient/machines/pneumatic_drill_4.wav,ambient/machines/station_train_squeel.wav,ambient/machines/ticktock.wav,ambient/creatures/teddy.wav,ambient/creatures/town_child_scream1.wav,ambient/creatures/town_moan1.wav,ambient/creatures/town_muffled_cry1.wav,ambient/creatures/town_scared_breathing1.wav,ambient/creatures/town_scared_breathing2.wav,ambient/creatures/town_scared_sob1.wav,ambient/creatures/town_scared_sob2.wav,ambient/creatures/town_zombie_call1.wav", 0, "Prop Hunt: Hider Taunts")
+function GM.Config.Taunt:Hiders()
+	local str = self.ConVars.Hiders:GetString()
+	if (self.HidersCacheDynamic == nil)
+		|| (self.HidersCache != str) then
+		self.HidersCache = str
+		self.HidersCacheDynamic = string.Split(self.HidersCache, ",")
+		self.HidersCacheFull = table.Add(self.HidersCacheDynamic, self.HidersCacheStatic)
+		for i,snd in ipairs(self.HidersCacheFull) do
+			util.PrecacheSound(snd)
+		end
+	end
+	return self.HidersCacheFull
+end
+
+-- ------------------------------------------------------------------------- --
+--! Announcers
+-- ------------------------------------------------------------------------- --
+
+-- --! Announcers (Round Start, Unblind, Win, Loss)
+-- GM.Config.Announcers = {
+	-- Start = { },
+	-- Unblind = { },
+	-- Win = { },
+	-- Loss = { }
+-- }
+
+-- ------------------------------------------------------------------------- --
+--! Camera
+-- ------------------------------------------------------------------------- --
+GM.Config.Camera = {}
+GM.Config.Camera.ConVars = {}
+
+-- Allow Camera No Clip
+GM.Config.Camera.ConVars.AllowNoClip = CreateConVarIfNotExists("ph_camera_allow_noclip", "0", FCVAR_REPLICATED, "Camera: Allow clients to disable camera collision.")
+function GM.Config.Camera:AllowNoClip()
+	return self.ConVars.AllowNoClip:GetBool()
+end
+
+-- Camera Distance Maximum
+GM.Config.Camera.ConVars.DistanceMax = CreateConVarIfNotExists("ph_camera_distance_max", "150", FCVAR_REPLICATED, "Camera: Maximum allowed distance to player.")
+function GM.Config.Camera:DistanceMax()
+	return self.ConVars.DistanceMax:GetFloat()
+end
+
+-- Camera Distance Minimum
+GM.Config.Camera.ConVars.DistanceMin = CreateConVarIfNotExists("ph_camera_distance_min", "30", FCVAR_REPLICATED, "Camera: Minimum allowed distance to player.")
+function GM.Config.Camera:DistanceMin()
+	return self.ConVars.DistanceMin:GetFloat()
+end
+
+-- Camera Distance Right Maximum
+GM.Config.Camera.ConVars.DistanceRightRange = CreateConVarIfNotExists("ph_camera_distance_right_range", "20", FCVAR_REPLICATED, "Camera: Horizontal allowed camera distance range.")
+function GM.Config.Camera:DistanceRightRange()
+	return self.ConVars.DistanceRightRange:GetFloat()
+end
+
+-- Camera Distance Up Maximum
+GM.Config.Camera.ConVars.DistanceUpRange = CreateConVarIfNotExists("ph_camera_distance_up_range", "20", FCVAR_REPLICATED, "Camera: Vertical allowed camera distance range.")
+function GM.Config.Camera:DistanceUpRange()
+	return self.ConVars.DistanceUpRange:GetFloat()
+end
+
+-- Lag Minimum
+GM.Config.Camera.ConVars.LagMinimum = CreateConVarIfNotExists("ph_camera_lag_min", "0.01", FCVAR_REPLICATED, "Camera: Minimum Camera Lag.")
+function GM.Config.Camera:LagMinimum()
+	return self.ConVars.LagMinimum:GetFloat()
+end
+
+-- Lag Maximum
+GM.Config.Camera.ConVars.LagMaximum = CreateConVarIfNotExists("ph_camera_lag_max", "0.95", FCVAR_REPLICATED, "Camera: Maximum Camera Lag.")
+function GM.Config.Camera:LagMaximum()
+	return self.ConVars.LagMaximum:GetFloat()
+end
+
+if CLIENT then
+	-- Collisions
+	GM.Config.Camera.ConVars.Collisions = CreateConVarIfNotExists("ph_camera_collisions", "1", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Camera: Enable collisions with the world and objects in it.")
+	function GM.Config.Camera:Collisions()
+		if self:AllowNoClip() then
+			return self.ConVars.Collisions:GetBool()
+		else
+			return true
+		end
+	end
+
+	-- Distance
+	GM.Config.Camera.ConVars.Distance = CreateConVarIfNotExists("ph_camera_distance", "100", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Camera: Ideal Distance to player.")
+	function GM.Config.Camera:Distance()
+		return math.Clamp(self.ConVars.Distance:GetFloat(), self:DistanceMin(), self:DistanceMax())
+	end
+
+	-- Distance Right
+	GM.Config.Camera.ConVars.DistanceRight = CreateConVarIfNotExists("ph_camera_distance_right", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Camera: Ideal Distance to player horizontally.")
+	function GM.Config.Camera:DistanceRight()
+		return math.Clamp(self.ConVars.DistanceRight:GetFloat(), -self:DistanceRightRange(), self:DistanceRightRange())
+	end
+
+	-- Distance Up
+	GM.Config.Camera.ConVars.DistanceUp = CreateConVarIfNotExists("ph_camera_distance_up", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Camera: Ideal Distance to player vertically.")
+	function GM.Config.Camera:DistanceUp()
+		return math.Clamp(self.ConVars.DistanceUp:GetFloat(), -self:DistanceUpRange(), self:DistanceUpRange())
+	end
+
+	-- Lag
+	GM.Config.Camera.ConVars.Lag = CreateConVarIfNotExists("ph_camera_lag", "0.95", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Camera: Percentage of camera lag (higher = slower, lower = faster).")
+	function GM.Config.Camera:Lag()
+		return math.Clamp(self.ConVars.Lag:GetFloat(), self:LagMinimum(), self:LagMaximum())
+	end
 end

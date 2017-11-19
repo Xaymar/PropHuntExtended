@@ -25,7 +25,7 @@
 StateHide = {}
 
 function StateHide:OnEnter(OldState)
-	if GAMEMODE.Config:Debug() then print("StateHide: OnEnter") end
+	if GAMEMODE.Config:DebugLog() then print("StateHide: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.Hide)
 	
 	-- Round Data
@@ -59,4 +59,7 @@ end
 
 function StateHide:OnLeave(NewState)
 	if GAMEMODE.Config:Debug() then print("StateHide: OnLeave") end
+	
+	-- Fretta Hooks
+	hook.Run("PropHuntUnblind")
 end

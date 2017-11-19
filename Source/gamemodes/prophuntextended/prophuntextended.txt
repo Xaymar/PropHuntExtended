@@ -2,181 +2,242 @@
 {
 	"base"	"base"
 	"title"	"Prop Hunt Extended"
-	"maps"	"^ph_|^cs_|^de_|^ttt_"	
+	"maps"	"^ph_"	
 	"menusystem"	"1"
 	"workshopid"	"468149739"
 
 	"settings"
 	{
-		// Game Settings
+		// Debug Settings
 		1
 		{
-			"name"		"ph_gamemode"
-			"text"		"G: Game Mode"
-			"help"		"0: Basic, 1: Swizzle Effect (Random Teams), 2: The Dead Hunt (One Hunter, Dead Props become Hunters)"
-			"type"		"Numeric"
+			"name"		"ph_debug"
+			"text"		"Enable Debug Mode"
+			"type"		"CheckBox"
 			"default"	"0"
 		}
 		
 		2
 		{
-			"name"		"mp_timelimit"
-			"text"		"G: Time Limit"
-			"help"		"Time Limit in Minutes for how long should we stay on one map. (0 to disable)"
-			"type"		"Numeric"
-			"default"	"20"
-		}
-		
-		3
-		{
-			"name"		"ph_sprinting"
-			"text"		"G: Enable Sprinting"
-			"help"		"Should sprinting be possible?"
+			"name"		"ph_debug_log"
+			"text"		"Enable Debug Logging"
 			"type"		"CheckBox"
-			"default"	"0"
+			"default"	"1"
 		}
-		
-		4
-		{
-			"name"		"ph_tauntcooldown"
-			"text"		"G: Taunt Cooldown"
-			"help"		"How much time must pass before another taunt may be played."
-			"type"		"Numeric"
-			"default"	"5"
-		}
-		
-		// Round Settings
-		10
-		{
-			"name"		"ph_round_limit"
-			"text"		"R: Rounds per Map"
-			"help"		"How many rounds are played per map."
-			"type"		"Numeric"
-			"default"	"10"
-		}
-		
+	
+		// Basic Settings
 		11
 		{
-			"name"		"ph_round_timelimit"
-			"text"		"R: Round Duration (Seconds)"
-			"help"		"How long is each round going to last?"
+			"name"		"ph_gametype"
+			"text"		"Game Type to use"
 			"type"		"Numeric"
-			"default"	"300"
+			"default"	"0"
 		}
 		
 		12
 		{
-			"name"		"ph_round_blindtime"
-			"text"		"R: Hiding Time (Seconds)"
-			"help"		"How long are hunters blinded? (positive values will be inside the round time limit, negative will add to the round time limit)"
+			"name"		"mp_timelimit"
+			"text"		"Map Time Limit"
 			"type"		"Numeric"
-			"default"	"30"
-		}
-
-		// Seeker Settings
-		20
-		{
-			"name"		"ph_seeker_health"
-			"text"		"S: Health"
-			"type"		"Numeric"
-			"default"	"100"
+			"default"	"0"
 		}
 		
+		13
+		{
+			"name"		"ph_sprinting"
+			"text"		"Enable Sprinting"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+		
+		// Round Settings
 		21
 		{
-			"name"		"ph_seeker_health_max"
-			"text"		"S: Max Health"
+			"name"		"ph_round_limit"
+			"text"		"Maximum Rounds Played"
 			"type"		"Numeric"
-			"default"	"100"
+			"default"	"10"
 		}
 		
 		22
 		{
-			"name"		"ph_seeker_health_bonus"
-			"text"		"S: Health Kill-Bonus"
-			"help"		"Health gained on kill."
+			"name"		"ph_round_timelimit"
+			"text"		"Time Limit per Round"
 			"type"		"Numeric"
-			"default"	"20"
+			"default"	"180"
 		}
 		
 		23
 		{
-			"name"		"ph_seeker_health_penalty"
-			"text"		"S: Health Penalty"
-			"help"		"Health lost on wrong shot."
+			"name"		"ph_round_blindtime"
+			"text"		"Seeker Blind time per Round"
 			"type"		"Numeric"
-			"default"	"5"
+			"default"	"-30"
 		}
 		
-		24
-		{
-			"name"		"ph_seeker_weapons"
-			"text"		"S: Weapons to be given to Seekers"
-			"help"		"Format: Weapon,Weapon,..."
-			"type"		"Text"
-			"default"	"weapon_crowbar,weapon_pistol,weapon_ph_smg,weapon_shotgun,weapon_physcannon"
-		}
-		
-		25
-		{
-			"name"		"ph_seeker_ammo"
-			"text"		"S: Ammo to give to Seekers"
-			"help"		"Format: Name:Amount,Name:Amount,..."
-			"type"		"Text"
-			"default"	"Pistol:100,SMG1:300,SMG1_Grenade:1,Buckshot:64"
-		}
-		
-		// Hider Settings
-		30
-		{
-			"name"		"ph_hider_health"
-			"text"		"H: Health"
-			"type"		"Numeric"
-			"default"	"100"
-		}
-		
+		// Team Settings
 		31
 		{
-			"name"		"ph_hider_health_max"
-			"text"		"H: Max Health"
-			"type"		"Numeric"
-			"default"	"100"
+			"name"		"ph_teams_randomize"
+			"text"		"Randomize Teams"
+			"type"		"CheckBox"
+			"default"	"1"
 		}
 		
 		32
 		{
-			"name"		"ph_hider_health_scaling"
-			"text"		"H: Enable Health Scaling"
-			"help"		"Larger & heavier objects have more health, smaller less."
+			"name"		"ph_teams_weighted"
+			"text"		"Randomize with weighted Score"
 			"type"		"CheckBox"
 			"default"	"1"
 		}
 		
 		33
 		{
+			"name"		"ph_teams_seekerpct"
+			"text"		"Pct of Pl. becoming Seeker"
+			"type"		"Numeric"
+			"default"	"25"
+		}
+
+		// Seeker Settings
+		41
+		{
+			"name"		"ph_seeker_health"
+			"text"		"Seeker Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		42
+		{
+			"name"		"ph_seeker_health_max"
+			"text"		"Seeker Max Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		43
+		{
+			"name"		"ph_seeker_health_bonus"
+			"text"		"Seeker Health Kill-Bonus"
+			"type"		"Numeric"
+			"default"	"20"
+		}
+		
+		44
+		{
+			"name"		"ph_seeker_health_penalty"
+			"text"		"Seeker Health Penalty"
+			"type"		"Numeric"
+			"default"	"5"
+		}
+		
+		45
+		{
+			"name"		"ph_seeker_weapons"
+			"text"		"Seeker Weapons"
+			"type"		"Text"
+			"default"	"weapon_crowbar,weapon_pistol,weapon_ph_smg,weapon_shotgun"
+		}
+		
+		46
+		{
+			"name"		"ph_seeker_ammo"
+			"text"		"Seeker Ammo"
+			"type"		"Text"
+			"default"	"Pistol:100,SMG1:300,SMG1_Grenade:1,Buckshot:64"
+		}
+		
+		// Hider Settings
+		51
+		{
+			"name"		"ph_hider_health"
+			"text"		"Hider Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		52
+		{
+			"name"		"ph_hider_health_max"
+			"text"		"Hider Max Health"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		
+		53
+		{
+			"name"		"ph_hider_health_scaling"
+			"text"		"Hider Enable Health Scaling"
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+		
+		54
+		{
 			"name"		"ph_hider_health_scaling_max"
-			"text"		"H: Scaled Max Health"
+			"text"		"Hider Scaled Max Health"
 			"type"		"Numeric"
 			"default"	"200"
 		}
 		
+		55
+		{
+			"name"		"ph_hider_allow_full_rotation"
+			"text"		"Hider 3-Dimensional Rotation"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+		
 		// Whitelist & Blacklist
-		40
+		61
 		{
 			"name"		"ph_list_class_whitelist"
-			"text"		"L: Allowed Entity Classes"
-			"help"		"Hiders can only use these for changing model and skin."
+			"text"		"Allowed Entity Classes"
 			"type"		"Text"
 			"default"	"ph_prop,prop_physics,prop_physics_multiplayer,prop_physics_respawnable"
 		}
 		
-		41
+		62
 		{
 			"name"		"ph_list_abuse_blacklist"
-			"text"		"L: Abuse Blacklist"
-			"help"		"Fix interact spam with certain entities so that all areas stay accessible."
+			"text"		"Abuse Blacklist"
 			"type"		"Text"
-			"default"	""func_button,func_door,func_door_rotation,prop_door_rotation,func_tracktrain,func_tanktrain,func_breakable""
+			"default"	"func_button,func_door,func_door_rotation,prop_door_rotation,func_tracktrain,func_tanktrain,func_breakable"
+		}
+		
+		63
+		{
+			"name"		"ph_list_model_blacklist"
+			"text"		"Model Blacklist"
+			"type"		"Text"
+			"default"	"models/props/cs_assault/dollar.mdl,models/props/cs_assault/money.mdl,models/props/cs_office/snowman_arm.mdl,models/props/cs_office/projector_remote.mdl"
+		}
+		
+		// Taunts
+		71
+		{
+			"name"		"ph_taunt_cooldown"
+			"text"		"Cooldown for Taunts"
+			"type"		"Numeric"
+			"default"	"5"
+		}
+		
+		72
+		{
+			"name"		"ph_taunt_seekers"
+			"text"		"Seeker Taunts"
+			"type"		"Text"
+			"default"	"bot/a_bunch_of_them.wav,bot/come_out_and_fight_like_a_man.wav,bot/come_out_wherever_you_are.wav,bot/come_to_papa.wav,bot/dont_worry_hell_get_it.wav,bot/hang_on_i_heard_something.wav,bot/hang_on_im_coming.wav,bot/i_dont_think_so.wav,bot/i_have_the_hostages.wav,bot/i_see_our_target.wav,bot/im_waiting_here.wav,bot/keeping_an_eye_on_the_hostages.wav,bot/nnno_sir.wav,bot/spotted_the_delivery_boy.wav,bot/target_acquired.wav,bot/target_spotted.wav,bot/you_heard_the_man_lets_go.wav"
+		}
+		
+		73
+		{
+			"name"		"ph_taunt_hiders"
+			"text"		"Hider Taunts"
+			"type"		"Text"
+			"default"	"ambient/alarms/apc_alarm_pass1.wav,ambient/alarms/manhack_alert_pass1.wav,ambient/alarms/razortrain_horn1.wav,ambient/alarms/scanner_alert_pass1.wav,ambient/alarms/train_horn2.wav,ambient/alarms/train_horn_distant1.wav,ambient/alarms/warningbell1.wav,ambient/energy/whiteflash.wav,ambient/intro/alyxremove.wav,ambient/intro/logosfx.wav,ambient/levels/launch/1stfiringwarning.wav,ambient/levels/launch/rockettakeoffblast.wav,ambient/misc/ambulance1.wav,ambient/misc/carhonk1.wav,ambient/misc/carhonk2.wav,ambient/misc/carhonk3.wav,ambient/outro/gunshipcrash.wav,ambient/3dmeagle.wav,beams/beamstart5.wav,buttons/bell1.wav,buttons/weapon_cant_buy.wav,common/bass.wav,common/bugreporter_failed.wav,common/warning.wav,doors/door_squeek1.wav,friends/friend_join.wav,friends/friend_online.wav,friends/message.wav,hostage/hunuse/comeback.wav,hostage/hunuse/dontleaveme.wav,hostage/hunuse/yeahillstay.wav,items/gift_drop.wav,music/radio1.mp3,phx/eggcrack.wav,plats/elevbell1.wav,player/headshot1.wav,player/headshot2.wav,player/sprayer.wav,radio/enemydown.wav,radio/go.wav,radio/locknload.wav,radio/negative.wav,radio/rounddraw.wav,radio/takepoint.wav,resource/warning.wav,ui/achievement_earned.wav,ui/freeze_cam.wav,vehicles/junker/radar_ping_friendly1.wav,weapons/c4/c4_beep1.wav,weapons/c4/c4_click.wav,weapons/awp/awp1.wav,vo/canals/female01/gunboat_giveemhell.wav,vo/canals/female01/gunboat_justintime.wav,vo/canals/female01/stn6_incoming.wav,vo/canals/male01/gunboat_giveemhell.wav,vo/canals/male01/gunboat_justintime.wav,vo/canals/male01/stn6_incoming.wav,vo/canals/al_radio_stn6.wav,vo/canals/arrest_getgoing.wav,vo/canals/arrest_helpme.wav,vo/canals/arrest_lookingforyou.wav,vo/canals/boxcar_lethimhelp.wav,vo/canals/matt_closecall.wav,vo/canals/premassacre.wav,vo/ravenholm/aimforhead.wav,vo/ravenholm/bucket_patience.wav,vo/ravenholm/madlaugh01.wav,vo/ravenholm/madlaugh02.wav,vo/ravenholm/madlaugh03.wav,vo/ravenholm/madlaugh04.wav,weapons/strider_buster/ol12_stickybombcreator.wav,weapons/c4/c4_explode1.wav,weapons/357/357_fire2.wav,weapons/357/357_fire3.wav,weapons/scout/scout_fire-1.wav,weapons/smokegrenade/sg_explode.wav,weapons/grenade_launcher1.wav,weapons/explode3.wav,weapons/underwater_explode3.wav,items/nvg_on.wav,hostage/huse/letsdoit.wav,hostage/huse/illfollow.wav,hostage/huse/getouttahere.wav,doors/door_screen_move1.wav,doors/heavy_metal_stop1.wav,doors/default_move.wav,common/stuck2.wav,ambient/water_splash1.wav,ambient/water_splash2.wav,ambient/water_splash3.wav,ambient/weather/thunder1.wav,ambient/weather/thunder2.wav,ambient/weather/thunder3.wav,ambient/weather/thunder4.wav,ambient/weather/thunder5.wav,ambient/weather/thunder6.wav,ambient/outro/thunder7.wav,ambient/voices/crying_loop1.wav,ambient/voices/playground_memory.wav,ambient/voices/f_scream1.wav,ambient/voices/m_scream1.wav,ambient/voices/cough1.wav,ambient/voices/cough2.wav,ambient/voices/cough3.wav,ambient/voices/cough4.wav,ambient/overhead/plane1.wav,ambient/overhead/plane2.wav,ambient/overhead/plane3.wav,ambient/overhead/hel1.wav,ambient/overhead/hel2.wav,ambient/misc/truck_backup1.wav,ambient/misc/truck_drive1.wav,ambient/misc/truck_drive2.wav,ambient/machines/pneumatic_drill_1.wav,ambient/machines/pneumatic_drill_2.wav,ambient/machines/pneumatic_drill_3.wav,ambient/machines/pneumatic_drill_4.wav,ambient/machines/station_train_squeel.wav,ambient/machines/ticktock.wav,ambient/creatures/teddy.wav,ambient/creatures/town_child_scream1.wav,ambient/creatures/town_moan1.wav,ambient/creatures/town_muffled_cry1.wav,ambient/creatures/town_scared_breathing1.wav,ambient/creatures/town_scared_breathing2.wav,ambient/creatures/town_scared_sob1.wav,ambient/creatures/town_scared_sob2.wav,ambient/creatures/town_zombie_call1.wav"
 		}
 	}
 }

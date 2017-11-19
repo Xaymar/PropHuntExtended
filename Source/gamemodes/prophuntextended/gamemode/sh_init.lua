@@ -35,15 +35,6 @@ GM.AllowAutoTeam = true
 GM.SecondsBetweenTeamSwitches = 10
 
 -- ------------------------------------------------------------------------- --
---! Includes
--- ------------------------------------------------------------------------- --
--- Player Classes
-include "player_class/class_default.lua"
-include "player_class/class_spectator.lua"
-include "player_class/class_seeker.lua"
-include "player_class/class_hider.lua"
-
--- ------------------------------------------------------------------------- --
 --! Code
 -- ------------------------------------------------------------------------- --
 -- Game States
@@ -56,10 +47,9 @@ GM.States.PostRound = 4
 GM.States.PostMatch = 5
 
 -- Game Modes
-GM.Modes = {}
-GM.Modes.Original		= 0
-GM.Modes.SwizzleEffect	= 1 -- Randomizes Teams each Round
-GM.Modes.TheDeadHunt	= 2 -- One Hunter, Dead Prop become Hunter, Props can't see each other.
+GM.Types = {}
+GM.Types.Original		= 0
+GM.Types.TheDeadHunt	= 1 -- One Hunter, Dead Prop become Hunter, Props can't see each other.
 
 -- Teams
 GM.Teams = {}
@@ -75,13 +65,15 @@ function GM:CreateTeams()
 		"info_player_combine",
 		"info_player_counterterrorist",
 		"info_player_allies",
-		"info_player_terrorist"
+		"info_player_terrorist",
+		"info_player_start"
 	})
 	team.SetClass(self.Teams.Spectators, { "Spectator", "Spectator" })
 
 	-- Seekers: "Hunters"
 	team.SetUp(self.Teams.Seekers, "Seekers", Color(0, 128, 255, 255))
 	team.SetSpawnPoint(self.Teams.Seekers, {
+		"info_player_start",
 		"info_player_spawn",
 		"info_player_deathmatch",
 		"info_player_combine",
@@ -92,6 +84,7 @@ function GM:CreateTeams()
 	-- Hiders: "Props"
 	team.SetUp(self.Teams.Hiders, "Hiders", Color(255, 128, 0, 255))
 	team.SetSpawnPoint(self.Teams.Hiders, {
+		"info_player_start",
 		"info_player_spawn",
 		"info_player_deathmatch",
 		"info_player_allies",
@@ -112,17 +105,23 @@ function GM:PlayerTick(ply, mv)
 end
 
 function GM:PlayerHurt(victim, attacker, healthRemaining, damageTaken)
-	if (victim != nil && victim:IsPlayer()) then
-		player_manager.RunClass(victim, "Hurt", victim, attacker, healthRemaining, damageTaken)
-	end
-	if (attacker != nil && attacker:IsPlayer()) then
+	player_manager.RunClass(victim, "Hurt", victim, attacker, healthRemaining, damageTaken)
+	
+	if (IsValid(attacker) && attacker:IsPlayer()) then
 		player_manager.RunClass(attacker, "Damage", victim, attacker, healthRemaining, damageTaken)
 	end
+end
+function GM:PlayerShouldTakeDamage(victim, attacker)
+	return player_manager.RunClass(victim, "ShouldTakeDamage", attacker)
 end
 
 -- ------------------------------------------------------------------------- --
 --! Gamemode Functionality
 -- ------------------------------------------------------------------------- --
+function GM:GetRound()
+	return GetGlobalInt("Round", 0)
+end
+
 function GM:GetRoundState()
 	return GetGlobalInt("RoundState", self.States.PreMatch)
 end
@@ -134,3 +133,14 @@ end
 function GM:GetRoundWinner()
 	return GetGlobalInt("RoundWinner", GAMEMODE.Teams.Spectator)
 end
+
+-- ------------------------------------------------------------------------- --
+--! Includes
+-- ------------------------------------------------------------------------- --
+include "sh_config.lua"
+
+-- Player Classes
+include "player_class/class_default.lua"
+include "player_class/class_spectator.lua"
+include "player_class/class_seeker.lua"
+include "player_class/class_hider.lua"

@@ -25,7 +25,7 @@
 StateSeek = {}
 
 function StateSeek:OnEnter(OldState)
-	if GAMEMODE.Config:Debug() then print("StateSeek: OnEnter") end
+	if GAMEMODE.Config:DebugLog() then print("StateSeek: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.Seek)
 	
 	-- Round Data
@@ -75,7 +75,7 @@ function StateSeek:Tick()
 			GAMEMODE.RoundManager:SetState(StatePostRound)
 		else
 			if (GAMEMODE.Data.RoundTime <= 0) then -- No Time remaining
-			GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Hiders)
+				GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Hiders)
 				GAMEMODE.RoundManager:SetState(StatePostRound)
 			end
 		end
@@ -83,5 +83,13 @@ function StateSeek:Tick()
 end
 
 function StateSeek:OnLeave(NewState)
-	if GAMEMODE.Config:Debug() then print("StateSeek: OnLeave") end
+	if GAMEMODE.Config:DebugLog() then print("StateSeek: OnLeave") end
+	
+	if GAMEMODE:GetRoundWinner() == GAMEMODE.Teams.Seekers then
+		hook.Run("RoundVictorySeeker")
+	elseif GAMEMODE:GetRoundWinner() == GAMEMODE.Teams.Hiders then
+		hook.Run("RoundVictoryHider")
+	else
+		hook.Run("RoundVictoryDraw")		
+	end
 end

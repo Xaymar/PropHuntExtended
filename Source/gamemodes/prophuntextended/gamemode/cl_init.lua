@@ -51,7 +51,7 @@ end
 function GM:Think() end
 
 function GM:InitialPlayerSpawn()
-	print("Prop Hunt CL: InitialPlayerSpawn")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: InitialPlayerSpawn") end
 	
 	-- Delay execution until LocalPlayer() is valid.
 	if (!LocalPlayer()) || (!IsValid(LocalPlayer())) then
@@ -59,13 +59,13 @@ function GM:InitialPlayerSpawn()
 		return
 	end
 	
-	print("Prop Hunt CL: InitialPlayerSpawn Valid")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: InitialPlayerSpawn Valid") end
 	
 	player_manager.RunClass(LocalPlayer(), "InitialClientSpawn")
 end
 
 function GM:PlayerSpawn()
-	print("Prop Hunt CL: PlayerSpawn")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: PlayerSpawn") end
 	
 	-- Delay execution until LocalPlayer() is valid.
 	if (!LocalPlayer()) || (!IsValid(LocalPlayer())) then
@@ -73,7 +73,7 @@ function GM:PlayerSpawn()
 		return
 	end
 	
-	print("Prop Hunt CL: PlayerSpawn Valid")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: PlayerSpawn Valid") end
 	
 	if !(LocalPlayer().Data) then
 		LocalPlayer().Data = {}
@@ -106,8 +106,9 @@ function GM:PlayerSetViewOffset(vo, voduck)
 		if !(GAMEMODE.TempData) then GAMEMODE.TempData = {} end
 		GAMEMODE.TempData.ViewOffset = vo
 		GAMEMODE.TempData.ViewOffsetDuck = voduck
-		
-		timer.Simple(.1, function() GAMEMODE:PlayerSetViewOffset(GAMEMODE.TempData.ViewOffset, GAMEMODE.TempData.ViewOffsetDuck) end)
+		timer.Simple(.1, function()
+			GAMEMODE:PlayerSetViewOffset(GAMEMODE.TempData.ViewOffset, GAMEMODE.TempData.ViewOffsetDuck)
+		end)
 		return
 	end
 	
@@ -126,8 +127,8 @@ function GM:PlayerSetHull(hullMin, hullMax)
 		if !(GAMEMODE.TempData) then GAMEMODE.TempData = {} end
 		GAMEMODE.TempData.HullMin = hullMin
 		GAMEMODE.TempData.HullMax = hullMax
-
-		timer.Simple(.1, function() GAMEMODE:PlayerSetHull(GAMEMODE.TempData.HullMin, GAMEMODE.TempData.HullMax) end)
+		timer.Simple(.1, function()
+			GAMEMODE:PlayerSetHull(GAMEMODE.TempData.HullMin, GAMEMODE.TempData.HullMax) end)
 		return
 	end
 	
@@ -146,20 +147,24 @@ function GM:OnContextMenuOpen()
 end
 
 function GM:OnContextMenuClose()
-	print("Prop Hunt CL: Toggled View Mode")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: Toggled View Mode") end
 	LocalPlayer().Data.ThirdPerson = !LocalPlayer().Data.ThirdPerson
 end
 
 function GM:OnSpawnMenuOpen()
-	print("Prop Hunt CL: Enabling Prop Rotation")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: Enabling Prop Rotation") end
 	LocalPlayer():SetNWBool("PropRotation", true)
-	net.Start("PlayerEnablePropRotation");net.SendToServer()
+	net.Start("PlayerEnablePropRotation")
+	net.WriteAngle(LocalPlayer():EyeAngles())
+	net.SendToServer()
 end
 
 function GM:OnSpawnMenuClose()
-	print("Prop Hunt CL: Disabling Prop Rotation")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: Disabling Prop Rotation") end
 	LocalPlayer():SetNWBool("PropRotation", false)
-	net.Start("PlayerDisablePropRotation");net.SendToServer()
+	net.Start("PlayerDisablePropRotation")
+	net.WriteAngle(LocalPlayer():EyeAngles())
+	net.SendToServer()
 end
 
 function GM:ShowHelpUI()

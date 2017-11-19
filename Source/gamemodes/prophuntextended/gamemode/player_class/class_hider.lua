@@ -35,19 +35,23 @@ CLASS.UseVMHands		= false		-- Uses viewmodel hands
 -- ------------------------------------------------------------------------- --
 -- Spawn
 function CLASS:Spawn()
-	print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.") end
 	BaseClass.Spawn(self, self.Player)
-	
-	-- Sprinting
-	if (!GAMEMODE.Config:Sprinting()) then
-		self.Player:SetRunSpeed(self.WalkSpeed)
-	end
-	
+		
 	-- Settings
 	self.Player:SetMaxHealth(GAMEMODE.Config.Hider:HealthMax())
 	self.Player:SetHealth(GAMEMODE.Config.Hider:Health())
 	self.Player:SetRenderMode(RENDERMODE_TRANSALPHA)
 	self.Player:SetColor(Color(0,0,0,0))
+	
+	-- Speed and Jump Power
+	self.Player:SetWalkSpeed(GAMEMODE.Config.Hider:WalkSpeed())
+	if (GAMEMODE.Config.Hider:Sprint()) then
+		self.Player:SetRunSpeed(GAMEMODE.Config.Hider:SprintSpeed())
+	else
+		self.Player:SetRunSpeed(GAMEMODE.Config.Hider:WalkSpeed())
+	end
+	self.Player:SetJumpPower(GAMEMODE.Config.Hider:JumpPower())
 	
 	-- Hull & View Offset
 	GAMEMODE:PlayerHullFromEntity(self.Player, nil)
@@ -55,6 +59,7 @@ function CLASS:Spawn()
 	
 	-- Collision Group
 	self.Player:SetCollisionGroup(COLLISION_GROUP_PLAYER)
+	self.Player:SetSolid(SOLID_VPHYSICS)
 	
 	-- Prop Stuff
 	self.Player.Data.Prop = ents.Create("ph_prop")
@@ -70,7 +75,7 @@ end
 
 -- Death
 function CLASS:PostDeath(attacker, dmginfo)
-	print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") died.")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") died.") end
 	BaseClass.PostDeath(self, inflictor, attacker)
 	
 	-- Delete Hands Model
@@ -120,11 +125,11 @@ function CLASS:Use(ent)
 	end
 	
 	-- Check Lists and other Parameters
-	if (!table.HasValue(GAMEMODE.Config.Lists:ClassWhitelist(), ent:GetClass()))-- Class is not Whitelisted
-		|| (GAMEMODE.Config.Lists.ModelBlacklist[ent:GetModel()])				-- Model is Blacklisted
-		|| !((ent:GetPhysicsObject()) && (ent:GetPhysicsObject():IsValid()))	-- Entity doesn't have Physics
+	if (!table.HasValue(GAMEMODE.Config.Lists:ClassWhitelist(), ent:GetClass()))	-- Class is not Whitelisted
+		|| (table.HasValue(GAMEMODE.Config.Lists:ModelBlacklist(), ent:GetModel()))	-- Model is Blacklisted
+		|| !((ent:GetPhysicsObject()) && (ent:GetPhysicsObject():IsValid()))		-- Entity doesn't have Physics
 	then
-		print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") attempted to turn into "..ent:GetClass().." ("..ent:GetModel()..").")
+		if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") attempted to turn into "..ent:GetClass().." ("..ent:GetModel()..").") end
 		return true -- Use instead of erroring.
 	end
 	
@@ -155,10 +160,21 @@ function CLASS:Use(ent)
 		self.Player:SetMaxHealth(maxhealth)
 	end
 	
-	print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") turned into "..ent:GetClass().." ("..ent:GetModel()..").")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") turned into "..ent:GetClass().." ("..ent:GetModel()..").") end
 end
 
 function CLASS:AllowPickup(ent) return true end
+
+-- Menu Buttons
+function CLASS:ShowSpare1()
+	if BaseClass.ShowSpare1(self) then return end
+	
+	-- Play a taunt
+	local tauntList = GAMEMODE.Config.Taunt:Hiders()
+	local index = math.random(#tauntList)
+	self.Player:EmitSound(tauntList[index], SNDLVL_NORM, 100, 1, CHAN_VOICE)
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") taunted with sound '"..tauntList[index].."'.") end
+end
 
 -- ------------------------------------------------------------------------- --
 --! Shared
@@ -168,71 +184,26 @@ function CLASS:AllowPickup(ent) return true end
 --! Client-Side
 -- ------------------------------------------------------------------------- --
 function CLASS:ClientSpawn()
-	print("Prop Hunt CL: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.")
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.") end
 	BaseClass.ClientSpawn(self, self.Player)
 	
 	self.Player:SetRenderMode(RENDERMODE_TRANSALPHA)
 end
 
 function CLASS:ShouldDrawLocal()
-	return false
-end
-
-function CLASS:CalcView(camdata)
-	-- ThirdPerson Settings (ToDo: client config maybe?)
-	local maxViewDist = 100
-	local viewDist = self.Player.Data.ViewDistance or 0
-	
-	-- First/Third
-	if (self.Player.Data.ThirdPerson) then
+	if (self.Player.Data.ViewDistance or 0) >= 10 then
 		if (IsValid(self.Player:GetHands())) then
 			self.Player:GetHands():SetRenderMode(RENDERMODE_TRANSALPHA)
 			self.Player:GetHands():SetColor(Color(255, 255, 255, 127))
 		end
-		
-		-- Incremental Distance instead of instant.
-		viewDist = math.Clamp(viewDist * 0.95 + maxViewDist * 0.05, 0, maxViewDist) -- Zoom Out
 	else
 		if (IsValid(self.Player:GetHands())) then
 			self.Player:GetHands():SetRenderMode(RENDERMODE_TRANSALPHA)
 			self.Player:GetHands():SetColor(Color(255, 255, 255, 0))
 		end
-		
-		viewDist = math.Clamp(viewDist * 0.95, 0, maxViewDist) -- Zoom In
 	end
 	
-	-- Trace from Player to would-be camera position
-	local trace = {
-		start = camdata.origin,
-		endpos = camdata.origin - (camdata.angles:Forward() * viewDist),
-		--filter = { "worldspawn", "ph_prop" },
-		filter = function(ent)
-			local filter = { "worldspawn", "ph_prop" }
-			
-			if (ent:IsPlayer())
-				|| (table.HasValue(filter, ent:GetClass()))
-				|| (ent == LocalPlayer()) || (ent == LocalPlayer():GetHands()) then
-				return false
-			end
-			return true
-		end
-	}
-	local result = util.TraceLine(trace)
-	
-	-- The Camera has a Sphere radius of 10.
-	if (result.Hit) then -- Configurable?
-		viewDist = math.Clamp(result.HitPos:Distance(camdata.origin), 0, maxViewDist)
-	end
-	
-	-- Store ViewDistance
-	self.Player.Data.ViewDistance = viewDist
-	
-	-- Adjust CamData
-	camdata.origin = camdata.origin - (camdata.angles:Forward() * math.Clamp(viewDist - 10, 0, maxViewDist))
-	camdata.drawviewer = false
-	
-	-- Return
-	return camdata
+	return (self.Player.Data.ViewDistance or 0) >= 10
 end
 
 -- Register

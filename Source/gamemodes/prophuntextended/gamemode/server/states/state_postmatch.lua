@@ -25,15 +25,30 @@
 StatePostMatch = {}
 
 function StatePostMatch:OnEnter(OldState)
-	if GAMEMODE.Config:Debug() then print("StatePostMatch: OnEnter") end
+	if GAMEMODE.Config:DebugLog() then print("StatePostMatch: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.PostMatch)
+	
+	self.NextState = StatePreMatch
+	
+	-- Check Change map conditions.
+	if ((GAMEMODE.Config:TimeLimit() > 0) && ((CurTime() - GAMEMODE.Data.StartTime) >= (GAMEMODE.Config:TimeLimit() * 60))) -- Over Time
+		|| (GAMEMODE:GetRound() >= GAMEMODE.Config.Round:Limit()) -- Over Round Limit
+		then
+		
+		-- Advance to nothing
+		GAMEMODE:SetRoundState(-1)
+		self.NextState = nil
+		
+		-- MapVote
+		if (MapVote != nil) then MapVote.Start(30, true, 30, "ph_") return end
+	end
 end
 
 function StatePostMatch:Tick()
 	-- Advance State
-	GAMEMODE.RoundManager:SetState(StatePreMatch)
+	GAMEMODE.RoundManager:SetState(self.NextState)
 end
 
 function StatePostMatch:OnLeave(NewState)
-	if GAMEMODE.Config:Debug() then print("StatePostMatch: OnLeave") end
+	if GAMEMODE.Config:DebugLog() then print("StatePostMatch: OnLeave") end
 end

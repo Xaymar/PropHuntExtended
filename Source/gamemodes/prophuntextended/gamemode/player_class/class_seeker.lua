@@ -44,19 +44,23 @@ CLASS.DropWeaponOnDie	= true
 -- ------------------------------------------------------------------------- --
 -- Spawn
 function CLASS:Spawn()
-	print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.")
+	if (GAMEMODE.Config:DebugLog()) then print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.") end
 	BaseClass.Spawn(self)
-	
-	-- Sprinting
-	if (GAMEMODE.Config:Sprinting()) then
-		self.Player:SetRunSpeed(self.WalkSpeed)
-	end
-	
+		
 	-- Settings
 	self.Player:SetMaxHealth(GAMEMODE.Config.Seeker:HealthMax())
 	self.Player:SetHealth(GAMEMODE.Config.Seeker:Health())
 	self.Player:SetRenderMode(RENDERMODE_NORMAL)
 	self.Player:SetColor(Color(255,255,255,255))
+	
+	-- Speed and Jump Power
+	self.Player:SetWalkSpeed(GAMEMODE.Config.Seeker:WalkSpeed())
+	if (GAMEMODE.Config.Seeker:Sprint()) then
+		self.Player:SetRunSpeed(GAMEMODE.Config.Seeker:SprintSpeed())
+	else
+		self.Player:SetRunSpeed(GAMEMODE.Config.Seeker:WalkSpeed())
+	end
+	self.Player:SetJumpPower(GAMEMODE.Config.Seeker:JumpPower())
 	
 	-- Hull & View Offset
 	GAMEMODE:PlayerHullFromEntity(self.Player, nil)
@@ -85,15 +89,33 @@ function CLASS:Loadout()
 end
 
 -- Damage
-function CLASS:Damage(victim, attacker, healthRemaining, damageDealt) end
+function CLASS:ShouldTakeDamage(attacker)
+	if (IsValid(attacker)) then
+		if (attacker:IsPlayer()) then
+			if (attacker:Team() == self.Player:Team()) then
+				local ffmode = GetConVarNumber("mp_friendlyfire")
+				if (ffmode == 0) then -- Not Allowed
+					return false
+				elseif (ffmode == 2) then -- Damage self instead
+					if (IsValid(attacker) && attacker:IsPlayer()) then
+						attacker:SetHealth(attacker:Health() - damageTaken)
+					end
+					return false
+				end
+			end
+		end
+	end
+	return true
+end
 function CLASS:DamageEntity(ent, att, dmg)
-	print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") damaged entity "..ent:GetClass()..".")
+	if (GAMEMODE.Config:DebugLog()) then print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") damaged entity "..ent:GetClass()..".") end
 	
 	-- Only take damage during this phase.
 	if (GAMEMODE:GetRoundState() == GAMEMODE.States.Seek) then
 		if IsValid(ent) && (!(ent:IsPlayer())) then
 			if (ent:GetClass() == "ph_prop") then
 				ent:GetOwner():TakeDamageInfo(dmg)
+				self.Player.Data.RandomWeight = self.Player.Data.RandomWeight - 1
 			elseif (ent:GetClass() == "func_breakable") then -- ToDo: Make Configurable which entities don't hurt?
 			else
 				att:TakeDamage(GAMEMODE.Config.Seeker:HealthPenalty(), ent, ent)
@@ -106,11 +128,14 @@ end
 function CLASS:Death(inflictor, attacker)
 	BaseClass.Death(self, inflictor, attacker)
 	
-	self.Player:CreateRagdoll()
+	if SERVER then
+		self.Player:SetShouldServerRagdoll(true)
+		--self.Player:CreateRagdoll()
+	end
 end
 
 function CLASS:PostDeath()
-	print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") died.")
+	if (GAMEMODE.Config:DebugLog()) then print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") died.") end
 	BaseClass.PostDeath(self, inflictor, attacker)
 	
 	self.Player:UnLock()
@@ -148,11 +173,22 @@ function CLASS:AllowPickup(ent) return true end
 function CLASS:CanPickupItem(ent) return true end
 function CLASS:CanPickupWeapon(ent) return true end
 
+-- Menu Buttons
+function CLASS:ShowSpare1()
+	if BaseClass.ShowSpare1(self) then return end
+	
+	-- Play a taunt
+	local tauntList = GAMEMODE.Config.Taunt:Seekers()
+	local index = math.random(#tauntList)
+	self.Player:EmitSound(tauntList[index], SNDLVL_NORM, 100, 1, CHAN_VOICE)
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") taunted with sound '"..tauntList[index].."'.") end
+end
+
 -- ------------------------------------------------------------------------- --
 --! Client-Side
 -- ------------------------------------------------------------------------- --
 function CLASS:ClientSpawn()
-	print("Prop Hunt CL: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.")
+	if (GAMEMODE.Config:DebugLog()) then print("Prop Hunt CL: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.") end
 	BaseClass.ClientSpawn(self)
 end
 
@@ -181,53 +217,7 @@ function CLASS:HUDPaint()
 end
 
 function CLASS:ShouldDrawLocal()
-	return self.Player.Data.ThirdPerson
-end
-
-function CLASS:CalcView(camdata)
-	-- ThirdPerson Settings (ToDo: client config maybe?)
-	local maxViewDist = 100
-	local viewDist = self.Player.Data.ViewDistance or 0
-	
-	-- First/Third
-	if (self.Player.Data.ThirdPerson) then
-		viewDist = math.Clamp(viewDist * 0.95 + maxViewDist * 0.05, 0, maxViewDist) -- Zoom Out
-	else
-		viewDist = math.Clamp(viewDist * 0.95, 0, maxViewDist) -- Zoom In
-	end
-	
-	-- Trace from Player to would-be camera position
-	local trace = {
-		start = camdata.origin,
-		endpos = camdata.origin - (camdata.angles:Forward() * viewDist),
-		--filter = { "worldspawn", "ph_prop" },
-		filter = function(ent)
-			local filter = { "worldspawn", "ph_prop" }
-			
-			if (ent:IsPlayer())
-				|| (table.HasValue(filter, ent:GetClass()))
-				|| (ent == LocalPlayer()) || (ent == LocalPlayer():GetHands()) then
-				return false
-			end
-			return true
-		end
-	}
-	local result = util.TraceLine(trace)
-	
-	-- The Camera has a Sphere radius of 10.
-	if (result.Hit) then -- Configurable?
-		viewDist = math.Clamp(result.HitPos:Distance(camdata.origin), 0, maxViewDist)
-	end
-	
-	-- Store ViewDistance
-	self.Player.Data.ViewDistance = viewDist
-	
-	-- Adjust CamData
-	camdata.origin = camdata.origin - (camdata.angles:Forward() * math.Clamp(viewDist - 10, 0, maxViewDist))
-	--camdata.drawviewer = false
-	
-	-- Return
-	return camdata
+	return (self.Player.Data.ViewDistance or 0) >= 10
 end
 
 -- Register

@@ -33,17 +33,36 @@ function CompatTauntPackLoader()
 	-- Run the old hook name.
 	hook.Run("ph_AddTaunts", nil)
 	
-	-- Insert the taunts into the new structure.
-	for k,v in ipairs(GAMEMODE.Hunter_Taunts) do
-		-- ToDo: string.GetFileFromFilename is broken!
-		--pcall(GAMEMODE.Config.Taunts.Add("TauntPackLoader."..string.GetFileFromFilename(v), v, TEAM_SEEKERES, nil))
+	-- Insert the taunts into the new structure (cvar).
+	Taunts = {}
+	for i,t in ipairs(GAMEMODE.Prop_Taunts) do
+		ty = type(t)
+		if (ty == "string") then
+			Taunts[#Taunts+1] = t
+		elseif (ty == "table") then
+			Taunts[#Taunts+1] = t[2]
+--			for j,snd in ipairs(t) do
+--				HiderTaunts[#HiderTaunts+1] = snd
+--			end
+		end
 	end
-	for k,v in ipairs(GAMEMODE.Prop_Taunts) do
-		--pcall(GAMEMODE.Config.Taunts.Add("TauntPackLoader."..string.GetFileFromFilename(v), v, TEAM_HIDERS, nil))
+	GAMEMODE.Config.Taunt.HidersCacheStatic = Taunts
+	Taunts = {}
+	for i,t in ipairs(GAMEMODE.Hunter_Taunts) do
+		ty = type(t)
+		if (ty == "string") then
+			Taunts[#Taunts+1] = t
+		elseif (ty == "table") then
+			Taunts[#Taunts+1] = t[2]
+--			for j,snd in ipairs(t) do
+--				SeekerTaunts[#SeekerTaunts+1] = snd
+--			end
+		end
 	end
+	GAMEMODE.Config.Taunt.SeekersCacheStatic = Taunts
 	
 	-- Clean up after ourselves
 	GAMEMODE.Prop_Taunts = nil
 	GAMEMODE.Hunter_Taunts = nil
 end
-hook.Add("OnPropHuntInitialized", "CompatTauntPackLoader", CompatTauntPackLoader)
+hook.Add("Initialize", "CompatTauntPackLoader", CompatTauntPackLoader)

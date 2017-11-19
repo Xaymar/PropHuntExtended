@@ -23,7 +23,7 @@
 --]]
 
 local PANEL = vgui.Create("DFrame")
-PANEL:SetSize(400, 300)
+PANEL:SetSize(640, 480)
 PANEL:SetTitle("Help")
 PANEL:SetDraggable(true)
 PANEL:SetVisible(false)
@@ -32,30 +32,51 @@ PANEL:SetSizable(true)
 PANEL:ShowCloseButton(true)
 PANEL:SetDeleteOnClose(false)
 
-function PANEL:Init()
-	DFrame.Init(self)
-	
-	-- Sheets
-	self.Sheets = vgui.Create("DPropertySheet", self)
-	self.Sheets:Dock(FILL)
-	
-	-- Basic Info
-	self.BasicInfoSheet = vgui.Create("DPanel", self.Sheets)
-	function self.BasicInfoSheet:Paint(w, h)
-		draw.RoundedBox(4, 0, 0, 100, 100, Color(0,128,255))
-	end
-	self.Sheets:AddSheet("The Gamemode", self.BasicInfoSheet)
-	
-	
-end
-
 function PANEL:Show()
-	self:SetSize(ScrW(), ScrH())
+	--self:SetSize(ScrW(), ScrH())
 	self:Center()
 	self:SetVisible(true)
 	self:SetFocusTopLevel(true)
 	self:SlideDown(.5)
 	self:MakePopup()
 end
+function PANEL:Hide()
+	self:Close()
+	self:SetVisible(false)
+end
 
-GAMEMODE.UI.Help = PANEL
+function PANEL:Paint(w, h)
+	draw.RoundedBox(0, 0, 0, w, h, Color(0,0,0,240))
+end
+
+-- Sheets
+local Element = vgui.Create("DPropertySheet", PANEL)
+function Element:PAINT(w,h)
+	draw.RoundedBox(0, 0, 0, w, h, Color(0,0,0,240))
+end
+Element:Dock(FILL)
+PANEL.Sheets = Element
+PANEL.Sheet = {}
+
+-- Basic Info
+local Element = vgui.Create("DPanel", PANEL.Sheets)
+function Element:Paint(w,h) end
+PANEL.Sheets:AddSheet("The Gamemode", Element)
+PANEL.Sheet.TheGamemode = Element
+
+local Element = vgui.Create("DLabel", PANEL.Sheet.TheGamemode)
+Element:Dock(TOP)
+Element:SetMultiline(true)
+Element:SetText([[
+	Prop Hunt Extended is a Gamemode based on the original Prop Hunt Gamemode. It changes many gameplay elements and features, adding the ability to easily integrate Taunt Packs, Configure Game parameters, rotate your prop and much more.
+]])
+
+
+
+-- Settings
+PANEL.SettingsSheet = vgui.Create("DPanel", PANEL.Sheets)
+PANEL.Sheets:AddSheet("Settings", PANEL.SettingsSheet)
+
+
+
+GM.UI.Help = PANEL

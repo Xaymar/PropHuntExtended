@@ -22,6 +22,19 @@
 	SOFTWARE.
 --]]
 
+local PANEL = vgui.Create("DFrame")
+PANEL:SetSize(400, 300)
+PANEL:SetTitle("Select a Team")
+PANEL:SetDraggable(true)
+PANEL:SetVisible(false)
+PANEL:SetDraggable(true)
+PANEL:SetSizable(true)
+PANEL:ShowCloseButton(true)
+PANEL:SetDeleteOnClose(false)
+
+
+
+
 TeamSelectionUI = {}
 TeamSelectionUI.Frame = vgui.Create("DFrame")
 TeamSelectionUI.Frame:SetPos(0, 0)

@@ -26,29 +26,30 @@
 StatePreMatch = {}
 
 function StatePreMatch:OnEnter(OldState)
-	if GAMEMODE.Config:Debug() then print("StatePreMatch: OnEnter") end
+	if GAMEMODE.Config:DebugLog() then print("StatePreMatch: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.PreMatch)
 	
-	SetGlobalInt("Round", GetGlobalInt("Round", 0) + 1)
+	math.randomseed(CurTime())
 end
 
 function StatePreMatch:Tick()
 	-- Debug: Auto Advance to PreRound State
 	if (GAMEMODE.Config:Debug()) then
-		print("StatePreMatch: Advancing to StatePreRound")
+		if GAMEMODE.Config:DebugLog() then print("StatePreMatch: Advancing to StatePreRound") end
 		GAMEMODE.RoundManager:SetState(StatePreRound)
 	end
 	
 	-- Game Mode: Basic
-	if (GAMEMODE.Config:GameMode() == GAMEMODE.Modes.Original) then
+	if (GAMEMODE.Config:GameType() == GAMEMODE.Types.Original) then
 		-- Both Teams must have at least 1 player.
 		if ((team.NumPlayers(GAMEMODE.Teams.Seekers) >= 1) && (team.NumPlayers(GAMEMODE.Teams.Hiders) >= 1)) then
 			GAMEMODE.RoundManager:SetState(StatePreRound)
+			if GAMEMODE.Config:DebugLog() then print("StatePreMatch: <Original> Have enough players to start match.") end
 		end
 	-- TODO: Other Gamemodes
 	end
 end
 
 function StatePreMatch:OnLeave(NewState)
-	if GAMEMODE.Config:Debug() then print("StatePreMatch: OnLeave") end
+	if GAMEMODE.Config:DebugLog() then print("StatePreMatch: OnLeave") end
 end

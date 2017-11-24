@@ -104,17 +104,6 @@ function GM:PlayerTick(ply, mv)
 	return player_manager.RunClass(ply, "Tick", mv)
 end
 
-function GM:PlayerHurt(victim, attacker, healthRemaining, damageTaken)
-	player_manager.RunClass(victim, "Hurt", victim, attacker, healthRemaining, damageTaken)
-	
-	if (IsValid(attacker) && attacker:IsPlayer()) then
-		player_manager.RunClass(attacker, "Damage", victim, attacker, healthRemaining, damageTaken)
-	end
-end
-function GM:PlayerShouldTakeDamage(victim, attacker)
-	return player_manager.RunClass(victim, "ShouldTakeDamage", attacker)
-end
-
 -- ------------------------------------------------------------------------- --
 --! Gamemode Functionality
 -- ------------------------------------------------------------------------- --

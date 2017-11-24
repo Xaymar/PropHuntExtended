@@ -208,21 +208,23 @@ function DrawNamePlates(bDrawingDepth, bDrawingSkybox)
 	
 	for i,v in ipairs(pls) do
 		if (v:Alive() && v != LocalPlayer()) then
-			local color = HSVToColor(GAMEMODE.Config.NamePlates:TintHue(),
-				GAMEMODE.Config.NamePlates:TintSaturation(),
-				GAMEMODE.Config.NamePlates:TintValue())
-			if GAMEMODE.Config.NamePlates:TintHealth() then
-				local healthPrc = v:Health() / v:GetMaxHealth()
-				color = HSVToColor(120 * healthPrc, 1.0, 1.0)				
-			elseif GAMEMODE.Config.NamePlates:TintTeam() then
-				color = team.GetColor(v:Team())
-			end			
-			
-			local pos = v:GetPos() + v:GetViewOffset() + Vector(0, 0, GAMEMODE.Config.NamePlates:Height())
-			local ang = Angle(0, LocalPlayer():EyeAngles().y - 90, 90 - LocalPlayer():EyeAngles().x)
-			cam.Start3D2D(pos, ang, scale)
-				draw.DrawText(v:GetName(), "RobotoBoldCondensed160", 0, -draw.GetFontHeight("RobotoBoldCondensed160") / 2, color, TEXT_ALIGN_CENTER)
-			cam.End3D2D()
+			if (player_manager.GetPlayerClass(v) != "Spectator") then
+				local color = HSVToColor(GAMEMODE.Config.NamePlates:TintHue(),
+					GAMEMODE.Config.NamePlates:TintSaturation(),
+					GAMEMODE.Config.NamePlates:TintValue())
+				if GAMEMODE.Config.NamePlates:TintHealth() then
+					local healthPrc = v:Health() / v:GetMaxHealth()
+					color = HSVToColor(120 * healthPrc, 1.0, 1.0)				
+				elseif GAMEMODE.Config.NamePlates:TintTeam() then
+					color = team.GetColor(v:Team())
+				end			
+				
+				local pos = v:GetPos() + v:GetViewOffset() + Vector(0, 0, GAMEMODE.Config.NamePlates:Height())
+				local ang = Angle(0, LocalPlayer():EyeAngles().y - 90, 90 - LocalPlayer():EyeAngles().x)
+				cam.Start3D2D(pos, ang, scale)
+					draw.DrawText(v:GetName(), "RobotoBoldCondensed160", 0, -draw.GetFontHeight("RobotoBoldCondensed160") / 2, color, TEXT_ALIGN_CENTER)
+				cam.End3D2D()
+			end
 		end
 	end	
 end

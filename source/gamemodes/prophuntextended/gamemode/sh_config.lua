@@ -85,7 +85,7 @@ function GM.Config.Round:Time()
 end
 
 -- For how many seconds are the Seekers blinded? (Seconds)
-GM.Config.Round.ConVars.BlindTime = CreateConVarIfNotExists("ph_round_blindtime", "-30", FCVAR_REPLICATED, "Round Manager: Blind Time for Seekers (in Seconds, positive takes away from ph_round_timelimit, negative adds extra time to ph_round_timelimit")
+GM.Config.Round.ConVars.BlindTime = CreateConVarIfNotExists("ph_round_blindtime", "-30", FCVAR_REPLICATED, "Round Manager: Blind Time for Seekers (in Seconds, positive takes away from ph_round_timelimit, negative adds extra time to ph_round_timelimit)")
 function GM.Config.Round:BlindTime()
 	return self.ConVars.BlindTime:GetFloat()
 end
@@ -97,7 +97,7 @@ GM.Config.Teams = {}
 GM.Config.Teams.ConVars = {}
 
 -- Should teams be ranomized each round?
-GM.Config.Teams.ConVars.Randomize = CreateConVarIfNotExists("ph_teams_randomize", "0", FCVAR_REPLICATED, "Teams: Randomize Each Round")
+GM.Config.Teams.ConVars.Randomize = CreateConVarIfNotExists("ph_teams_randomize", "0", FCVAR_REPLICATED, "Teams: Randomize Teams instead of swapping each round")
 function GM.Config.Teams:Randomize()
 	return self.ConVars.Randomize:GetBool()
 end

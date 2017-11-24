@@ -96,30 +96,50 @@ function CLASS:ShouldTakeDamage(attacker)
 				local ffmode = GetConVarNumber("mp_friendlyfire")
 				if (ffmode == 0) then -- Not Allowed
 					return false
-				elseif (ffmode == 2) then -- Damage self instead
-					if (IsValid(attacker) && attacker:IsPlayer()) then
-						attacker:SetHealth(attacker:Health() - damageTaken)
-					end
-					return false
 				end
 			end
 		end
 	end
 	return true
 end
+
+function CLASS:Damage(victim, attacker, healthRemaining, damageDealt)
+	if ((victim != attacker) && victim:IsPlayer() && attacker:IsPlayer() && (attacker:Team() == victim:Team())) then
+		if (GAMEMODE.Config:DebugLog()) then
+			print("Prop Hunt: Seeker '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..") damaged seeker '"..victim:GetName().."' (SteamID: "..victim:SteamID()..") with "..damageDealt.." damage.")
+		end
+	end
+end
+
+function CLASS:Hurt(victim, attacker, healthRemaining, damageTaken)
+	if ((victim != attacker) && victim:IsPlayer() && attacker:IsPlayer() && (attacker:Team() == victim:Team())) then
+		if (GAMEMODE.Config:DebugLog()) then 
+			print("Prop Hunt: Seeker '"..victim:GetName().."' (SteamID: "..victim:SteamID()..") was hurt by seeker '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..") with "..damageTaken.." damage.")
+		end
+		
+		if (GetConVarNumber("mp_friendlyfire") == 2) then
+			victim:SetHealth(healthRemaining + damageTaken)
+			attacker:TakeDamage(damageTaken, attacker, attacker)
+			print("Prop Hunt: Seeker '"..victim:GetName().."' (SteamID: "..victim:SteamID()..") reflected "..damageTaken.." to seeker '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..").")
+		end
+	end
+end
+
 function CLASS:DamageEntity(ent, att, dmg)
 	if (GAMEMODE.Config:DebugLog()) then print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") damaged entity "..ent:GetClass()..".") end
+
+	if (GAMEMODE:GetRoundState() != GAMEMODE.States.Seek) then return end	
+	if (!IsValid(ent) || !IsValid(att)) then return end
+	if (att == ent) then return end
 	
 	-- Only take damage during this phase.
-	if (GAMEMODE:GetRoundState() == GAMEMODE.States.Seek) then
-		if IsValid(ent) && (!(ent:IsPlayer())) then
-			if (ent:GetClass() == "ph_prop") then
-				ent:GetOwner():TakeDamageInfo(dmg)
-				self.Player.Data.RandomWeight = self.Player.Data.RandomWeight - 1
-			elseif (ent:GetClass() == "func_breakable") then -- ToDo: Make Configurable which entities don't hurt?
-			else
-				att:TakeDamage(GAMEMODE.Config.Seeker:HealthPenalty(), ent, ent)
-			end
+	if IsValid(ent) && (!(ent:IsPlayer())) then
+		if (ent:GetClass() == "ph_prop") then
+			ent:GetOwner():TakeDamageInfo(dmg)
+			self.Player.Data.RandomWeight = self.Player.Data.RandomWeight - 1
+		elseif (ent:GetClass() == "func_breakable") then
+		else
+			att:TakeDamage(GAMEMODE.Config.Seeker:HealthPenalty(), ent, ent)
 		end
 	end
 end

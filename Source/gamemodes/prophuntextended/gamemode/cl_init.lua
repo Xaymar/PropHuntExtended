@@ -41,8 +41,8 @@ function GM:Initialize()
 	print("Prop Hunt CL: Initializing Gamemode Data...")
 	self.Data = {}
 	
-	print("Prop Hunt CL: Creating Huge Ass Font...")
-	surface.CreateFont("PHHugeAssFont", {font="Roboto Bold Condensed", extended=true, size=160, weight=800, antialias=true})
+	print("Prop Hunt CL: Creating Fonts...")
+	surface.CreateFont("RobotoBoldCondensed160", {font="Roboto Bold Condensed", extended=true, size=160, weight=800, antialias=true})
 	
 	print("Prop Hunt CL: Complete.")
 	print("-------------------------------------------------------------------------")
@@ -193,28 +193,45 @@ net.Receive( "PlayerViewOffset", function(len, pl)
 end)
 
 -- ------------------------------------------------------------------------- --
+--! Special Drawing
+-- ------------------------------------------------------------------------- --
+function DrawNamePlates(bDrawingDepth, bDrawingSkybox)
+	if (!GAMEMODE.Config.NamePlates:Show()) then
+		return
+	end
+	
+	local scale = GAMEMODE.Config.NamePlates:Scale()	
+	local pls = team.GetPlayers(GAMEMODE.Teams.Seekers)
+	if (LocalPlayer():Team() == GAMEMODE.Teams.Hiders) then
+		pls = table.Add(pls, team.GetPlayers(GAMEMODE.Teams.Hiders))
+	end	
+	
+	for i,v in ipairs(pls) do
+		if (v:Alive() && v != LocalPlayer()) then
+			local color = HSVToColor(GAMEMODE.Config.NamePlates:TintHue(),
+				GAMEMODE.Config.NamePlates:TintSaturation(),
+				GAMEMODE.Config.NamePlates:TintValue())
+			if GAMEMODE.Config.NamePlates:TintHealth() then
+				local healthPrc = v:Health() / v:GetMaxHealth()
+				color = HSVToColor(120 * healthPrc, 1.0, 1.0)				
+			elseif GAMEMODE.Config.NamePlates:TintTeam() then
+				color = team.GetColor(v:Team())
+			end			
+			
+			local pos = v:GetPos() + v:GetViewOffset() + Vector(0, 0, GAMEMODE.Config.NamePlates:Height())
+			local ang = Angle(0, LocalPlayer():EyeAngles().y - 90, 90 - LocalPlayer():EyeAngles().x)
+			cam.Start3D2D(pos, ang, scale)
+				draw.DrawText(v:GetName(), "RobotoBoldCondensed160", 0, -draw.GetFontHeight("RobotoBoldCondensed160") / 2, color, TEXT_ALIGN_CENTER)
+			cam.End3D2D()
+		end
+	end	
+end
+hook.Add("PostDrawTranslucentRenderables", "PHDrawNamePlates", DrawNamePlates)
+
+-- ------------------------------------------------------------------------- --
 --! Old Code
 -- ------------------------------------------------------------------------- --
 --[[
--- Render halos and player names.
-function DrawPlayerNames(bDrawingDepth, bDrawingSkybox)
-	for i,v in ipairs(player.GetAll()) do
-		if v:Alive() && v != LocalPlayer() then
-			local pos = v:GetPos() + v:GetViewOffset() + Vector(0, 0, 5)
-			local ang = Angle(0, LocalPlayer():EyeAngles().y - 90, 90 - LocalPlayer():EyeAngles().x)
-			local healthPrc = v:Health() / v:GetMaxHealth()
-			local healthCol = HSVToColor(120 * healthPrc, 1.0, 1.0)
-			
-			if v:Team() == TEAM_HUNTERS || LocalPlayer():Team() == TEAM_PROPS then
-				cam.Start3D2D(pos, ang, 0.15)
-					draw.DrawText(v:GetName(), "Trebuchet24", 0, -draw.GetFontHeight("Trebuchet24"), healthCol, TEXT_ALIGN_CENTER)
-				cam.End3D2D()
-			end
-		end
-	end
-end
-hook.Add("PostDrawTranslucentRenderables", "PH_DrawPlayerNames", DrawPlayerNames)
-
 function DrawPlayerHalos(bDrawingDepth, bDrawingSkybox)
 	for i,v in ipairs(player.GetAll()) do
 		if v:Alive() then

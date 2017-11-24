@@ -40,7 +40,6 @@ end
 --! Debug Settings
 -- ------------------------------------------------------------------------- --
 -- Debug Mode
-
 GM.Config.ConVars.Debug = CreateConVarIfNotExists("ph_debug", "0", FCVAR_CHEAT + FCVAR_REPLICATED, "Prop Hunt: Enable Debug Mode")
 function GM.Config:Debug()
 	return self.ConVars.Debug:GetBool()
@@ -410,4 +409,56 @@ if CLIENT then
 	function GM.Config.Camera:Lag()
 		return math.Clamp(self.ConVars.Lag:GetFloat(), self:LagMinimum(), self:LagMaximum())
 	end
+end
+
+-- ------------------------------------------------------------------------- --
+--! Name Plates
+-- ------------------------------------------------------------------------- --
+GM.Config.NamePlates = {}
+GM.Config.NamePlates.ConVars = {}
+
+if CLIENT then
+	-- Show
+	GM.Config.NamePlates.ConVars.Show = CreateConVarIfNotExists("ph_nameplates_show", "1", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Show a name plate above each player in your team (or all players if spectating).")
+	function GM.Config.NamePlates:Show()
+		return self.ConVars.Show:GetBool()
+	end
+	
+	-- Scale
+	GM.Config.NamePlates.ConVars.Scale = CreateConVarIfNotExists("ph_nameplates_scale", "0.05", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: World scale of name plate, a setting of 1 means 1px = 1unit.")
+	function GM.Config.NamePlates:Scale()
+		return self.ConVars.Scale:GetFloat()
+	end
+	
+	-- Height
+	GM.Config.NamePlates.ConVars.Height = CreateConVarIfNotExists("ph_nameplates_height", "10", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Height above player.")
+	function GM.Config.NamePlates:Height()
+		return self.ConVars.Height:GetFloat()
+	end
+	
+	-- Tint Color
+	GM.Config.NamePlates.ConVars.TintHue = CreateConVarIfNotExists("ph_nameplates_tint_hue", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Tint hue.")
+	function GM.Config.NamePlates:TintHue()
+		return self.ConVars.TintHue:GetFloat()
+	end
+	GM.Config.NamePlates.ConVars.TintSaturation = CreateConVarIfNotExists("ph_nameplates_tint_saturation", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Tint saturation.")
+	function GM.Config.NamePlates:TintSaturation()
+		return self.ConVars.TintSaturation:GetFloat()
+	end
+	GM.Config.NamePlates.ConVars.TintValue = CreateConVarIfNotExists("ph_nameplates_tint_value", "1", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Tint value.")
+	function GM.Config.NamePlates:TintValue()
+		return self.ConVars.TintValue:GetFloat()
+	end
+	
+	-- Tint By Health
+	GM.Config.NamePlates.ConVars.TintHealth = CreateConVarIfNotExists("ph_nameplates_tint_health", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Tint the nameplate using their health percent.")
+	function GM.Config.NamePlates:TintHealth()
+		return self.ConVars.TintHealth:GetBool()
+	end
+	
+	-- Tint By Team
+	GM.Config.NamePlates.ConVars.TintTeam = CreateConVarIfNotExists("ph_nameplates_tint_team", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Tint the nameplate with the team colors.")
+	function GM.Config.NamePlates:TintTeam()
+		return self.ConVars.TintTeam:GetBool()
+	end	
 end

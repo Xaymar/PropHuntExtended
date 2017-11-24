@@ -138,6 +138,7 @@ function CLASS:DamageEntity(ent, att, dmg)
 			ent:GetOwner():TakeDamageInfo(dmg)
 			self.Player.Data.RandomWeight = self.Player.Data.RandomWeight - 1
 		elseif (ent:GetClass() == "func_breakable") then
+		elseif (ent:GetClass() == "prop_ragdoll") then
 		else
 			att:TakeDamage(GAMEMODE.Config.Seeker:HealthPenalty(), ent, ent)
 		end

@@ -26,8 +26,8 @@
 --! Gamemode Information
 -- ------------------------------------------------------------------------- --
 GM.Name		= "Prop Hunt Extended"
-GM.Author	= "Michael 'Xaymar' Dirks (Based on Kow@lskis Version, Original by AMT)"
-GM.Email	= "michael.fabian.dirks@gmail.com"
+GM.Author	= "Michael Fabian 'Xaymar' Dirks"
+GM.Email	= "info@xaymar.com"
 GM.Website	= "http://xaymar.com/"
 
 GM.TeamBased = true

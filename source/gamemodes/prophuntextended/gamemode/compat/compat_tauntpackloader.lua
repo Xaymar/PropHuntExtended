@@ -40,7 +40,7 @@ function CompatTauntPackLoader()
 		if (ty == "string") then
 			Taunts[#Taunts+1] = t
 		elseif (ty == "table") then
-			Taunts[#Taunts+1] = t[2]
+			Taunts[#Taunts+1] = t[1]
 --			for j,snd in ipairs(t) do
 --				HiderTaunts[#HiderTaunts+1] = snd
 --			end
@@ -53,7 +53,7 @@ function CompatTauntPackLoader()
 		if (ty == "string") then
 			Taunts[#Taunts+1] = t
 		elseif (ty == "table") then
-			Taunts[#Taunts+1] = t[2]
+			Taunts[#Taunts+1] = t[1]
 --			for j,snd in ipairs(t) do
 --				SeekerTaunts[#SeekerTaunts+1] = snd
 --			end

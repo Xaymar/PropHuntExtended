@@ -346,7 +346,7 @@
 			"default"	"20"
 			"help"		"Camera: Horizontal allowed camera distance range."
 		}
-		803
+		804
 		{
 			"name"		"ph_camera_distance_up_range"
 			"text"		"Camera Vertical Offset Range"
@@ -354,7 +354,7 @@
 			"default"	"20"
 			"help"		"Camera: Vertical allowed camera distance range."
 		}
-		803
+		805
 		{
 			"name"		"ph_camera_lag_min"
 			"text"		"Camera Lag Min."
@@ -362,7 +362,7 @@
 			"default"	"0"
 			"help"		"Camera: Minimum Camera Lag."
 		}
-		803
+		806
 		{
 			"name"		"ph_camera_lag_max"
 			"text"		"Camera Lag Max."

@@ -104,6 +104,10 @@ function GM:PlayerTick(ply, mv)
 	return player_manager.RunClass(ply, "Tick", mv)
 end
 
+function GM:FindUseEntity(ply, defaultEnt)
+	return player_manager.RunClass(ply, "FindUseEntity", defaultEnt)
+end
+
 -- ------------------------------------------------------------------------- --
 --! Gamemode Functionality
 -- ------------------------------------------------------------------------- --

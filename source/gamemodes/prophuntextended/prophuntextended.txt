@@ -371,5 +371,31 @@
 			"help"		"Camera: Maximum Camera Lag."
 		}
 		
+		// Selection Halo
+		900
+		{
+			"name"		"ph_selectionhalo_allow"
+			"text"		"Selection Halo Allowed"
+			"type"		"CheckBox"
+			"default"	"1"
+			"help"		"Selection Halo: Allow clients to enable halo around the currently looked at prop?"
+		}
+		901
+		{
+			"name"		"ph_selectionhalo_approximate"
+			"text"		"Selection Approximate Mode"
+			"type"		"CheckBox"
+			"default"	"1"
+			"help"		"Selection Halo: Enable approximate selection halo, which only checks the forward vector on the client."
+		}
+		902
+		{
+			"name"		"ph_selectionhalo_interval"
+			"text"		"Selection Halo Allowed"
+			"type"		"Numeric"
+			"default"	"0.05"
+			"help"		"Selection Halo: Interval for updates of the accuracte selection halo in seconds."
+		}
+		
 	}
 }

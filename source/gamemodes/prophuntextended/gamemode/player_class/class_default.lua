@@ -44,7 +44,10 @@ CLASS.UseVMHands		= true		-- Uses viewmodel hands
 --! Server-Side
 -- ------------------------------------------------------------------------- --
 -- Spawn
-function CLASS:InitialSpawn() end
+function CLASS:InitialSpawn()
+	self.Player.Data = {}
+	self.Player.Data.SelectionHaloTime = CurTime()	
+end
 function CLASS:Spawn() end
 function CLASS:Loadout() end
 

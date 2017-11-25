@@ -462,3 +462,79 @@ if CLIENT then
 		return self.ConVars.TintTeam:GetBool()
 	end	
 end
+
+-- ------------------------------------------------------------------------- --
+--! Selection Halo
+-- ------------------------------------------------------------------------- --
+GM.Config.SelectionHalo = {}
+GM.Config.SelectionHalo.ConVars = {}
+
+-- Allow
+GM.Config.SelectionHalo.ConVars.Allow = CreateConVarIfNotExists("ph_selectionhalo_allow", "1", FCVAR_REPLICATED, "Selection Halo: Allow clients to enable halo around the currently looked at prop?")
+function GM.Config.SelectionHalo:Allow()
+	return self.ConVars.Allow:GetBool()
+end
+
+-- Approximate
+GM.Config.SelectionHalo.ConVars.Approximate = CreateConVarIfNotExists("ph_selectionhalo_approximate", "1", FCVAR_REPLICATED, "Selection Halo: Enable approximate selection halo, which only checks the forward vector on the client.")
+function GM.Config.SelectionHalo:Approximate()
+	return self.ConVars.Approximate:GetBool()
+end
+
+if SERVER then
+	-- Update Interval
+	GM.Config.SelectionHalo.ConVars.Interval = CreateConVarIfNotExists("ph_selectionhalo_interval", "0.05", FCVAR_ARCHIVE, "Selection Halo: Interval for updates of the accuracte selection halo in seconds.")
+	function GM.Config.SelectionHalo:Interval()
+		return self.ConVars.Interval:GetFloat()
+	end
+end
+
+if CLIENT then
+	-- Enabled
+	GM.Config.SelectionHalo.ConVars.Enabled = CreateConVarIfNotExists("ph_selectionhalo_enabled", "1", FCVAR_ARCHIVE, "Selection Halo: Enable halo around prop you might become.")
+	function GM.Config.SelectionHalo:Enabled()
+		if (self:Allow()) then
+			return self.ConVars.Enabled:GetBool()
+		else
+			return false
+		end
+	end
+	
+	-- Settings
+	GM.Config.SelectionHalo.ConVars.Passes = CreateConVarIfNotExists("ph_selectionhalo_passes", "1", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Passes")
+	function GM.Config.SelectionHalo:Passes()
+		return self.ConVars.Passes:GetInt()
+	end
+	GM.Config.SelectionHalo.ConVars.Additive = CreateConVarIfNotExists("ph_selectionhalo_additive", "1", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Additive")
+	function GM.Config.SelectionHalo:Additive()
+		return self.ConVars.Additive:GetBool()
+	end
+	GM.Config.SelectionHalo.ConVars.IgnoreZ = CreateConVarIfNotExists("ph_selectionhalo_ignorez", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Ignore Z")
+	function GM.Config.SelectionHalo:IgnoreZ()
+		return self.ConVars.IgnoreZ:GetBool()
+	end
+	
+	-- Blur
+	GM.Config.SelectionHalo.ConVars.BlurX = CreateConVarIfNotExists("ph_selectionhalo_blur_x", "2", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Blur X")
+	function GM.Config.SelectionHalo:BlurX()
+		return self.ConVars.BlurX:GetFloat()
+	end
+	GM.Config.SelectionHalo.ConVars.BlurY = CreateConVarIfNotExists("ph_selectionhalo_blur_y", "2", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Blur Y")
+	function GM.Config.SelectionHalo:BlurY()
+		return self.ConVars.BlurY:GetFloat()
+	end
+	
+	-- Tint Color
+	GM.Config.SelectionHalo.ConVars.TintHue = CreateConVarIfNotExists("ph_selectionhalo_tint_hue", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Tint Hue")
+	function GM.Config.SelectionHalo:TintHue()
+		return self.ConVars.TintHue:GetFloat()
+	end
+	GM.Config.SelectionHalo.ConVars.TintSaturation = CreateConVarIfNotExists("ph_selectionhalo_tint_saturation", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Tint Saturation")
+	function GM.Config.SelectionHalo:TintSaturation()
+		return self.ConVars.TintSaturation:GetFloat()
+	end
+	GM.Config.SelectionHalo.ConVars.TintValue = CreateConVarIfNotExists("ph_selectionhalo_tint_value", "1", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Tint Value")
+	function GM.Config.SelectionHalo:TintValue()
+		return self.ConVars.TintValue:GetFloat()
+	end
+end

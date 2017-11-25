@@ -230,26 +230,54 @@ function DrawNamePlates(bDrawingDepth, bDrawingSkybox)
 end
 hook.Add("PostDrawTranslucentRenderables", "PHDrawNamePlates", DrawNamePlates)
 
+function DrawSelectionHalo(bDrawingDepth, bDrawingSkybox)
+	if (!GAMEMODE.Config.SelectionHalo:Enabled()) then return end
+	local ent = nil
+	if (GAMEMODE.Config.SelectionHalo:Approximate()) then
+		local trace = {
+			start = LocalPlayer():EyePos(),
+			endpos = LocalPlayer():EyePos() + LocalPlayer():EyeAngles():Forward() * 80,
+			mins = Vector(-16, -16, -16),
+			maxs = Vector( 16,  16,  16),
+			mask = MASK_SOLID + CONTENTS_DEBRIS + CONTENTS_PLAYERCLIP,
+			filter = function(ent)
+				-- Ensure that we don't actually hit ourselves by accident, or our "hands" model.
+				if (!IsValid(ent)
+					|| (ent == LocalPlayer())
+					|| (ent == LocalPlayer():GetHands())) then
+					return false
+				end					
+				if table.HasValue(GAMEMODE.Config.Lists:ClassWhitelist(), ent:GetClass()) then return true end
+				return false
+			end,
+			output = {}
+		}
+		util.TraceLine(trace)
+		if !IsValid(trace.output.Entity) then util.TraceHull(trace) end
+		if IsValid(trace.output.Entity) then
+			if (!table.HasValue(GAMEMODE.Config.Lists:ModelBlacklist(), trace.output.Entity:GetModel())) then
+				ent = trace.output.Entity
+			end
+		end		
+	else
+		ent = LocalPlayer():GetNWEntity("SelectionHalo")
+	end
+	if IsValid(ent) then
+		local color = HSVToColor(
+			GAMEMODE.Config.SelectionHalo:TintHue(), 
+			GAMEMODE.Config.SelectionHalo:TintSaturation(), 
+			GAMEMODE.Config.SelectionHalo:TintValue()
+			)
+		halo.Add({ ent }, color, 
+			GAMEMODE.Config.SelectionHalo:BlurX(), GAMEMODE.Config.SelectionHalo:BlurY(), GAMEMODE.Config.SelectionHalo:Passes(),
+			GAMEMODE.Config.SelectionHalo:Additive(), GAMEMODE.Config.SelectionHalo:IgnoreZ())
+	end
+end
+hook.Add("PostDrawEffects", "PHDrawSelectionHalo", DrawSelectionHalo)
+
 -- ------------------------------------------------------------------------- --
 --! Old Code
 -- ------------------------------------------------------------------------- --
 --[[
-function DrawPlayerHalos(bDrawingDepth, bDrawingSkybox)
-	for i,v in ipairs(player.GetAll()) do
-		if v:Alive() then
-			local pos = v:GetPos() + Vector(0, 0, 1) * (v:OBBMaxs().z - v:OBBMins().z + 5)
-			local ang = Angle(0, LocalPlayer():EyeAngles().y - 90, 90 - LocalPlayer():EyeAngles().x)
-			local healthPrc = v:Health() / v:GetMaxHealth()
-			local healthCol = HSVToColor(120 * healthPrc, 1.0, 1.0)
-			
-			if v:Team() == TEAM_HUNTERS || LocalPlayer():Team() == TEAM_PROPS then
-				local ent = v
-				if v.ph_prop && v.ph_prop:IsValid() then ent = v.ph_prop end
-				
-				halo.Add({ent}, healthCol, 2, 2, 1)
-			end
-		end
-	end
-end
---hook.Add("PostDrawEffects", "PH_DrawPlayerHalos", DrawPlayerHalos)
+
 ]]

@@ -179,6 +179,32 @@ end
 -- ------------------------------------------------------------------------- --
 --! Shared
 -- ------------------------------------------------------------------------- --
+if SERVER then
+	function CLASS:FindUseEntity(defEnt)
+		return self.Player:FindUseEntity()
+	end
+	
+	function CLASS:Tick(mv)
+		if (self.Player.Data == nil) then return end
+		
+		-- Selection Halo
+		if (GAMEMODE.Config.SelectionHalo:Allow()) && (!GAMEMODE.Config.SelectionHalo:Approximate()) then
+			if (self.Player.Data.SelectionHaloTime == nil) then
+				self.Player.Data.SelectionHaloTime = CurTime()
+			elseif ((CurTime() - self.Player.Data.SelectionHaloTime) > GAMEMODE.Config.SelectionHalo:Interval()) then
+				self.Player.Data.SelectionHaloTime = CurTime()
+				local ent = self.Player:FindUseEntity()
+				if (IsValid(ent)
+					&& table.HasValue(GAMEMODE.Config.Lists:ClassWhitelist(), ent:GetClass()) 
+					&& !table.HasValue(GAMEMODE.Config.Lists:ModelBlacklist(), ent:GetModel())) then
+					self.Player:SetNWEntity("SelectionHalo", ent)
+				else
+					self.Player:SetNWBool("SelectionHalo", false)
+				end				
+			end
+		end
+	end
+end
 
 -- ------------------------------------------------------------------------- --
 --! Client-Side

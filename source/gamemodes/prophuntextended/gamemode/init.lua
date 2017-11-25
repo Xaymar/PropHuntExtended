@@ -27,6 +27,7 @@
 -- ------------------------------------------------------------------------- --
 -- Shared
 AddCSLuaFile("sh_init.lua")
+AddCSLuaFile("meta/player.lua")
 AddCSLuaFile("sh_config.lua")
 AddCSLuaFile("player_class/class_default.lua")
 AddCSLuaFile("player_class/class_spectator.lua")

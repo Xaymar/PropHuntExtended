@@ -41,9 +41,6 @@ function CompatTauntPackLoader()
 			Taunts[#Taunts+1] = t
 		elseif (ty == "table") then
 			Taunts[#Taunts+1] = t[1]
---			for j,snd in ipairs(t) do
---				HiderTaunts[#HiderTaunts+1] = snd
---			end
 		end
 	end
 	GAMEMODE.Config.Taunt.HidersCacheStatic = Taunts
@@ -54,9 +51,6 @@ function CompatTauntPackLoader()
 			Taunts[#Taunts+1] = t
 		elseif (ty == "table") then
 			Taunts[#Taunts+1] = t[1]
---			for j,snd in ipairs(t) do
---				SeekerTaunts[#SeekerTaunts+1] = snd
---			end
 		end
 	end
 	GAMEMODE.Config.Taunt.SeekersCacheStatic = Taunts

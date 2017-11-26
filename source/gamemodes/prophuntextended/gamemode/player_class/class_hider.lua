@@ -206,6 +206,7 @@ if SERVER then
 		end
 	end
 end
+function CLASS:Alive() return true end
 
 -- ------------------------------------------------------------------------- --
 --! Client-Side

@@ -126,6 +126,7 @@ function CLASS:ShowSpare2() end
 function CLASS:PostThink() end
 function CLASS:Tick(mv) end 
 function CLASS:FindUseEntity(defEnt) return defEnt end
+function CLASS:Alive() return false end
 
 -- ------------------------------------------------------------------------- --
 --! Client-Side

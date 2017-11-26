@@ -32,7 +32,7 @@ function StatePostMatch:OnEnter(OldState)
 	
 	-- Check Change map conditions.
 	if ((GAMEMODE.Config:TimeLimit() > 0) && ((CurTime() - GAMEMODE.Data.StartTime) >= (GAMEMODE.Config:TimeLimit() * 60))) -- Over Time
-		|| (GAMEMODE:GetRound() >= GAMEMODE.Config.Round:Limit()) -- Over Round Limit
+		|| ((GAMEMODE.Config.Round:Limit() > 0) && (GAMEMODE:GetRound() >= GAMEMODE.Config.Round:Limit())) -- Over Round Limit
 		then
 		
 		-- Advance to nothing

@@ -66,6 +66,7 @@ function CLASS:Spawn()
 	self.Player.Data.Prop:SetOwner(self.Player)
 	self.Player.Data.Prop:Spawn()
 	self.Player:DeleteOnRemove(self.Player.Data.Prop)
+	self.Player.Data.PropContraint = constraint.NoCollide(self.Player, self.Player.Data.Prop, 0, 0)
 	
 	-- Assign Hands (Auto Networked Sync!)
 	local oldhands = self.Player:GetHands()

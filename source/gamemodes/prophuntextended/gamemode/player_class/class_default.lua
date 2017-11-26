@@ -62,11 +62,12 @@ function CLASS:Death(inflictor, attacker)
 	self.Player.Data.Alive = false
 	self.Player.Data.AliveTime = CurTime()
 	-- Score support
-	if IsValid(attacker) then
-		if attacker:IsPlayer() then
-			attacker:AddFrags(1)
+	self.Player:AddDeaths(1)
+	if IsValid(attacker) && attacker:IsPlayer() then
+		if ((attacker == self.Player)
+			|| (attacker:Team() == self.Player:Team())) then
+			self.Player:AddFrags(-1)
 		end
-		self.Player:AddDeaths(1)
 	end
 end
 function CLASS:SilentDeath()

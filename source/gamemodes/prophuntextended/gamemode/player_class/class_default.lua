@@ -61,6 +61,13 @@ function CLASS:DamageEntity(ent, attacker, dmginfo) end -- Damage Dealt To Entit
 function CLASS:Death(inflictor, attacker)
 	self.Player.Data.Alive = false
 	self.Player.Data.AliveTime = CurTime()
+	-- Score support
+	if IsValid(attacker) then
+		if attacker:IsPlayer() then
+			attacker:AddFrags(1)
+		end
+		self.Player:AddDeaths(1)
+	end
 end
 function CLASS:SilentDeath()
 	self.Player.Data.Alive = false

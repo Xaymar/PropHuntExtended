@@ -86,10 +86,19 @@ function StateSeek:OnLeave(NewState)
 	if GAMEMODE.Config:DebugLog() then print("StateSeek: OnLeave") end
 	
 	if GAMEMODE:GetRoundWinner() == GAMEMODE.Teams.Seekers then
+		-- Run external Hooks
 		hook.Run("RoundVictorySeeker")
+		
+		-- Assign Team Points
+		team.SetScore(GAMEMODE.Teams.Seekers, team.GetScore(GAMEMODE.Teams.Seekers) + 1)
 	elseif GAMEMODE:GetRoundWinner() == GAMEMODE.Teams.Hiders then
+		-- Run external Hooks
 		hook.Run("RoundVictoryHider")
+		
+		-- Assign Team Points
+		team.SetScore(GAMEMODE.Teams.Hiders, team.GetScore(GAMEMODE.Teams.Hiders) + 1)
 	else
+		-- Run external Hooks
 		hook.Run("RoundVictoryDraw")		
 	end
 end

@@ -37,6 +37,7 @@ AddCSLuaFile("player_class/class_hider.lua")
 -- Client-Only
 AddCSLuaFile("client/cl_ui_help.lua")
 AddCSLuaFile("client/cl_ui_teamselection.lua")
+AddCSLuaFile("derma/dscoreboard.lua")
 
 -- Client Init
 AddCSLuaFile("cl_init.lua") -- Immediately executed when downloaded, weird bug.

@@ -26,6 +26,7 @@
 --! Includes
 -- ------------------------------------------------------------------------- --
 include("sh_init.lua")
+include("derma/dscoreboard.lua")
 
 GM.UI = {}
 include("client/cl_ui_help.lua")
@@ -53,6 +54,9 @@ function GM:Initialize()
 	surface.CreateFont("Roboto40Bold", {font="Roboto Bold", extended=true, size=40, weight=500, antialias=true})
 	surface.CreateFont("Roboto48Bold", {font="Roboto Bold", extended=true, size=48, weight=500, antialias=true})	
 	surface.CreateFont("RobotoBoldCondensed160", {font="Roboto Bold Condensed", extended=true, size=160, weight=800, antialias=true})
+	
+	print("Prop Hunt CL: Initializing User Interface...")
+	self.UI.Scoreboard = vgui.Create("DScoreBoard")
 	
 	print("Prop Hunt CL: Complete.")
 	print("-------------------------------------------------------------------------")
@@ -175,6 +179,14 @@ function GM:OnSpawnMenuClose()
 	net.Start("PlayerDisablePropRotation")
 	net.WriteAngle(LocalPlayer():EyeAngles())
 	net.SendToServer()
+end
+
+function GM:ScoreboardShow()
+	self.UI.Scoreboard:Show()
+end
+
+function GM:ScoreboardHide()
+	self.UI.Scoreboard:Hide()
 end
 
 function GM:ShowHelpUI()

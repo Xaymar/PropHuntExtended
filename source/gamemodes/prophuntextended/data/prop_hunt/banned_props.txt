@@ -1,8 +1,0 @@
-"TableToKeyValues"
-{
-	"1"		"models/props/cs_assault/dollar.mdl"
-	"2"		"models/props/cs_assault/money.mdl"
-	"3"		"models/props/cs_office/snowman_arm.mdl"
-	"4"		"models/props_junk/garbage_plasticbottle001a.mdl"
-	"5"		"models/props/cs_office/projector_remote.mdl"
-}

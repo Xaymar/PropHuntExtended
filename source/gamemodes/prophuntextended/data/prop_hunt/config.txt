@@ -1,8 +1,0 @@
-"TableToKeyValues"
-{
-	"TAUNT_DELAY"		"0.1"
-	"ROUNDS_PER_MAP"		"20"
-	"ROUND_TIME"		"240"
-	"SWAP_TEAM_EVERY_ROUND"		"1"
-	"GAME_TIME"		"20"
-}

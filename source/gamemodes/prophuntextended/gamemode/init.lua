@@ -27,17 +27,19 @@
 -- ------------------------------------------------------------------------- --
 -- Shared
 AddCSLuaFile("sh_init.lua")
-AddCSLuaFile("meta/player.lua")
 AddCSLuaFile("sh_config.lua")
+AddCSLuaFile("meta/player.lua")
 AddCSLuaFile("player_class/class_default.lua")
 AddCSLuaFile("player_class/class_spectator.lua")
 AddCSLuaFile("player_class/class_seeker.lua")
 AddCSLuaFile("player_class/class_hider.lua")
 
 -- Client-Only
-AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("client/cl_ui_help.lua")
 AddCSLuaFile("client/cl_ui_teamselection.lua")
+
+-- Client Init
+AddCSLuaFile("cl_init.lua") -- Immediately executed when downloaded, weird bug.
 
 -- ------------------------------------------------------------------------- --
 --! Code

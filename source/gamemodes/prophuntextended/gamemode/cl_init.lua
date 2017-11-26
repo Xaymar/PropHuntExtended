@@ -232,45 +232,48 @@ hook.Add("PostDrawTranslucentRenderables", "PHDrawNamePlates", DrawNamePlates)
 
 function DrawSelectionHalo(bDrawingDepth, bDrawingSkybox)
 	if (!GAMEMODE.Config.SelectionHalo:Enabled()) then return end
-	local ent = nil
-	if (GAMEMODE.Config.SelectionHalo:Approximate()) then
-		local trace = {
-			start = LocalPlayer():EyePos(),
-			endpos = LocalPlayer():EyePos() + LocalPlayer():EyeAngles():Forward() * 80,
-			mins = Vector(-16, -16, -16),
-			maxs = Vector( 16,  16,  16),
-			mask = MASK_SOLID + CONTENTS_DEBRIS + CONTENTS_PLAYERCLIP,
-			filter = function(ent)
-				-- Ensure that we don't actually hit ourselves by accident, or our "hands" model.
-				if (!IsValid(ent)
-					|| (ent == LocalPlayer())
-					|| (ent == LocalPlayer():GetHands())) then
+	if ((LocalPlayer():Team() == GAMEMODE.Teams.Hiders) 
+		&& (player_manager.GetPlayerClass(LocalPlayer()) == "Hider")) then
+		local ent = nil
+		if (GAMEMODE.Config.SelectionHalo:Approximate()) then
+			local trace = {
+				start = LocalPlayer():EyePos(),
+				endpos = LocalPlayer():EyePos() + LocalPlayer():EyeAngles():Forward() * 80,
+				mins = Vector(-16, -16, -16),
+				maxs = Vector( 16,  16,  16),
+				mask = MASK_SOLID + CONTENTS_DEBRIS + CONTENTS_PLAYERCLIP,
+				filter = function(ent)
+					-- Ensure that we don't actually hit ourselves by accident, or our "hands" model.
+					if (!IsValid(ent)
+						|| (ent == LocalPlayer())
+						|| (ent == LocalPlayer():GetHands())) then
+						return false
+					end					
+					if table.HasValue(GAMEMODE.Config.Lists:ClassWhitelist(), ent:GetClass()) then return true end
 					return false
-				end					
-				if table.HasValue(GAMEMODE.Config.Lists:ClassWhitelist(), ent:GetClass()) then return true end
-				return false
-			end,
-			output = {}
-		}
-		util.TraceLine(trace)
-		if !IsValid(trace.output.Entity) then util.TraceHull(trace) end
-		if IsValid(trace.output.Entity) then
-			if (!table.HasValue(GAMEMODE.Config.Lists:ModelBlacklist(), trace.output.Entity:GetModel())) then
-				ent = trace.output.Entity
-			end
-		end		
-	else
-		ent = LocalPlayer():GetNWEntity("SelectionHalo")
-	end
-	if IsValid(ent) then
-		local color = HSVToColor(
-			GAMEMODE.Config.SelectionHalo:TintHue(), 
-			GAMEMODE.Config.SelectionHalo:TintSaturation(), 
-			GAMEMODE.Config.SelectionHalo:TintValue()
-			)
-		halo.Add({ ent }, color, 
-			GAMEMODE.Config.SelectionHalo:BlurX(), GAMEMODE.Config.SelectionHalo:BlurY(), GAMEMODE.Config.SelectionHalo:Passes(),
-			GAMEMODE.Config.SelectionHalo:Additive(), GAMEMODE.Config.SelectionHalo:IgnoreZ())
+				end,
+				output = {}
+			}
+			util.TraceLine(trace)
+			if !IsValid(trace.output.Entity) then util.TraceHull(trace) end
+			if IsValid(trace.output.Entity) then
+				if (!table.HasValue(GAMEMODE.Config.Lists:ModelBlacklist(), trace.output.Entity:GetModel())) then
+					ent = trace.output.Entity
+				end
+			end		
+		else
+			ent = LocalPlayer():GetNWEntity("SelectionHalo")
+		end
+		if IsValid(ent) then
+			local color = HSVToColor(
+				GAMEMODE.Config.SelectionHalo:TintHue(), 
+				GAMEMODE.Config.SelectionHalo:TintSaturation(), 
+				GAMEMODE.Config.SelectionHalo:TintValue()
+				)
+			halo.Add({ ent }, color, 
+				GAMEMODE.Config.SelectionHalo:BlurX(), GAMEMODE.Config.SelectionHalo:BlurY(), GAMEMODE.Config.SelectionHalo:Passes(),
+				GAMEMODE.Config.SelectionHalo:Additive(), GAMEMODE.Config.SelectionHalo:IgnoreZ())
+		end
 	end
 end
 hook.Add("PostDrawEffects", "PHDrawSelectionHalo", DrawSelectionHalo)

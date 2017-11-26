@@ -80,6 +80,9 @@ function CLASS:PostDeath(attacker, dmginfo)
 	BaseClass.PostDeath(self, inflictor, attacker)
 	
 	-- Delete Hands Model
+	if IsValid(self.Player.Data.PropConstraint) then
+		self.Player.Data.PropConstraint:Remove()
+	end
 	if IsValid(self.Player:GetHands()) then
 		self.Player:GetHands():Remove()
 	end
@@ -112,7 +115,9 @@ function CLASS:DeathThink()
 end
 
 -- Visible Stuff
-function CLASS:SetModel() self.Player:SetModel("models/Gibs/Antlion_gib_small_3.mdl") end -- does "" even work?
+function CLASS:SetModel()
+	self.Player:SetModel("models/Gibs/Antlion_gib_small_3.mdl")
+end
 
 -- Interaction
 function CLASS:Use(ent)

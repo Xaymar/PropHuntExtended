@@ -42,6 +42,16 @@ function GM:Initialize()
 	self.Data = {}
 	
 	print("Prop Hunt CL: Creating Fonts...")
+	surface.CreateFont("Roboto16", {font="Roboto", extended=true, size=16, weight=500, antialias=true})
+	surface.CreateFont("Roboto24", {font="Roboto", extended=true, size=24, weight=500, antialias=true})
+	surface.CreateFont("Roboto32", {font="Roboto", extended=true, size=32, weight=500, antialias=true})
+	surface.CreateFont("Roboto40", {font="Roboto", extended=true, size=40, weight=500, antialias=true})
+	surface.CreateFont("Roboto48", {font="Roboto", extended=true, size=48, weight=500, antialias=true})
+	surface.CreateFont("Roboto16Bold", {font="Roboto Bold", extended=true, size=16, weight=500, antialias=true})
+	surface.CreateFont("Roboto24Bold", {font="Roboto Bold", extended=true, size=24, weight=500, antialias=true})
+	surface.CreateFont("Roboto32Bold", {font="Roboto Bold", extended=true, size=32, weight=500, antialias=true})
+	surface.CreateFont("Roboto40Bold", {font="Roboto Bold", extended=true, size=40, weight=500, antialias=true})
+	surface.CreateFont("Roboto48Bold", {font="Roboto Bold", extended=true, size=48, weight=500, antialias=true})	
 	surface.CreateFont("RobotoBoldCondensed160", {font="Roboto Bold Condensed", extended=true, size=160, weight=800, antialias=true})
 	
 	print("Prop Hunt CL: Complete.")

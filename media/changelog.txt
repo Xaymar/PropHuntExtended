@@ -1,0 +1,12 @@
+[h1]Version: 1.3.1 (Hotfix 1)[/h1]
+With this update Prop Hunt Extended now has the last core gameplay feature implemented: Scoreboards! You will no longer have to install any other addon just to have a scoreboard that shows who is in what team. But if you do install an external scoreboard, the gamemode now also properly tracks player kills and deaths, as well as team points.
+
+Two other minor fixes were also implemented. You can now play an infinite amount of rounds (ph_round_limit 0) and Hiders should no longer get stuck on themselves.
+
+[b]Changelog:[/b]
+[list][*]Added support for Scoreboards by properly tracking player kills, deaths and team points.
+[*]Implemented basic Scoreboard which shows players separated by teams plus their kills and deaths.
+[*]Fixed Hiders occasionally getting stuck on their own prop.
+[*]Added player class function Alive(), which can be used to tell apart alive and dead players (Note: Player:Alive() is different from this!).
+[*]Hotfix: Fixed lua errors caused by indexing wrong ConVar in SeekerPercentage().
+[/list]

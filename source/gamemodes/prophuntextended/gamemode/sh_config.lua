@@ -115,7 +115,7 @@ end
 -- The Dead Hunt: Percent of players to assign to seeker.
 GM.Config.Teams.ConVars.SeekerPercentage = CreateConVarIfNotExists("ph_teams_seekerpct", "25", FCVAR_REPLICATED, "Teams: Initial percentage of Seekers in Dead Hunt Game Type")
 function GM.Config.Teams:SeekerPercentage()
-	return self.ConVars.Teams:GetFloat() / 100
+	return self.ConVars.SeekerPercentage:GetFloat() / 100
 end
 
 -- ------------------------------------------------------------------------- --

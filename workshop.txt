@@ -1,0 +1,31 @@
+Hide n Seek with a twist - Hiders can turn into anything on the map! From bottles, to vending machines and all the way to huge cars - what you become depends on how you want to play. Do you want to blend in with your surroundings, or do you want to make a fool of the Seekers? And how will you deal with finding (and killing) all hiders as a Seeker?
+
+The Gamemode comes with out of the box support for console configuration (ph_*), custom taunt support, prop rotation, an improved code base for modders and better integration and some other fixes. Support for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=151583504]MapVote[/url] is also built in, so as long as you have a compatible addon installed you will get a map voting menu at the end of a match.
+
+[h1]How To Play[/h1]
+[b]Seekers[/b]
+Your primary goal is to find hiders by any means possible. But watch out, you might lose health if you shoot an object that isn't actually a hider! Pick things up before shooting them, or simply remember the layout of the maps you are playing on. And remember: You lose if only a single hider is still alive at the end of the round.
+
+[b]Hiders[/b]
+Stay alive as long as possible and make Seekers look like a fool. Dance around their feet, hide in plain sight or be that huge car that nobody though you could become! What you do is entirely up to you.
+
+[b]Spectators[/b]
+You get to watch the whole thing go down live! Sit back, grab some popcorn or any other snack and relax.
+
+[h1]Controls[/h1]
+[list][*]F2 (ShowTeam): Select A Team or Change Current Team.
+[*]F3 (ShowSpare1): Play a Taunt.
+[*]C (ShowContextMenu): Toggle between first and third person camera.
+[*]Q (ShowSpawnMenu): Hold to rotate your object (Hider only).
+[*]Ctrl (Duck, Crouch): Interact with objects instead of turning into them, allowing you to pick things up (Hiders only, Seekers always interact with things).
+[*]R with the Prop Hunt SMG (Reload): On full magazine, switch between auto and burst fire.
+[/list]
+
+[h1]Support the Gamemode[/h1]
+Spreading the word that Prop Hunt Extended exists, work together with others on the gamemode or just play it on your favourite server. Every single thing helps! You can also join our [url=https://discord.gg/tbqhAxr]Discord[/url] and perhaps find additional people to play with that way.
+
+[h1]Need support?[/h1]
+Please consider reading the [url=http://steamcommunity.com/workshop/filedetails/discussion/468149739/358415206095321277/]Frequently Asked Questions[/url] first. If nothing of that helped, either write a comment below or try asking your question in #gmod-prop-hunt-extended on [url=https://discord.gg/tbqhAxr]Discord[/url].
+
+[h1]Want to join development?[/h1]
+The entire source code is available under the MIT License [url=https://github.com/Xaymar/PropHuntExtended]on GitHub[/url].

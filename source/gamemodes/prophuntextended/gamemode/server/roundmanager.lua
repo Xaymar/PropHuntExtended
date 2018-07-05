@@ -1,7 +1,7 @@
 --[[
 	The MIT License (MIT)
 	
-	Copyright (c) 2015 Xaymar
+	Copyright (c) 2015-2018 Xaymar
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,27 @@
 	SOFTWARE.
 --]]
 
-GM.RoundManager = {}
-GM.RoundManager.State = nil;
-GM.RoundManager.NextState = nil;
+local roundManagerDef = {}
+roundManagerDef.__index = roundManagerDef
 
-function GM.RoundManager:Tick(...)
+function roundManagerDef:__construct()
+	self.State = nil
+	self.NextState = nil
+end
+
+function roundManagerDef:GetState()
+	return self.State
+end
+
+function roundManagerDef:GetNextState()
+	return self.NextState
+end
+
+function roundManagerDef:SetState(state)
+	self.NextState = state
+end
+
+function roundManagerDef:Tick(...) 
 	if (self.State != nil) then
 		if (self.State.Tick != nil) then
 			self.State:Tick(...)
@@ -40,13 +56,19 @@ function GM.RoundManager:Tick(...)
 			if (self.State.OnLeave != nil) then
 				self.State:OnLeave(self.NextState)
 			end
+			
+			-- Run Hook
+			hook.Run("RoundManagerLeaveState", self.State.Name)			
 		end
 		
 		-- Call OnEnter(OldState)
-		if (self.NextState != nil) then
+		if (self.NextState != nil) then		
 			if (self.NextState.OnEnter != nil) then
 				self.NextState:OnEnter(self.State)
 			end
+			
+			-- Run Hook
+			hook.Run("RoundManagerEnterState", self.NextState.Name)
 		end
 		
 		-- Set State
@@ -54,10 +76,11 @@ function GM.RoundManager:Tick(...)
 	end
 end
 
-function GM.RoundManager:GetState()
-	return self.State
-end
-
-function GM.RoundManager:SetState(State)
-	self.NextState = State
+function roundManager(initialState)
+	local obj = {}
+	obj.__index = obj
+	setmetatable(obj, roundManagerDef)
+	obj:__construct()
+	obj:SetState(initialState)	
+	return obj
 end

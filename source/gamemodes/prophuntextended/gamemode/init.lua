@@ -76,8 +76,8 @@ function GM:Initialize()
 	self.Data = {}
 	self.Data.StartTime = CurTime()
 	
-	print("Prop Hunt: Setting initial RoundManager State...")
-	self.RoundManager:SetState(StatePreMatch)
+	print("Prop Hunt: Initializing Round Manager")
+	self.RoundManager = roundManager(StatePreMatch)
 	
 	print("Prop Hunt: Precaching...")
 	GAMEMODE.Config.Taunt:Seekers()

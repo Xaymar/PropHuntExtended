@@ -394,15 +394,23 @@ net.Receive("PlayerEnablePropRotation", function(len, ply)
 	if (ply:Team() != GAMEMODE.Teams.Hiders) then
 		return
 	end
-	print("Prop Hunt: Enabling Prop Rotation")
+	
+	angle = net.ReadAngle()
+	
 	ply:SetNWBool("PropRotation", true)
-	ply.Data.Prop:ApplyRotation(net.ReadAngle())
+	ply.Data.Prop:ApplyRotation(angle)
+	
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") enabled prop rotation with angle ["..tostring(angle).."].") end	
 end)
 net.Receive("PlayerDisablePropRotation", function(len, ply)
 	if (ply:Team() != GAMEMODE.Teams.Hiders) then
 		return
 	end
-	print("Prop Hunt: Disabling Prop Rotation")
+	
+	angle = net.ReadAngle()
+	
 	ply:SetNWBool("PropRotation", false)
-	ply.Data.Prop:ApplyRotation(net.ReadAngle())
+	ply.Data.Prop:ApplyRotation(angle)
+	
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") enabled prop rotation with angle ["..tostring(angle).."].") end	
 end)

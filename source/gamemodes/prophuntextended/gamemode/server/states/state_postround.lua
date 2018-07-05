@@ -1,7 +1,7 @@
 --[[
 	The MIT License (MIT)
 	
-	Copyright (c) 2015 Xaymar
+	Copyright (c) 2015-2018 Xaymar
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,9 @@
 	SOFTWARE.
 --]]
 
-StatePostRound = {}
+include "base.lua"
+
+StatePostRound = state("PostRound")
 
 function StatePostRound:OnEnter(OldState)
 	if GAMEMODE.Config:DebugLog() then print("StatePostRound: OnEnter") end

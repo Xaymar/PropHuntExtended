@@ -1,7 +1,7 @@
 --[[
 	The MIT License (MIT)
 	
-	Copyright (c) 2015 Xaymar
+	Copyright (c) 2015-2018 Xaymar
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,10 @@
 	SOFTWARE.
 --]]
 
+include "base.lua"
+
 StateSeek = {}
+StateSeek.Name = "Seek"
 
 function StateSeek:OnEnter(OldState)
 	if GAMEMODE.Config:DebugLog() then print("StateSeek: OnEnter") end

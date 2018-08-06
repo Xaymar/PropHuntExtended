@@ -75,7 +75,28 @@ function CLASS:Spawn()
 end
 
 -- Death
-function CLASS:PostDeath(attacker, dmginfo)
+function CLASS:DoDeath(attacker, dmginfo)
+	BaseClass.DoDeath(self, attacker, dmginfo)
+	if GAMEMODE.Config:DebugLog() then 
+		if (IsValid(attacker) && attacker:IsPlayer() && attacker != self.Player) then
+			print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") killed by '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..").")
+		end
+	end
+	
+	if (!IsValid(attacker)) then return end
+	if (!attacker:IsPlayer()) then return end
+	if (attacker:Team() == self.Player:Team()) then return end
+	if (attacker:Team() == GAMEMODE.Teams.Seekers) then
+		if GAMEMODE.Config:DebugLog() then
+			print("Prop Hunt: Seeker '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..") gained "..GAMEMODE.Config.Seeker:HealthBonus().." health for killing Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..").")
+		end
+		local newhealth = attacker:Health() + GAMEMODE.Config.Seeker:HealthBonus()
+		if (newhealth > attacker:GetMaxHealth()) then newhealth = attacker:GetMaxHealth() end
+		attacker:SetHealth(newhealth)
+	end
+end
+
+function CLASS:PostDeath()
 	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") died.") end
 	BaseClass.PostDeath(self, inflictor, attacker)
 	

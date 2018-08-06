@@ -146,8 +146,13 @@ function CLASS:DamageEntity(ent, att, dmg)
 end
 
 -- Death
-function CLASS:Death(inflictor, attacker)
-	BaseClass.Death(self, inflictor, attacker)
+function CLASS:DoDeath(attacker, dmginfo)
+	BaseClass.DoDeath(self, attacker, dmginfo)
+	if GAMEMODE.Config:DebugLog() then 
+		if (IsValid(attacker) && attacker:IsPlayer() && attacker != self.Player) then
+			print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") killed by '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..").")
+		end
+	end
 	
 	if SERVER then
 		self.Player:SetShouldServerRagdoll(true)

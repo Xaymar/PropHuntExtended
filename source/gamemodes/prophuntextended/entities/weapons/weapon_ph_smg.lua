@@ -1,6 +1,6 @@
 -- SWEP Information
 SWEP.Author			= "Michael 'Xaymar' Dirks"
-SWEP.Contact		= "info@project-kube.de"
+SWEP.Contact		= "info@xaymar.com"
 SWEP.PrintName		= "PH Submachine Gun"
 SWEP.Purpose		= "More accurate SMG for Prop Hunt."
 SWEP.Instructions	= "Fire away! Alternative fire to fire a grenade."
@@ -30,8 +30,8 @@ SWEP.Primary.ClipSize		= 45
 SWEP.Primary.DefaultClip	= 45
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "SMG1"
-SWEP.Primary.Damage			= 5
-SWEP.Primary.RefireTime		= 0.1
+SWEP.Primary.Damage			= 4
+SWEP.Primary.RefireTime		= 0.075
 
 -- Secondary Ammunition: SMG Grenades
 SWEP.Secondary.ClipSize		= 1

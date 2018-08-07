@@ -91,14 +91,14 @@ function CLASS:SetModel() BaseClass.SetModel( self ) end
 -- Interaction
 function CLASS:Use(ent)
 	-- Entity must be valid and not a player.
-	if (!ent) || (!ent:IsValid()) || (ent:IsPlayer()) then
+	if (!ent || !ent:IsValid()) then
 		return false
 	end
 	
 	-- Cool Down
 	if (self.Player.Data.UseTime) then
 		local timeSinceUse = (CurTime() - self.Player.Data.UseTime)
-		if (0.2 > timeSinceUse) then
+		if (0.5 > timeSinceUse) then
 			return false
 		end
 		

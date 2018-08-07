@@ -147,7 +147,8 @@ function CLASS:Use(ent)
 	end
 	
 	-- Allow interacting while crouched instead of turning into the prop.
-	if (self.Player:Crouching()) then 
+	if (self.Player:Crouching()) then
+		if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") interacted with "..ent:GetClass().." ("..ent:GetModel()..").") end
 		return true
 	end
 	

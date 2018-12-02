@@ -47,8 +47,8 @@ The development of this and other projects is funded through [Patreon](https://w
 
 ## Official Servers
 ### Central Europe
-* [Primary](steam://connect/xaymar.com:27015)
-* [Secondary](steam://connect/xaymar.com:27016)
+* Primary: steam://connect/xaymar.com:27015
+* Secondary: steam://connect/xaymar.com:27016
 
 ## Links
 * [Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=468149739)

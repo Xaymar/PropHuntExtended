@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg6163"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="title-extended.svg">
+  <defs
+     id="defs6157">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter7370"
+       inkscape:label="text-extended-filter">
+      <feGaussianBlur
+         stdDeviation="1"
+         id="feGaussianBlur7374"
+         result="result4" />
+      <feGaussianBlur
+         stdDeviation="2"
+         id="feGaussianBlur7376"
+         in="SourceGraphic"
+         result="result2" />
+      <feGaussianBlur
+         stdDeviation="4"
+         id="feGaussianBlur7378"
+         in="SourceGraphic"
+         result="result1" />
+      <feBlend
+         mode="screen"
+         in2="result2"
+         id="feBlend7380"
+         result="result3"
+         in="result1" />
+      <feBlend
+         mode="screen"
+         in2="result4"
+         id="feBlend7382"
+         result="result5" />
+      <feBlend
+         mode="screen"
+         in2="SourceGraphic"
+         id="feBlend7384"
+         result="result7" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="-77.142857"
+     inkscape:cy="560"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="3840"
+     inkscape:window-height="2080"
+     inkscape:window-x="3829"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata6160">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       style="display:inline;stroke:#f2722b;stroke-width:14.74307919;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;filter:url(#filter7370)"
+       transform="matrix(0.82040111,0,0,0.82040111,98.238237,35.82582)"
+       inkscape:label="Layer 1"
+       id="g7255">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:316.34109497px;line-height:1.25;font-family:Impact;-inkscape-font-specification:Impact;letter-spacing:0px;word-spacing:0px;fill:none;fill-opacity:1;stroke:#f2722b;stroke-width:14.57606602;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         x="-10.334827"
+         y="293.34174"
+         id="text7253"><tspan
+           dx="0"
+           sodipodi:role="line"
+           id="tspan7251"
+           x="-10.334827"
+           y="293.34174"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:273.42272949px;font-family:Impact;-inkscape-font-specification:Impact;letter-spacing:4.85868835px;fill:none;fill-opacity:1;stroke:#f2722b;stroke-width:14.57606602;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal">EXTENDED</tspan></text>
+    </g>
+  </g>
+</svg>

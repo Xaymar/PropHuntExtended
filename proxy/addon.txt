@@ -1,0 +1,9 @@
+"AddonInfo"
+{
+	"name"            "Prop Hunt"
+	"version"         "1.0.0"
+	"up_date"         "00/00/00"
+	"author_name"     "Xaymar"
+	"author_email"    "info@xaymar.com"
+	"author_url"      "https://xaymar.com/"
+}

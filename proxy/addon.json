@@ -3,5 +3,6 @@
 	"type"		: "gamemode",
 	"tags"		: [ ],
 	"ignore"	: [
+		"addon.txt"
 	]
 }

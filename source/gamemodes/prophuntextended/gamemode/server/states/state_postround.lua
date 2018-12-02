@@ -97,7 +97,7 @@ function StatePostRound:Tick()
 			if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Swapping Teams.") end
 			
 			table.sort(players, function(a,b)
-				return math.random(100) > 50
+				return (math.random(100) > 50)
 			end)
 			table.sort(players, function(a,b)
 				if (b:Team() == GAMEMODE.Teams.Seekers) then

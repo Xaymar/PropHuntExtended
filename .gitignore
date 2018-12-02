@@ -1,4 +1,3 @@
-Pack.gma
-Changelog.txt
-Description.txt
-/*.gma
+/media/rendered/*
+*.gma
+desktop.ini

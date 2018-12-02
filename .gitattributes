@@ -1,0 +1,7 @@
+*.jpg merge=binary -diff
+*.png merge=bianry -diff
+*.gif merge=binary -diff
+*.tiff merge=bianry -diff
+*.tga merge=binary -diff
+*.psd merge=binary -diff
+*.psb merge=binary -diff

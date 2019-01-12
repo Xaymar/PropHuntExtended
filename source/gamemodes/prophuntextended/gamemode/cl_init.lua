@@ -31,6 +31,7 @@ include("derma/dscoreboard.lua")
 GM.UI = {}
 include("client/fontmanager.lua")
 include("client/uimanager.lua")
+include("client/hud/gamestatedisplay.lua")
 include("client/cl_ui_help.lua")
 include("client/cl_ui_teamselection.lua")
 
@@ -51,6 +52,7 @@ function GM:Initialize()
 	print("Prop Hunt CL: Creating User Interface...")
 	self.FontManager:Request("RobotoBoldCondensed160", {font="Roboto Bold Condensed", extended=true, size=160, weight=800, antialias=true})
 	self.UI.Scoreboard = vgui.Create("DScoreBoard")
+	self.UI.GameStateDisplay = vgui.Create("PHEHUDGameStateDisplay")
 	
 	print("Prop Hunt CL: Complete.")
 	print("-------------------------------------------------------------------------")

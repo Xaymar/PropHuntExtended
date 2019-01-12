@@ -35,6 +35,8 @@ AddCSLuaFile("player_class/class_seeker.lua")
 AddCSLuaFile("player_class/class_hider.lua")
 
 -- Client-Only
+AddCSLuaFile("client/fontmanager.lua")
+AddCSLuaFile("client/uimanager.lua")
 AddCSLuaFile("client/cl_ui_help.lua")
 AddCSLuaFile("client/cl_ui_teamselection.lua")
 AddCSLuaFile("derma/dscoreboard.lua")

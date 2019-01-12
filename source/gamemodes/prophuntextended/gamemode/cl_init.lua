@@ -29,6 +29,8 @@ include("sh_init.lua")
 include("derma/dscoreboard.lua")
 
 GM.UI = {}
+include("client/fontmanager.lua")
+include("client/uimanager.lua")
 include("client/cl_ui_help.lua")
 include("client/cl_ui_teamselection.lua")
 
@@ -39,30 +41,24 @@ function GM:Initialize()
 	print("-------------------------------------------------------------------------")
 	print("Prop Hunt CL: Initializing...")
 	
-	print("Prop Hunt CL: Initializing Gamemode Data...")
+	print("Prop Hunt CL: Preparing data...")
 	self.Data = {}
 	
-	print("Prop Hunt CL: Creating Fonts...")
-	surface.CreateFont("Roboto16", {font="Roboto", extended=true, size=16, weight=500, antialias=true})
-	surface.CreateFont("Roboto24", {font="Roboto", extended=true, size=24, weight=500, antialias=true})
-	surface.CreateFont("Roboto32", {font="Roboto", extended=true, size=32, weight=500, antialias=true})
-	surface.CreateFont("Roboto40", {font="Roboto", extended=true, size=40, weight=500, antialias=true})
-	surface.CreateFont("Roboto48", {font="Roboto", extended=true, size=48, weight=500, antialias=true})
-	surface.CreateFont("Roboto16Bold", {font="Roboto Bold", extended=true, size=16, weight=500, antialias=true})
-	surface.CreateFont("Roboto24Bold", {font="Roboto Bold", extended=true, size=24, weight=500, antialias=true})
-	surface.CreateFont("Roboto32Bold", {font="Roboto Bold", extended=true, size=32, weight=500, antialias=true})
-	surface.CreateFont("Roboto40Bold", {font="Roboto Bold", extended=true, size=40, weight=500, antialias=true})
-	surface.CreateFont("Roboto48Bold", {font="Roboto Bold", extended=true, size=48, weight=500, antialias=true})	
-	surface.CreateFont("RobotoBoldCondensed160", {font="Roboto Bold Condensed", extended=true, size=160, weight=800, antialias=true})
+	print("Prop Hunt CL: Preparing User Interface...")
+	self.FontManager = FontManager()
+	self.UIManager = UIManager()
 	
-	print("Prop Hunt CL: Initializing User Interface...")
+	print("Prop Hunt CL: Creating User Interface...")
+	self.FontManager:Request("RobotoBoldCondensed160", {font="Roboto Bold Condensed", extended=true, size=160, weight=800, antialias=true})
 	self.UI.Scoreboard = vgui.Create("DScoreBoard")
 	
 	print("Prop Hunt CL: Complete.")
 	print("-------------------------------------------------------------------------")
 end
 
-function GM:Think() end
+function GM:Think()
+	self.UIManager:Tick()
+end
 
 function GM:InitialPlayerSpawn()
 	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: InitialPlayerSpawn") end

@@ -34,11 +34,16 @@ function StatePreRound:OnEnter(OldState)
 	-- Clean Up the Map
 	game.CleanUpMap()
 	
+	-- Set Round Start Time
+	GAMEMODE.Data.RoundStartTime = CurTime()
+
 end
+
 function StatePreRound:Tick()
 	-- Advance State
 	GAMEMODE.RoundManager:SetState(StateHide)
 end
+
 function StatePreRound:OnLeave(NewState)
 	if GAMEMODE.Config:DebugLog() then print("StatePreRound: OnLeave") end
 	

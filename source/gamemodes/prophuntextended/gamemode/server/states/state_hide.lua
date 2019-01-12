@@ -29,21 +29,18 @@ StateHide = state("Hide")
 function StateHide:OnEnter(OldState)
 	if GAMEMODE.Config:DebugLog() then print("StateHide: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.Hide)
-	
-	-- Round Data
-	GAMEMODE.Data.RoundTime = math.abs(GAMEMODE.Config.Round:BlindTime())
-	GAMEMODE.Data.RoundStartTime = CurTime()
-	
-	GAMEMODE:SetRoundTime(GAMEMODE.Data.RoundTime)
 end
 
 function StateHide:Tick()
 	-- Update Game Time
-	GAMEMODE.Data.RoundTime = math.abs(GAMEMODE.Config.Round:BlindTime()) - (CurTime() - GAMEMODE.Data.RoundStartTime)
+	local deltaTime = (CurTime() - GAMEMODE.Data.RoundStartTime)
+	GAMEMODE.Data.RoundTime = GAMEMODE.Config.Round:Time() - deltaTime
+	GAMEMODE.Data.StateTime = math.abs(GAMEMODE.Config.Round:BlindTime()) - deltaTime
 	GAMEMODE:SetRoundTime(GAMEMODE.Data.RoundTime)
+	GAMEMODE:SetRoundStateTime(GAMEMODE.Data.StateTime)
 	
 	-- Advance to Seeking State
-	if (GAMEMODE.Data.RoundTime <= 0) then
+	if (GAMEMODE.Data.StateTime <= 0) then
 		if GAMEMODE.Config:Debug() then print("StateHide: Advancing to Seek stage.") end
 		
 		GAMEMODE.RoundManager:SetState(StateSeek)

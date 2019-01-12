@@ -49,7 +49,7 @@ GM.States.PostMatch = 5
 -- Game Modes
 GM.Types = {}
 GM.Types.Original		= 0
-GM.Types.TheDeadHunt	= 1 -- One Hunter, Dead Prop become Hunter, Props can't see each other.
+GM.Types.TheDeadHunt	= 1 -- Deprecated: One Hunter, Dead Prop become Hunter, Props can't see each other.
 
 -- Teams
 GM.Teams = {}
@@ -115,12 +115,16 @@ function GM:GetRound()
 	return GetGlobalInt("Round", 0)
 end
 
+function GM:GetRoundTime()
+	return GetGlobalInt("RoundTime", 0)
+end
+
 function GM:GetRoundState()
 	return GetGlobalInt("RoundState", self.States.PreMatch)
 end
 
-function GM:GetRoundTime()
-	return GetGlobalInt("RoundTime", 0)
+function GM:GetRoundStateTime()
+	return GetGlobalInt("RoundStateTime", 0)
 end
 
 function GM:GetRoundWinner()

@@ -76,7 +76,9 @@ function GM:Initialize()
 	
 	print("Prop Hunt: Initializing Gamemode Data...")
 	self.Data = {}
-	self.Data.StartTime = CurTime()
+	self.Data.RoundTime = 0
+	self.Data.RoundStartTime = 0
+	self.Data.StateTime = 0
 	
 	print("Prop Hunt: Initializing Round Manager")
 	self.RoundManager = roundManager(StatePreMatch)
@@ -275,12 +277,16 @@ function GM:SetRound(Round)
 	SetGlobalInt("Round", Round)
 end
 
+function GM:SetRoundTime(Time)
+	SetGlobalInt("RoundTime", Time)
+end
+
 function GM:SetRoundState(State)
 	SetGlobalInt("RoundState", State)
 end
 
-function GM:SetRoundTime(Time)
-	SetGlobalInt("RoundTime", Time)
+function GM:SetRoundStateTime(Time)
+	SetGlobalInt("RoundStateTime", Time)
 end
 
 function GM:SetRoundWinner(Winner)

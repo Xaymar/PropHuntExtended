@@ -31,9 +31,6 @@ function StateSeek:OnEnter(OldState)
 	if GAMEMODE.Config:DebugLog() then print("StateSeek: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.Seek)
 	
-	-- Round Data
-	GAMEMODE.Data.RoundTime = GAMEMODE.Config.Round:Time()
-	
 	-- Unfreeze Seekers
 	for i, ply in ipairs(team.GetPlayers(GAMEMODE.Teams.Seekers)) do
 		ply:Freeze(false)
@@ -45,8 +42,11 @@ end
 
 function StateSeek:Tick()
 	-- Update Game Time
-	GAMEMODE.Data.RoundTime = GAMEMODE.Config.Round:Time() - (CurTime() - GAMEMODE.Data.RoundStartTime)
+	local deltaTime = (CurTime() - GAMEMODE.Data.RoundStartTime)
+	GAMEMODE.Data.RoundTime = GAMEMODE.Config.Round:Time() - deltaTime
+	GAMEMODE.Data.StateTime = GAMEMODE.Config.Round:Time() - deltaTime
 	GAMEMODE:SetRoundTime(GAMEMODE.Data.RoundTime)
+	GAMEMODE:SetRoundStateTime(GAMEMODE.Data.StateTime)
 	
 	-- Victory Conditions
 	local hiders, seekers = team.GetPlayers(GAMEMODE.Teams.Hiders), team.GetPlayers(GAMEMODE.Teams.Seekers)
@@ -61,7 +61,7 @@ function StateSeek:Tick()
 	end
 	for i,ply in ipairs(seekers) do
 		if (ply.Data.Alive) then
-			seekerAlive = true
+			seekerAlive = truew
 		end
 	end
 	if (hiderAlive == false) then
@@ -77,7 +77,7 @@ function StateSeek:Tick()
 			GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Hiders)
 			GAMEMODE.RoundManager:SetState(StatePostRound)
 		else
-			if (GAMEMODE.Data.RoundTime <= 0) then -- No Time remaining
+			if (GAMEMODE.Data.StateTime <= 0) then -- No Time remaining
 				GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Hiders)
 				GAMEMODE.RoundManager:SetState(StatePostRound)
 			end

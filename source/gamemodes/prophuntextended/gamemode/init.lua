@@ -35,12 +35,16 @@ AddCSLuaFile("player_class/class_seeker.lua")
 AddCSLuaFile("player_class/class_hider.lua")
 
 -- Client-Only
-AddCSLuaFile("client/fontmanager.lua")
-AddCSLuaFile("client/uimanager.lua")
+AddCSLuaFile("vgui/fontmanager.lua")
+AddCSLuaFile("vgui/uimanager.lua")
+AddCSLuaFile("vgui/dlabeldpi.lua")
+AddCSLuaFile("vgui/dframedpi.lua")
+AddCSLuaFile("client/ui/help.lua")
+AddCSLuaFile("client/ui/settings.lua")
+AddCSLuaFile("client/ui/scoreboard.lua")
 AddCSLuaFile("client/hud/gamestatedisplay.lua")
 AddCSLuaFile("client/cl_ui_help.lua")
 AddCSLuaFile("client/cl_ui_teamselection.lua")
-AddCSLuaFile("derma/dscoreboard.lua")
 
 -- Client Init
 AddCSLuaFile("cl_init.lua") -- Immediately executed when downloaded, weird bug.

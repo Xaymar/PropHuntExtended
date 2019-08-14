@@ -26,11 +26,13 @@
 --! Includes
 -- ------------------------------------------------------------------------- --
 include("sh_init.lua")
-include("derma/dscoreboard.lua")
-
-GM.UI = {}
-include("client/fontmanager.lua")
-include("client/uimanager.lua")
+include("vgui/dlabeldpi.lua")
+include("vgui/dframedpi.lua")
+include("vgui/fontmanager.lua")
+include("vgui/uimanager.lua")
+include("client/ui/scoreboard.lua")
+include("client/ui/help.lua")
+include("client/ui/settings.lua")
 include("client/hud/gamestatedisplay.lua")
 include("client/cl_ui_help.lua")
 include("client/cl_ui_teamselection.lua")
@@ -45,12 +47,10 @@ function GM:Initialize()
 	print("Prop Hunt CL: Preparing data...")
 	self.Data = {}
 	
-	print("Prop Hunt CL: Preparing User Interface...")
-	self.FontManager = FontManager()
-	self.UIManager = UIManager()
-	
 	print("Prop Hunt CL: Creating User Interface...")
-	self.FontManager:Request("RobotoBoldCondensed160", {font="Roboto Bold Condensed", extended=true, size=160, weight=800, antialias=true})
+	FontManager:Request("RobotoBoldCondensed160", {font="Roboto Bold Condensed", extended=true, size=160, weight=800, antialias=true})
+	self.UI = {}
+	self.UI.Help = vgui.Create("PHE_HelpUI")
 	self.UI.Scoreboard = vgui.Create("DScoreBoard")
 	self.UI.GameStateDisplay = vgui.Create("PHEHUDGameStateDisplay")
 	
@@ -59,7 +59,7 @@ function GM:Initialize()
 end
 
 function GM:Think()
-	self.UIManager:Tick()
+	UIManager:Tick()
 end
 
 function GM:InitialPlayerSpawn()

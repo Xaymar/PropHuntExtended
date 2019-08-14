@@ -22,61 +22,58 @@
 	SOFTWARE.
 --]]
 
-local PANEL = vgui.Create("DFrame")
-PANEL:SetSize(640, 480)
-PANEL:SetTitle("Help")
-PANEL:SetDraggable(true)
-PANEL:SetVisible(false)
-PANEL:SetDraggable(true)
-PANEL:SetSizable(true)
-PANEL:ShowCloseButton(true)
-PANEL:SetDeleteOnClose(false)
+local UI = {}
 
-function PANEL:Show()
-	--self:SetSize(ScrW(), ScrH())
+function UI:Init()
+	-- Initialize
+	self:SetVisible(false)
+	self:SetSize(1280, 720)
+	self:SetScreenLock(true)
+	self:SetTitle("Help & Settings")
+	self:SetDraggable(true)
+	self:SetSizable(true)
+	self:ShowCloseButton(true)
+	self:SetDeleteOnClose(false)
+
+	self.scale = 1.0
+
+	self.psh = vgui.Create("DPropertySheet", self)
+	self.psh:Dock(FILL)
+	self.psh:AddSheet("Help", vgui.Create("PHE_HelpUI_Help", self.psh))
+	self.psh:AddSheet("Settings", vgui.Create("PHE_HelpUI_Settings", self.psh))
+	
+	-- Listen to DPI Updates
+	UIManager:Listen("UpdateDPI", self, function(dpi) self:UpdateDPI(dpi) end)
+	self:UpdateDPI(UIManager:GetDPIScale())
+end
+
+function UI:OnRemove()
+	UIManager:Silence("UpdateDPI", self)
+
+	self.psh:Remove()
+end
+
+function UI:Show()
 	self:Center()
 	self:SetVisible(true)
 	self:SetFocusTopLevel(true)
-	self:SlideDown(.5)
 	self:MakePopup()
 end
-function PANEL:Hide()
-	self:Close()
-	self:SetVisible(false)
-end
 
-function PANEL:Paint(w, h)
+function UI:Paint(w, h)
 	draw.RoundedBox(0, 0, 0, w, h, Color(0,0,0,240))
 end
 
--- Sheets
-local Element = vgui.Create("DPropertySheet", PANEL)
-function Element:PAINT(w,h)
-	draw.RoundedBox(0, 0, 0, w, h, Color(0,0,0,240))
+function UI:UpdateDPI(dpi)
+	local mult = dpi / self.scale
+	self.scale = dpi
+
+	local x, y = self:GetPos()
+	local w, h = self:GetSize()
+	local nw, nh = w * mult, h * mult
+	local ox, oy = (nw - w) / 2, (nh - h) / 2
+	self:SetSize(w * mult, h * mult)
+	self:SetPos(x - ox, y - oy)
 end
-Element:Dock(FILL)
-PANEL.Sheets = Element
-PANEL.Sheet = {}
 
--- Basic Info
-local Element = vgui.Create("DPanel", PANEL.Sheets)
-function Element:Paint(w,h) end
-PANEL.Sheets:AddSheet("The Gamemode", Element)
-PANEL.Sheet.TheGamemode = Element
-
-local Element = vgui.Create("DLabel", PANEL.Sheet.TheGamemode)
-Element:Dock(TOP)
-Element:SetMultiline(true)
-Element:SetText([[
-	Prop Hunt Extended is a Gamemode based on the original Prop Hunt Gamemode. It changes many gameplay elements and features, adding the ability to easily integrate Taunt Packs, Configure Game parameters, rotate your prop and much more.
-]])
-
-
-
--- Settings
-PANEL.SettingsSheet = vgui.Create("DPanel", PANEL.Sheets)
-PANEL.Sheets:AddSheet("Settings", PANEL.SettingsSheet)
-
-
-
-GM.UI.Help = PANEL
+derma.DefineControl("PHE_HelpUI", "Show Help UI Element", UI, "DFrameDPI");

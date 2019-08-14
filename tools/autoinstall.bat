@@ -1,18 +1,17 @@
 @ECHO OFF
-CALL "env.win.bat"
 ECHO This script must be run as administrator, or will fail with unknown results.
 
-PUSHD "%GARRYSMODPATH%
-PUSHD "garrysmod"
-PUSHD "addons"
-ECHO Location: %CD%
-MKLINK /J prophuntextended "%REPO%source"
-MKLINK /J prophunt "%REPO%proxy"
+ECHO I've been run from "%CD%", and am in "%~dp0", switching directory to set up environment.
+PUSHD "%~dp0"
+CALL "%~dp0\env.win.bat"
+
+SET "PATH_GMOD=%GARRYSMODPATH%"
+SET "PATH_REPO=%ROOT%\.."
+
+PUSHD "%PATH_GMOD%\garrysmod\addons"
+MKLINK /J prophuntextended "%PATH_REPO%\source"
+MKLINK /J prophunt "%PATH_REPO%\proxy"
 POPD
-REM PUSHD "gamemodes"
-REM ECHO Location: %CD%
-REM MKLINK /J prophuntextended "%REPO%source\gamemodes\prophuntextended"
-REM MKLINK /J prophunt "%REPO%proxy\gamemodes\prop_hunt"
-REM POPD
+
 POPD
-POPD
+PAUSE

@@ -2,7 +2,6 @@
 
 :: Root and repo
 SET "ROOT=%~dp0"
-SET "REPO=%ROOT%..\"
 
 :: Garry's Mod
 SET "GARRYSMODPATH="

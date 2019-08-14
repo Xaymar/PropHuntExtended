@@ -134,12 +134,12 @@ function UIManagerMeta:InitializeDPI()
 	self.dpi = {}
 	-- Calculate DPI using these base sizes.
 	self.dpi.base = {}
-	self.dpi.base.width = 1280
-	self.dpi.base.height = 720
+	self.dpi.base.width = 1920
+	self.dpi.base.height = 1080
 	-- Limits
 	self.dpi.limits = {}
-	self.dpi.limits.min = 25
-	self.dpi.limits.max = 400
+	self.dpi.limits.min = 0.25
+	self.dpi.limits.max = 4.00
 	-- Final Value
 	self.dpi.override = nil
 	self.dpi.calculated = self:CalculateDPI()
@@ -169,11 +169,10 @@ function UIManagerMeta:GetDPIScale()
 end
 
 function UIManagerMeta:SetDPIScale(newDPIScale)
-	if (newDPIScale == nil) then
-		self.dpi.override = nil
+	self.dpi.override = newDPIScale
+	if (self.dpi.override == nil) then
 		self:Call("UpdateDPI", self.dpi.calculated)
 	else
-		self.dpi.override = newDPIScale
 		if (self.dpi.override < self.dpi.limits.min) then
 			self.dpi.override = self.dpi.limits.min
 		end
@@ -184,4 +183,4 @@ function UIManagerMeta:SetDPIScale(newDPIScale)
 	end
 end
 
-
+_G["UIManager"] = UIManager()

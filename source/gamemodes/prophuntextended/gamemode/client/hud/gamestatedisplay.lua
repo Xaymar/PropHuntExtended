@@ -22,217 +22,214 @@
 	SOFTWARE.
 --]]
 
-local DHUDGameStateDisplay = {}
+local UI = {}
 
-function DHUDGameStateDisplay:Init()
+function UI:Init()
 	self.time = CurTime() - 0.5
 
+	self.padding = 3
+	self.size = Vector(320, 30 + self.padding * 2)
+	self.size2 = Vector(60, self.size.y)
 	self.colors = {}
 	self.colors.background = Color(0, 0, 0, 204)
 	self.colors.title = Color(204, 204, 204, 255)
-	self.colors.content = Color(255, 255, 255, 255)
-	self.colors.team = team.GetColor(self.team)
-
-	self.text = {}
-	self.text.title = "Initializing..."
-	self.text.content = "Initializing..."
-
-	self.round = {}
-	self.round.num = GAMEMODE:GetRound()
-	self.round.state = GAMEMODE:GetRoundState()
-	self.round.time = GAMEMODE:GetRoundTime()
-
-	self.team = GAMEMODE.Teams.Spectators
-
-	-- Set up VGUI
-	self.sizes = {}
-	self.sizes.area = Vector(420, 48)
-	self.sizes.smallFont = 18
-	self.sizes.largeFont = 24
-	self.sizes.scaledFont = 4
-
+	self.colors.text = Color(255, 255, 255, 255)
+	self.state = {}
+	self.state.name = ""
+	
 	self.ui = {}
-	self.ui.container = vgui.Create("Panel", self)
+	self:DockPadding(self.padding, self.padding, self.padding, self.padding)
 
-	self.ui.teamBar = vgui.Create("DShape", self.ui.container)
-	self.ui.teamBar:SetType("Rect")
-	self.ui.teamBar:SetSize(0, 5)
-	self.ui.teamBar:Dock(TOP)
-	
-	self.ui.timeContainer = vgui.Create("Panel", self.ui.container)
-	self.ui.timeContainer:Dock(LEFT)
-	self.ui.timeTitle = vgui.Create("DLabel", self.ui.timeContainer)
-	self.ui.timeTitle:SetText("N/A")
-	self.ui.timeTitle:SetFont("Default")
-	self.ui.timeTitle:SetContentAlignment(2)
-	self.ui.timeTitle:Dock(TOP)
-	self.ui.timeContent = vgui.Create("DLabel", self.ui.timeContainer)
-	self.ui.timeContent:SetText("N/A")
-	self.ui.timeContent:SetFont("Default")
-	self.ui.timeContent:SetContentAlignment(8)
-	self.ui.timeContent:Dock(FILL)
+	self.ui.bar = vgui.Create("DShape", self)
+	self.ui.bar:SetType("Rect")
+	self.ui.bar:SetSize(0, 5)
+	self.ui.bar:Dock(BOTTOM)
 
-	self.ui.mainContainer = vgui.Create("Panel", self.ui.container)
-	self.ui.mainContainer:Dock(FILL)
-	self.ui.mainTitle = vgui.Create("DLabel", self.ui.mainContainer)
-	self.ui.mainTitle:SetText("N/A")
-	self.ui.mainTitle:SetFont("Default")
-	self.ui.mainTitle:SetContentAlignment(2)
-	self.ui.mainTitle:Dock(TOP)
-	self.ui.mainContent = vgui.Create("DLabel", self.ui.mainContainer)
-	self.ui.mainContent:SetText("N/A")
-	self.ui.mainContent:SetFont("Default")
-	self.ui.mainContent:SetContentAlignment(8)
-	self.ui.mainContent:Dock(FILL)
+	self.ui.round = vgui.Create("Panel", self)
+	self.ui.round:Dock(LEFT)
+	self.ui.round:SetSize(100, self.size.y)
 
-	self.ui.roundContainer = vgui.Create("Panel", self.ui.container)
-	self.ui.roundContainer:Dock(RIGHT)
-	self.ui.roundTitle = vgui.Create("DLabel", self.ui.roundContainer)
-	self.ui.roundTitle:SetText("N/A")
-	self.ui.roundTitle:SetFont("Default")
-	self.ui.roundTitle:SetContentAlignment(2)
-	self.ui.roundTitle:Dock(TOP)
-	self.ui.roundContent = vgui.Create("DLabel", self.ui.roundContainer)
-	self.ui.roundContent:SetText("N/A")
-	self.ui.roundContent:SetFont("Default")
-	self.ui.roundContent:SetContentAlignment(8)
-	self.ui.roundContent:Dock(FILL)
-	
-	self.ui.timeContent:InvalidateParent()
-	self.ui.timeTitle:InvalidateParent()	
-	self.ui.mainContent:InvalidateParent()
-	self.ui.mainTitle:InvalidateParent()
-	self.ui.roundContent:InvalidateParent()
-	self.ui.roundTitle:InvalidateParent()
-	
-	self.ui.mainContainer:InvalidateParent()
-	self.ui.timeContainer:InvalidateParent()
-	self.ui.roundContainer:InvalidateParent()
+	self.ui.round_title = vgui.Create("DLabelDPI", self.ui.round)
+	self.ui.round_title:SetFontEx({ size = 10 })
+	self.ui.round_title:SetText("Round")
+	self.ui.round_title:SetColor(self.colors.title)
+	self.ui.round_title:SetContentAlignment(2)
+	self.ui.round_title:SizeToContents()
+	self.ui.round_title:Dock(TOP)
 
-	self.ui.container:Dock(FILL)
-	self.ui.container:InvalidateParent()
-	
-	GAMEMODE.UIManager:Listen("UpdateDPI", self, function(dpi) self:UpdateDPI(dpi) end)
-	self:UpdateDPI(GAMEMODE.UIManager:GetDPIScale())
+	self.ui.round_text = vgui.Create("DLabelDPI", self.ui.round)
+	self.ui.round_text:SetFontEx({ size = 14 })
+	self.ui.round_text:SetText("0 / 10")
+	self.ui.round_text:SetColor(self.colors.text)
+	self.ui.round_text:SetContentAlignment(8)
+	self.ui.round_text:Dock(FILL)
+
+	self.ui.time = vgui.Create("Panel", self)
+	self.ui.time:Dock(RIGHT)
+	self.ui.time:SetSize(100, self.size.y)
+
+	self.ui.time_title = vgui.Create("DLabelDPI", self.ui.time)
+	self.ui.time_title:SetFontEx({ size = 10 })
+	self.ui.time_title:SetText("Time")
+	self.ui.time_title:SetColor(self.colors.title)
+	self.ui.time_title:SetContentAlignment(2)
+	self.ui.time_title:SizeToContents()
+	self.ui.time_title:Dock(TOP)
+
+	self.ui.time_text = vgui.Create("DLabelDPI", self.ui.time)
+	self.ui.time_text:SetFontEx({ size = 14 })
+	self.ui.time_text:SetText("00:00")
+	self.ui.time_text:SetColor(self.colors.text)
+	self.ui.time_text:SetContentAlignment(8)
+	self.ui.time_text:Dock(FILL)
+
+	self.ui.state = vgui.Create("Panel", self)
+	self.ui.state:Dock(FILL)
+
+	self.ui.state_title = vgui.Create("DLabelDPI", self.ui.state)
+	self.ui.state_title:SetFontEx({ size = 14 })
+	self.ui.state_title:SetText("Waiting for Server...")
+	self.ui.state_title:SetColor(self.colors.title)
+	self.ui.state_title:SetContentAlignment(2)
+	self.ui.state_title:SizeToContents()
+	self.ui.state_title:Dock(TOP)
+
+	self.ui.state_text = vgui.Create("DLabelDPI", self.ui.state)
+	self.ui.state_text:SetFontEx({ size = 10 })
+	self.ui.state_text:SetText("Waiting for Server...")
+	self.ui.state_text:SetColor(self.colors.text)
+	self.ui.state_text:SetContentAlignment(8)
+	self.ui.state_text:Dock(FILL)
+
+	hook.Add("RoundManagerEnterState", self, self.HandleEnterState);
+
+	UIManager:Listen("UpdateDPI", self, function(dpi) self:UpdateDPI(dpi) end)
+	self:UpdateDPI(UIManager:GetDPIScale())
 end
 
-function DHUDGameStateDisplay:OnRemove()
-	GAMEMODE.UIManager:Silence("UpdateDPI", self)
+function UI:OnRemove()
+	UIManager:Silence("UpdateDPI", self)
 end
 
-function DHUDGameStateDisplay:Think()
-	-- Only update once every 0.1 seconds.
-	if ((CurTime() - self.time) < 0.1) then
+function UI:Think()
+	-- Only update once every 1/20th of a second.
+	if ((CurTime() - self.time) < 0.05) then
 		return
 	end
 	self.time = CurTime()
 
-	-- Update Information
+	-- Update Time
+	self.ui.time_text:SetText(string.format("%02d:%02d", 
+		math.floor(GAMEMODE:GetRoundTime() / 60), 
+		math.floor(GAMEMODE:GetRoundTime() % 60)))
+
+	-- Update State Text
+	local round_time = GAMEMODE:GetRoundStateTime()
+	local team_id = GAMEMODE.Teams.Spectator
 	if (LocalPlayer() && LocalPlayer():IsPlayer()) then
-		self.team = LocalPlayer():Team()
+		team_id = LocalPlayer():Team()
 	end
-	self.round.num = GAMEMODE:GetRound()
-	self.round.state = GAMEMODE:GetRoundState()
-	self.round.time = GAMEMODE:GetRoundTime()
-	self.round.winner = GAMEMODE:GetRoundWinner()
-	self.round.statetime = GAMEMODE:GetRoundStateTime()
-	
-	-- Update Colors
-	self.colors.team = team.GetColor(self.team)
 
-	-- Generate text
-	if (self.round.state == GAMEMODE.States.PreMatch) then
-		self.text.title = "Waiting for Players"
-		self.text.content = tostring(team.NumPlayers(GAMEMODE.Teams.Seekers)) .. " " .. team.GetName(GAMEMODE.Teams.Seekers) .. ", " .. tostring(team.NumPlayers(GAMEMODE.Teams.Hiders)) .. " " .. team.GetName(GAMEMODE.Teams.Hiders)
-	elseif (self.round.state == GAMEMODE.States.PreRound) then
-		self.text.title = "Preparing Round"
-		self.text.content = ""
-	elseif (self.round.state == GAMEMODE.States.Hide) then
-		self.text.title = "Hide! Seekers are unblinded in..."
-		self.text.content = string.format("%d:%02d", math.floor(self.round.statetime / 60), math.ceil(self.round.statetime % 60))
-	elseif (self.round.state == GAMEMODE.States.Seek) then
-		self.text.title = "Seek! Hiders survive for..."
-		self.text.content = string.format("%d:%02d", math.floor(self.round.statetime / 60), math.ceil(self.round.statetime % 60))
-	elseif (self.round.state == GAMEMODE.States.PostRound) then
-		self.text.title = "Round Result:"
-		if (self.round.winner == GAMEMODE.Teams.Spectator) then
-			self.text.content = "Draw"
-		elseif (self.round.winner == GAMEMODE.Teams.Hiders) then
-			self.text.content = "Hiders Win!"
-		elseif (self.round.winner == GAMEMODE.Teams.Seekers) then
-			self.text.content = "Seekers Win!"
+	if (self.state.name == "Hide") then
+		if (team_id == GAMEMODE.Teams.Seekers) then
+			self.ui.state_text:SetText(string.format("You will be unblinded in %02d:%02d", 
+				math.floor(round_time / 60), math.floor(round_time % 60)))
+		else
+			self.ui.state_text:SetText(string.format("Seekers unblinded in %02d:%02d...",
+				math.floor(round_time / 60), math.floor(round_time % 60)))
 		end
-		--self.colors.content = team.GetColor(self.round.winner)
-	elseif (self.round.state == GAMEMODE.States.PostMatch) then
-		self.text.title = "Match Complete"
+	elseif (self.state.name == "Seek") then
+		if (team_id == GAMEMODE.Teams.Seekers) then
+			self.ui.state_text:SetText(string.format("You have %02d:%02d left to kill all Hiders.", 
+				math.floor(round_time / 60), math.floor(round_time % 60)))
+		else
+			self.ui.state_text:SetText(string.format("You have %02d:%02d left to annoy all Seekers.",
+				math.floor(round_time / 60), math.floor(round_time % 60)))
+		end
 	end
-
-	-- Update UI
-	self.ui.teamBar:SetColor(self.colors.team)
-	self.ui.mainTitle:SetText(self.text.title)
-	self.ui.mainTitle:SetColor(self.colors.title)
-	self.ui.mainTitle:SizeToContents()
-	self.ui.mainContent:SetText(self.text.content)
-	self.ui.mainContent:SetColor(self.colors.content)
-	self.ui.timeTitle:SetText("Time")
-	self.ui.timeTitle:SetColor(self.colors.title)
-	self.ui.timeTitle:SizeToContents()
-	self.ui.timeContent:SetText(string.format("%02d:%02d", math.floor(self.round.time / 60), math.ceil(self.round.time % 60)))
-	self.ui.timeContent:SetColor(self.colors.content)
-	self.ui.roundTitle:SetText("Round")
-	self.ui.roundTitle:SetColor(self.colors.title)
-	self.ui.roundTitle:SizeToContents()
-	if (GAMEMODE.Config.Round:Limit() > 0) then
-		self.ui.roundContent:SetText(string.format("%d of %d", self.round.num, GAMEMODE.Config.Round:Limit()))
-	else
-		self.ui.roundContent:SetText(string.format("%d of ∞", self.round.num))
-	end
-	self.ui.roundContent:SetColor(self.colors.content)
 end
 
-function DHUDGameStateDisplay:Paint()
+function UI:Paint()
 	local w,h = self:GetSize()
 	draw.RoundedBox(0, 0, 0, w, h, self.colors.background)
 end
 
-function DHUDGameStateDisplay:UpdateDPI(dpi)
-	local titleFontSize = math.floor(self.sizes.smallFont*dpi)
-	local contentFontSize = math.floor(titleFontSize+4)
-	local titleFont = "Roboto"..titleFontSize
-	local contentFont = "Roboto"..contentFontSize
-	
-	GAMEMODE.FontManager:Request(titleFont, {font="Roboto", extended=true, size=titleFontSize, weight=500, antialias=true})
-	GAMEMODE.FontManager:Request(contentFont, {font="Roboto", extended=true, size=contentFontSize, weight=500, antialias=true})
-
-	self.ui.timeTitle:SetFont(titleFont)
-	self.ui.mainTitle:SetFont(titleFont)
-	self.ui.roundTitle:SetFont(titleFont)
-	self.ui.timeContent:SetFont(contentFont)
-	self.ui.mainContent:SetFont(contentFont)
-	self.ui.roundContent:SetFont(contentFont)	
-
-	local paddingH = math.floor(10*dpi)
-	local paddingV = math.floor(2*dpi)
-	self.ui.timeContainer:DockPadding(paddingH, paddingV, paddingH, paddingV)
-	self.ui.roundContainer:DockPadding(paddingH, paddingV, paddingH, paddingV)
-	self.ui.mainContainer:DockPadding(paddingH, paddingV, paddingH, paddingV)	
-
-	local newSize = self.sizes.area * dpi
-	self.ui.teamBar:SetSize(newSize.x, paddingV)
-	self.ui.timeContainer:SetSize(newSize.x / 5, newSize.y)
-	self.ui.roundContainer:SetSize(newSize.x / 5, newSize.y)
-	self:SetSize(newSize.x, newSize.y)
-
-	self.ui.teamBar:InvalidateParent()
-	self.ui.mainTitle:InvalidateParent()
-	self.ui.timeTitle:InvalidateParent()
-	self.ui.roundTitle:InvalidateParent()
-	self.ui.timeContainer:InvalidateParent()
-	self.ui.mainContainer:InvalidateParent()
-	self.ui.roundContainer:InvalidateParent()
-
-	self:AlignBottom()
-	self:CenterHorizontal()
+function UI:PerformLayout(w, h)	
 end
 
-vgui.Register("PHEHUDGameStateDisplay", DHUDGameStateDisplay, "Panel")
+function UI:UpdateDPI(dpi)
+	local w, h = self.size.x * dpi, self.size.y * dpi
+	local w2, h2 = self.size2.x * dpi, self.size2.y * dpi
+
+	self.ui.round:SetSize(w2, h2)
+	self.ui.time:SetSize(w2, h2)
+	
+	self:DockPadding(self.padding * dpi, self.padding * dpi, self.padding * dpi, self.padding * dpi)
+	self:SetSize(w, h)
+	self:CenterHorizontal()
+	self:AlignTop(20 * dpi)
+
+	self.ui.round:InvalidateLayout()
+	self.ui.time:InvalidateLayout()
+	self:InvalidateLayout()	
+end
+
+function UI:UpdateStateDisplay()
+	local team_id = GAMEMODE.Teams.Spectator
+	if (LocalPlayer() && LocalPlayer():IsPlayer()) then
+		team_id = LocalPlayer():Team()
+	end
+	
+	-- Update Team Color
+	self.ui.bar:SetColor(team.GetColor(team_id))
+
+	-- Update State itself
+	if (self.state.name == "PreMatch") then
+		self.ui.state_title:SetText(team.GetName(team_id))
+		self.ui.state_text:SetText(string.format("Waiting for players..."))
+	elseif (self.state.name == "PreRound") then
+		self.ui.state_title:SetText(team.GetName(team_id))
+		self.ui.state_text:SetText(string.format("Round starts soon..."))
+	elseif (self.state.name == "Hide") then
+		local round_time = GAMEMODE:GetRoundStateTime()
+		if (team_id == GAMEMODE.Teams.Seekers) then
+			self.ui.state_title:SetText("Blinded! Get ready to seek.")
+		else
+			self.ui.state_title:SetText("Hiding Time!")
+		end
+	elseif (self.state.name == "Seek") then
+		local round_time = GAMEMODE:GetRoundStateTime()
+		if (team_id == GAMEMODE.Teams.Seekers) then
+			self.ui.state_title:SetText("Seek & Destroy!")
+		else
+			self.ui.state_title:SetText("Hide & Avoid!")
+		end
+	elseif (self.state.name == "PostRound") then
+		self.ui.state_text:SetText("Next Round starting soon...")
+		local winner = GAMEMODE:GetRoundWinner()
+		if (winner == GAMEMODE.Teams.Spectators) then
+			self.ui.state_title:SetText("Draw! Everybody lost.")
+		elseif (winner == GAMEMODE.Teams.Seekers) then
+			self.ui.state_title:SetText("Seekers Win!")
+		elseif (winner == GAMEMODE.Teams.Hiders) then
+			self.ui.state_title:SetText("Hiders Win!")
+		end
+	elseif (self.state.name == "PostMatch") then
+		self.ui.state_title:SetText(team.GetName(team_id))
+	end
+end
+
+function UI:HandleEnterState(id, name)
+	self.state.name = name
+
+	-- Update Round
+	if (GAMEMODE.Config.Round:Limit() > 0) then
+		self.ui.round_text:SetText(string.format("%d / %d", GAMEMODE:GetRound(), GAMEMODE.Config.Round:Limit()))
+	else
+		self.ui.round_text:SetText(string.format("%d / ∞", GAMEMODE:GetRound()))
+	end
+	
+	self:UpdateStateDisplay()
+end
+
+vgui.Register("PHE_GameState", UI, "Panel")

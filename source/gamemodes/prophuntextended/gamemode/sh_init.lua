@@ -61,12 +61,13 @@ function GM:CreateTeams()
 	-- Specators
 	team.SetUp(self.Teams.Spectators, "Spectators", Color(127, 127, 127, 255))
 	team.SetSpawnPoint(self.Teams.Spectators, {
+		"info_player_start",
+		"info_player_spawn",
 		"info_player_deathmatch",
 		"info_player_combine",
 		"info_player_counterterrorist",
 		"info_player_allies",
-		"info_player_terrorist",
-		"info_player_start"
+		"info_player_terrorist"
 	})
 	team.SetClass(self.Teams.Spectators, { "Spectator", "Spectator" })
 

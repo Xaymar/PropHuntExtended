@@ -39,7 +39,7 @@ function UI:OnRemove()
 end
 
 function UI:SetFontEx(fontData)
-    self.fontdata = fontData
+    self.fontdata = FontManager:CreateFontData(fontData)
     
     local scaled = table.Merge({}, self.fontdata)
     scaled.size = math.Round(self.fontdata.size * self.scale)

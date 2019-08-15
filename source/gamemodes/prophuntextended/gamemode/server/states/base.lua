@@ -22,32 +22,38 @@
 	SOFTWARE.
 --]]
 
-local stateDef = {}
-stateDef.__index = stateDef
+local CLASS = {}
+CLASS.__index = CLASS
 
-function stateDef:__construct()
-	self.Name = ""		
+function CLASS:__construct()
+	self.name = "Unnamed"
+	self.id = 0
 end
 
-function stateDef:GetName()
-	return self.Name
+function CLASS:GetName()
+	return self.name
 end
 
-function stateDef:OnEnter() end
+function CLASS:GetId()
+	return self.id
+end
 
-function stateDef:Tick() end
+function CLASS:OnEnter() end
 
-function stateDef:OnLeave() end
+function CLASS:Tick() end
 
-function state(name)
+function CLASS:OnLeave() end
+
+function state(name, id)
 	local obj = {}
 	obj.__index = obj
-	setmetatable(obj, stateDef)
+	setmetatable(obj, CLASS)
 	obj:__construct()
 	if (name != nil) then
-		obj.Name = name
-	else
-		obj.Name = "Unnamed"
+		obj.name = name
+	end
+	if (id != nil) then
+		obj.id = id
 	end
 	return obj;
 end

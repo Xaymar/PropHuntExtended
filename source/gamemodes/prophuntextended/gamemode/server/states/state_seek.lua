@@ -24,10 +24,9 @@
 
 include "base.lua"
 
-StateSeek = {}
-StateSeek.Name = "Seek"
+local CLASS = state("Seek", GM.States.Seek)
 
-function StateSeek:OnEnter(OldState)
+function CLASS:OnEnter(OldState)
 	if GAMEMODE.Config:DebugLog() then print("StateSeek: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.Seek)
 	
@@ -40,7 +39,7 @@ function StateSeek:OnEnter(OldState)
 	end	
 end
 
-function StateSeek:Tick()
+function CLASS:Tick()
 	-- Update Game Time
 	local deltaTime = (CurTime() - GAMEMODE.Data.RoundStartTime)
 	GAMEMODE.Data.RoundTime = GAMEMODE.Config.Round:Time() - deltaTime
@@ -67,25 +66,25 @@ function StateSeek:Tick()
 	if (hiderAlive == false) then
 		if (seekerAlive == false) then -- Draw, both teams dead.
 			GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Spectators)
-			GAMEMODE.RoundManager:SetState(StatePostRound)
+			RoundManager:SetState(StatePostRound)
 		else -- Seeker victory, Hiders dead
 			GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Seekers)
-			GAMEMODE.RoundManager:SetState(StatePostRound)
+			RoundManager:SetState(StatePostRound)
 		end
 	else
 		if (seekerAlive == false) then -- Hider Victory, Seeker dead.
 			GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Hiders)
-			GAMEMODE.RoundManager:SetState(StatePostRound)
+			RoundManager:SetState(StatePostRound)
 		else
 			if (GAMEMODE.Data.StateTime <= 0) then -- No Time remaining
 				GAMEMODE:SetRoundWinner(GAMEMODE.Teams.Hiders)
-				GAMEMODE.RoundManager:SetState(StatePostRound)
+				RoundManager:SetState(StatePostRound)
 			end
 		end
 	end
 end
 
-function StateSeek:OnLeave(NewState)
+function CLASS:OnLeave(NewState)
 	if GAMEMODE.Config:DebugLog() then print("StateSeek: OnLeave") end
 	
 	if GAMEMODE:GetRoundWinner() == GAMEMODE.Teams.Seekers then
@@ -105,3 +104,5 @@ function StateSeek:OnLeave(NewState)
 		hook.Run("RoundVictoryDraw")		
 	end
 end
+
+_G["StateSeek"] = CLASS

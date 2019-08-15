@@ -24,9 +24,9 @@
 
 include "base.lua"
 
-StatePreRound = state("PreRound")
+local CLASS = state("PreRound", GM.States.PreRound)
 
-function StatePreRound:OnEnter(OldState)
+function CLASS:OnEnter(OldState)
 	if GAMEMODE.Config:DebugLog() then print("StatePreRound: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.PreRound)
 	GAMEMODE:SetRound(GAMEMODE:GetRound() + 1)
@@ -39,12 +39,12 @@ function StatePreRound:OnEnter(OldState)
 
 end
 
-function StatePreRound:Tick()
+function CLASS:Tick()
 	-- Advance State
-	GAMEMODE.RoundManager:SetState(StateHide)
+	RoundManager:SetState(StateHide)
 end
 
-function StatePreRound:OnLeave(NewState)
+function CLASS:OnLeave(NewState)
 	if GAMEMODE.Config:DebugLog() then print("StatePreRound: OnLeave") end
 	
 	-- Respawn Everyone
@@ -66,3 +66,5 @@ function StatePreRound:OnLeave(NewState)
 	-- Fretta Hooks
 	hook.Run("RoundStart")
 end
+
+_G["StatePreRound"] = CLASS

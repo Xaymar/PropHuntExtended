@@ -24,9 +24,9 @@
 
 include "base.lua"
 
-StatePostMatch = state("PostMatch")
+local CLASS = state("PostMatch", GM.States.PostMatch)
 
-function StatePostMatch:OnEnter(OldState)
+function CLASS:OnEnter(OldState)
 	if GAMEMODE.Config:DebugLog() then print("StatePostMatch: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.PostMatch)
 	
@@ -46,11 +46,13 @@ function StatePostMatch:OnEnter(OldState)
 	end
 end
 
-function StatePostMatch:Tick()
+function CLASS:Tick()
 	-- Advance State
-	GAMEMODE.RoundManager:SetState(self.NextState)
+	RoundManager:SetState(self.NextState)
 end
 
-function StatePostMatch:OnLeave(NewState)
+function CLASS:OnLeave(NewState)
 	if GAMEMODE.Config:DebugLog() then print("StatePostMatch: OnLeave") end
 end
+
+_G["StatePostMatch"] = CLASS

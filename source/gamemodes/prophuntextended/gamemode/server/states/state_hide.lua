@@ -24,14 +24,14 @@
 
 include "base.lua"
 
-StateHide = state("Hide")
+local CLASS = state("Hide", GM.States.Hide)
 
-function StateHide:OnEnter(OldState)
+function CLASS:OnEnter(OldState)
 	if GAMEMODE.Config:DebugLog() then print("StateHide: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.Hide)
 end
 
-function StateHide:Tick()
+function CLASS:Tick()
 	-- Update Game Time
 	local deltaTime = (CurTime() - GAMEMODE.Data.RoundStartTime)
 	GAMEMODE.Data.RoundTime = GAMEMODE.Config.Round:Time() - deltaTime
@@ -43,7 +43,7 @@ function StateHide:Tick()
 	if (GAMEMODE.Data.StateTime <= 0) then
 		if GAMEMODE.Config:Debug() then print("StateHide: Advancing to Seek stage.") end
 		
-		GAMEMODE.RoundManager:SetState(StateSeek)
+		RoundManager:SetState(StateSeek)
 	end
 	
 	-- Freeze Seekers
@@ -56,9 +56,11 @@ function StateHide:Tick()
 	-- ToDo: Logic for more game modes here?
 end
 
-function StateHide:OnLeave(NewState)
+function CLASS:OnLeave(NewState)
 	if GAMEMODE.Config:Debug() then print("StateHide: OnLeave") end
 	
 	-- Fretta Hooks
 	hook.Run("PropHuntUnblind")
 end
+
+_G["StateHide"] = CLASS

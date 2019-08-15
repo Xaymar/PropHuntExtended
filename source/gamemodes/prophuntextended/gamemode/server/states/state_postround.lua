@@ -24,9 +24,9 @@
 
 include "base.lua"
 
-StatePostRound = state("PostRound")
+local CLASS = state("PostRound", GM.States.PostRound)
 
-function StatePostRound:OnEnter(OldState)
+function CLASS:OnEnter(OldState)
 	if GAMEMODE.Config:DebugLog() then print("StatePostRound: OnEnter") end
 	GAMEMODE:SetRoundState(GAMEMODE.States.PostRound)
 	
@@ -36,10 +36,10 @@ function StatePostRound:OnEnter(OldState)
 	hook.Run("RoundEnd")
 end
 
-function StatePostRound:Tick()
+function CLASS:Tick()
 	-- Advance State
 	if (CurTime() - GAMEMODE.Data.RoundStartTime) >= 5 then -- ToDo: configureable time?
-		GAMEMODE.RoundManager:SetState(StatePostMatch)
+		RoundManager:SetState(StatePostMatch)
 		local players = team.GetPlayers(GAMEMODE.Teams.Seekers)
 		table.Add(players, team.GetPlayers(GAMEMODE.Teams.Hiders))
 		
@@ -139,6 +139,8 @@ function StatePostRound:Tick()
 	end
 end
 
-function StatePostRound:OnLeave(NewState)
+function CLASS:OnLeave(NewState)
 	if GAMEMODE.Config:DebugLog() then print("StatePostRound: OnLeave") end
 end
+
+_G["StatePostRound"] = CLASS

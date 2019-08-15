@@ -22,65 +22,131 @@
 	SOFTWARE.
 --]]
 
-local roundManagerDef = {}
-roundManagerDef.__index = roundManagerDef
+local CLASS = {}
+CLASS.__index = CLASS
 
-function roundManagerDef:__construct()
-	self.State = nil
-	self.NextState = nil
-end
+local netmsg = {
+	refresh = "RoundManagerUpdate",
+	winner = "RoundManagerWinner"
+}
 
-function roundManagerDef:GetState()
-	return self.State
-end
+function CLASS:__construct()
+	self.state = nil
+	self.next_state = nil
 
-function roundManagerDef:GetNextState()
-	return self.NextState
-end
-
-function roundManagerDef:SetState(state)
-	self.NextState = state
-end
-
-function roundManagerDef:Tick(...) 
-	if (self.State != nil) then
-		if (self.State.Tick != nil) then
-			self.State:Tick(...)
-		end
-	end
+	-- Custom Timer Stuff
+	self.timers = {}
+	self.timers.funcs = {}
+	self.timers.times = {}
+	self.timers.delay = {}
 	
+	-- Register all network string
+	for k, v in pairs(netmsg) do
+		util.AddNetworkString(v)
+	end
+
+	-- And some more Timers based functionality.
+	self:_RegisterTimer("refresh", 2.0, function() self:RefreshAll() end)
+
+	-- We need a Think hook.
+	hook.Add("Think", "RoundManagerThink", function(...) self:Tick(...) end)
+end
+
+function CLASS:_RegisterTimer(name, delay, func)
+	self.timers.funcs[name] = func
+	self.timers.delay[name] = delay
+	self.timers.times[name] = CurTime()
+end
+
+function CLASS:GetState()
+	return self.state
+end
+
+function CLASS:GetNextState()
+	return self.next_state
+end
+
+function CLASS:SetState(state)
+	self.next_state = state
+end
+
+function CLASS:Tick(...)
+	-- Tick State
+	if (self.state != nil) then
+		if (self.state.Tick != nil) then
+			self.state:Tick(...)
+		end
+	end
+
 	-- Advance States
-	if (self.NextState != self.State) then
-		-- Call OnLeave(NewState)
-		if (self.State != nil) then
-			if (self.State.OnLeave != nil) then
-				self.State:OnLeave(self.NextState)
+	if (self.next_state != self.state) then
+		local to_id = -1
+		local to_name = ""
+
+		-- Call OnLeave
+		if (self.state != nil) then
+			if (self.state.OnLeave != nil) then
+				self.state:OnLeave(self.next_state)
 			end
 			
 			-- Run Hook
-			hook.Run("RoundManagerLeaveState", self.State.Name)			
+			hook.Run("RoundManagerLeaveState", self.state:GetId(), self.state:GetName())
 		end
 		
-		-- Call OnEnter(OldState)
-		if (self.NextState != nil) then		
-			if (self.NextState.OnEnter != nil) then
-				self.NextState:OnEnter(self.State)
+		-- Call OnEnter
+		if (self.next_state != nil) then		
+			if (self.next_state.OnEnter != nil) then
+				self.next_state:OnEnter(self.state)
 			end
+
+			to_id = self.next_state:GetId()
+			to_name = self.next_state:GetName()
 			
 			-- Run Hook
-			hook.Run("RoundManagerEnterState", self.NextState.Name)
+			hook.Run("RoundManagerEnterState", self.next_state:GetId(), self.next_state:GetName())
 		end
-		
+
+		-- Send Network Message
+		self:RefreshAll()
+
 		-- Set State
-		self.State = self.NextState
+		self.state = self.next_state
+	end
+
+	-- Run all timers.
+	for k, v in pairs(self.timers.times) do
+		if ((CurTime() - self.timers.times[k]) >= self.timers.delay[k]) then
+			self.timers.funcs[k]()
+			self.timers.times[k] = CurTime()
+		end
 	end
 end
 
-function roundManager(initialState)
+function CLASS:RefreshAll()
+	local data = {}
+	if (self.state != nil) then 
+		data.state = self.state:GetId()
+		data.state_name = self.state:GetName()
+	else
+		data.state = -1
+		data.state_name = "Unknown"
+	end
+
+	net.Start(netmsg.refresh)
+	net.WriteTable(data)
+	net.Broadcast()
+end
+
+function CLASS:AnnounceWinner(team)
+
+end
+
+function CreateRoundManager()
 	local obj = {}
 	obj.__index = obj
-	setmetatable(obj, roundManagerDef)
+	setmetatable(obj, CLASS)
 	obj:__construct()
-	obj:SetState(initialState)	
 	return obj
 end
+
+_G["RoundManager"] = CreateRoundManager()

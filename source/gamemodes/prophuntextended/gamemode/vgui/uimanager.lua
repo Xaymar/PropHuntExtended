@@ -98,8 +98,6 @@ function UIManagerMeta:Call(event, ...)
 	end
 	
 	for k,v in pairs(self.events[event]) do
-		print(k)
-		print(v)
 		v(...)
 	end
 end
@@ -121,11 +119,7 @@ end
 function UIManagerMeta:Tick()
 	if (self:UpdateScreen() == true) then
 		self.dpi.calculated = self:CalculateDPI()
-		if (self.dpi.override == nil) then
-			self:Call("UpdateDPI", self.dpi.calculated)
-		else
-			self:Call("UpdateDPI", self.dpi.override)
-		end
+		self:SetDPIScale(self.dpi.override)
 	end
 end
 

@@ -40,7 +40,10 @@ function FontManagerMeta:__construct()
 end
 
 function FontManagerMeta:Exists(name)
-	return (self.fonts[name] != nil)
+	if (self.fonts[name] != nil) then
+		return true
+	end
+	return false
 end
 
 function FontManagerMeta:CreateFontData(settings)
@@ -91,10 +94,11 @@ function FontManagerMeta:ToName(settings)
 end
 
 function FontManagerMeta:Request(name, settings)
-	if self:Exists(name) then
+	if (self.fonts[name] != nil) then
 		--print("[Prop Hunt Font Manager] Request for font '"..name.."' received and cached.")
 		return name
 	end
+	
 	print("[Font Manager] Creating new Font '"..name.."'...")
 	self.fonts[name] = surface.CreateFont(name, settings)
 	return name

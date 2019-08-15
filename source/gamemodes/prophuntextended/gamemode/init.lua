@@ -43,11 +43,12 @@ AddCSLuaFile("client/ui/help.lua")
 AddCSLuaFile("client/ui/settings.lua")
 AddCSLuaFile("client/ui/scoreboard.lua")
 AddCSLuaFile("client/hud/gamestatedisplay.lua")
+AddCSLuaFile("client/roundmanager.lua")
 AddCSLuaFile("client/cl_ui_help.lua")
 AddCSLuaFile("client/cl_ui_teamselection.lua")
 
 -- Client Init
-AddCSLuaFile("cl_init.lua") -- Immediately executed when downloaded, weird bug.
+AddCSLuaFile("cl_init.lua") -- Immediately executed when downloaded, weird behavior.
 
 -- ------------------------------------------------------------------------- --
 --! Code
@@ -86,7 +87,7 @@ function GM:Initialize()
 	self.Data.StateTime = 0
 	
 	print("Prop Hunt: Initializing Round Manager")
-	self.RoundManager = roundManager(StatePreMatch)
+	RoundManager:SetState(StatePreRound)
 	
 	print("Prop Hunt: Precaching...")
 	GAMEMODE.Config.Taunt:Seekers()
@@ -94,10 +95,6 @@ function GM:Initialize()
 	
 	print("Prop Hunt: Complete.")
 	print("-------------------------------------------------------------------------")
-end
-
-function GM:Think()
-	self.RoundManager:Tick()
 end
 
 -- Player Connected

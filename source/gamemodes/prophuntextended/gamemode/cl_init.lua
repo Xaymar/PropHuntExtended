@@ -25,17 +25,21 @@
 -- ------------------------------------------------------------------------- --
 --! Includes
 -- ------------------------------------------------------------------------- --
+-- Early Init
 include("sh_init.lua")
 include("vgui/dlabeldpi.lua")
 include("vgui/dframedpi.lua")
 include("vgui/fontmanager.lua")
 include("vgui/uimanager.lua")
+include("client/roundmanager.lua")
+
+-- Late Init
+include("client/cl_ui_help.lua")
+include("client/cl_ui_teamselection.lua")
+include("client/hud/gamestatedisplay.lua")
 include("client/ui/scoreboard.lua")
 include("client/ui/help.lua")
 include("client/ui/settings.lua")
-include("client/hud/gamestatedisplay.lua")
-include("client/cl_ui_help.lua")
-include("client/cl_ui_teamselection.lua")
 
 -- ------------------------------------------------------------------------- --
 --! Code
@@ -52,7 +56,8 @@ function GM:Initialize()
 	self.UI = {}
 	self.UI.Help = vgui.Create("PHE_HelpUI")
 	self.UI.Scoreboard = vgui.Create("DScoreBoard")
-	self.UI.GameStateDisplay = vgui.Create("PHEHUDGameStateDisplay")
+	self.UI.GameStateDisplay = vgui.Create("PHE_GameState")
+	self.UI.GameStateDisplay:Show()
 	
 	print("Prop Hunt CL: Complete.")
 	print("-------------------------------------------------------------------------")

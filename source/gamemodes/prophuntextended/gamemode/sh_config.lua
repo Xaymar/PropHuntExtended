@@ -65,12 +65,6 @@ end
 -- ------------------------------------------------------------------------- --
 --! Basic Settings
 -- ------------------------------------------------------------------------- --
--- Game Mode (See sh_init.lua)
-GM.Config.ConVars.GameType = CreateConVarIfNotExists("ph_gametype", GM.Types.Original, FCVAR_REPLICATED, "Prop Hunt: Which Game Type should be played? ("..GM.Types.Original.." = Original Prop Hunt, "..GM.Types.TheDeadHunt.." = The Dead Hunt Mode)")
-function GM.Config:GameType()
-	return self.ConVars.GameType:GetInt()
-end
-
 -- Timelimit in minutes
 GM.Config.ConVars.TimeLimit = CreateConVarIfNotExists("mp_timelimit", "20", FCVAR_REPLICATED, "Map Time Limit (in Minutes)")
 function GM.Config:TimeLimit()

@@ -46,11 +46,6 @@ GM.States.Seek = 3
 GM.States.PostRound = 4
 GM.States.PostMatch = 5
 
--- Game Modes
-GM.Types = {}
-GM.Types.Original		= 0
-GM.Types.TheDeadHunt	= 1 -- Deprecated: One Hunter, Dead Prop become Hunter, Props can't see each other.
-
 -- Teams
 GM.Teams = {}
 GM.Teams.Spectators = 0
@@ -137,6 +132,9 @@ end
 -- ------------------------------------------------------------------------- --
 -- Meta
 include "meta/player.lua"
+
+-- Defines
+include "sh_defines.lua"
 
 -- Configuration
 include "sh_config.lua"

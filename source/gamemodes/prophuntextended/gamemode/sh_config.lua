@@ -37,6 +37,17 @@ function CreateConVarIfNotExists(name, value, flags, helptext)
 end
 
 -- ------------------------------------------------------------------------- --
+--! Options
+-- ------------------------------------------------------------------------- --
+GM.Options = { }
+
+-- Friendly Fire
+GM.Options.FriendlyFire = { }
+GM.Options.FriendlyFire.Off = 0
+GM.Options.FriendlyFire.On = 1
+GM.Options.FriendlyFire.Reflect = 2
+
+-- ------------------------------------------------------------------------- --
 --! Debug Settings
 -- ------------------------------------------------------------------------- --
 -- Debug Mode
@@ -64,6 +75,17 @@ end
 GM.Config.ConVars.TimeLimit = CreateConVarIfNotExists("mp_timelimit", "20", FCVAR_REPLICATED, "Map Time Limit (in Minutes)")
 function GM.Config:TimeLimit()
 	return self.ConVars.TimeLimit:GetFloat()
+end
+
+-- Friendly Fire
+GM.Config.ConVars.FriendlyFire = CreateConVarIfNotExists(
+	"mp_friendlyfire",
+	GM.Options.FriendlyFire.Off,
+	FCVAR_REPLICATED,
+	"Enable Friendly Fire? (0 = Off, 1 = On, 2 = Reflect)"
+)
+function GM.Config:FriendlyFire()
+	return self.ConVars.FriendlyFire:GetInt()
 end
 
 -- ------------------------------------------------------------------------- --

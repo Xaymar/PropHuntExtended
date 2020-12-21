@@ -130,11 +130,11 @@ end
 -- ------------------------------------------------------------------------- --
 --! Includes
 -- ------------------------------------------------------------------------- --
--- Meta
-include "meta/player.lua"
-
 -- Defines
 include "sh_defines.lua"
+
+-- Meta
+include "meta/player.lua"
 
 -- Configuration
 include "sh_config.lua"

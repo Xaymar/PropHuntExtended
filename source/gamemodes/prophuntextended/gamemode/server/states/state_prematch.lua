@@ -40,14 +40,10 @@ function CLASS:Tick()
 		RoundManager:SetState(StatePreRound)
 	end
 	
-	-- Game Mode: Basic
-	if (GAMEMODE.Config:GameType() == GAMEMODE.Types.Original) then
-		-- Both Teams must have at least 1 player.
-		if ((team.NumPlayers(GAMEMODE.Teams.Seekers) >= 1) && (team.NumPlayers(GAMEMODE.Teams.Hiders) >= 1)) then
-			RoundManager:SetState(StatePreRound)
-			if GAMEMODE.Config:DebugLog() then print("StatePreMatch: <Original> Have enough players to start match.") end
-		end
-	-- TODO: Other Gamemodes
+	-- Both Teams must have at least 1 player.
+	if ((team.NumPlayers(GAMEMODE.Teams.Seekers) >= 1) && (team.NumPlayers(GAMEMODE.Teams.Hiders) >= 1)) then
+		RoundManager:SetState(StatePreRound)
+		if GAMEMODE.Config:DebugLog() then print("StatePreMatch: <Original> Have enough players to start match.") end
 	end
 end
 

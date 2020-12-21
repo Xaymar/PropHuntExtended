@@ -109,21 +109,11 @@ function CLASS:Tick()
 		
 		-- Team Distribution Logic
 		local hiders, seekers = {}, {}
-		if (GAMEMODE.Config:GameType() == GAMEMODE.Types.Original) then
-			-- Game Mode: Basic
-			local plyCount, finalPlyCount = #players, math.max(math.ceil(#players / 2), 1)
-			for c = 1,finalPlyCount do
-				seekers[c] = table.remove(players, 1)
-			end
-			hiders = players
-		elseif (GAMEMODE.Config:GameType() == GAMEMODE.Types.TheDeadHunt) then
-			-- Game Mode: The Dead Hunt
-			local plyCount, finalPlyCount = #players, math.max(math.ceil(#players * GAMEMODE.Config.Teams:SeekerPercentage()), 1)
-			for c = 1,finalPlyCount do
-				seekers[c] = table.remove(players, 1)
-			end
-			hiders = players
+		local plyCount, finalPlyCount = #players, math.max(math.ceil(#players / 2), 1)
+		for c = 1,finalPlyCount do
+			seekers[c] = table.remove(players, 1)
 		end
+		hiders = players
 		
 		-- Kill & Assign Teams
 		for i, ply in ipairs(hiders) do

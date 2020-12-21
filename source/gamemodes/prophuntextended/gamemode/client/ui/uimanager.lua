@@ -68,8 +68,8 @@ function UIManagerMeta:InitializeEvents()
 end
 
 function UIManagerMeta:Listen(event, uniqueName, callback)
-	assert(type(event) == "string", "UIManager:Listen(event<string>, callback<function>): event must be a string")
-	assert(type(callback) == "function", "UIManager:Listen(event<string>, callback<function>): callback must be a function")
+	assert(type(event) == "string", "UIManager:Listen(event<string>, uniqueName<any>, callback<function>): event must be a string")
+	assert(type(callback) == "function", "UIManager:Listen(event<string>, uniqueName<any>, callback<function>): callback must be a function")
 	
 	if (self.events[event] == nil) then
 		self.events[event] = {}
@@ -80,6 +80,8 @@ function UIManagerMeta:Listen(event, uniqueName, callback)
 end
 
 function UIManagerMeta:Silence(event, uniqueName)
+	assert(type(event) == "string", "UIManager:Silence(event<string>, uniqueName<any>): event must be a string")
+
 	if (self.events[event] == nil) then
 		return false
 	end
@@ -128,12 +130,12 @@ function UIManagerMeta:InitializeDPI()
 	self.dpi = {}
 	-- Calculate DPI using these base sizes.
 	self.dpi.base = {}
-	self.dpi.base.width = 1920
-	self.dpi.base.height = 1080
+	self.dpi.base.width = 1280
+	self.dpi.base.height = 720
 	-- Limits
 	self.dpi.limits = {}
 	self.dpi.limits.min = 0.25
-	self.dpi.limits.max = 4.00
+	self.dpi.limits.max = 10.00
 	-- Final Value
 	self.dpi.override = nil
 	self.dpi.calculated = self:CalculateDPI()
